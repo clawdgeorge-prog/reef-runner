@@ -121,6 +121,8 @@ Data-driven healthcare analytics company (founded 2021), Roosevelt, Utah. Specia
 - Keep George (main session) on OpenAI when configured
 - Keep routine cron jobs, scraping, and spawned agents on MiniMax by default
 - Only switch subagents/workloads to OpenAI when Brant and George agree it’s needed
+- Prefer one stable daily maintenance/game cron over many hourly spammy ones
+- For cron jobs, do not ask the worker to send messages directly; have the worker return text and let cron delivery send it
 
 ## Key Learnings
 

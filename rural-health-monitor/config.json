@@ -1,0 +1,36 @@
+{
+  "queries": [
+    "rural healthcare United States",
+    "rural health program United States",
+    "RHTP rural health",
+    "FLEX program rural health",
+    "SHIP rural health",
+    "critical access hospital rural health",
+    "rural hospital funding United States",
+    "rural hospital closure United States",
+    "rural health conference United States",
+    "NRHA rural health",
+    "Federal Office of Rural Health Policy",
+    "rural telehealth United States",
+    "rural Medicaid rural hospital",
+    "rural maternal health United States",
+    "rural healthcare workforce United States"
+  ],
+  "known_sources": [
+    {"name": "Rural Health Information Hub", "url": "https://www.ruralhealthinfo.org/", "category": "policy/resources"},
+    {"name": "National Rural Health Association", "url": "https://www.ruralhealth.us/", "category": "association"},
+    {"name": "FORHP", "url": "https://www.hrsa.gov/rural-health", "category": "federal"},
+    {"name": "CMS Rural Health", "url": "https://www.cms.gov/priorities/innovation/key-concepts/rural-health", "category": "federal"},
+    {"name": "CDC Rural Health", "url": "https://www.cdc.gov/rural-health/", "category": "federal"},
+    {"name": "KFF Rural Health", "url": "https://www.kff.org/tag/rural-health/", "category": "research"},
+    {"name": "AHA Rural Health Services", "url": "https://www.aha.org/center/rural-health-care-services", "category": "association"},
+    {"name": "Becker's Hospital Review", "url": "https://www.beckershospitalreview.com/", "category": "industry news"},
+    {"name": "Modern Healthcare", "url": "https://www.modernhealthcare.com/", "category": "industry news"},
+    {"name": "Fierce Healthcare", "url": "https://www.fiercehealthcare.com/", "category": "industry news"},
+    {"name": "Rural Health Value", "url": "https://www.ruralhealthvalue.org/", "category": "resources"},
+    {"name": "The Chartis Center for Rural Health", "url": "https://www.chartis.com/what-we-do/healthcare/center-for-rural-health", "category": "research"}
+  ],
+  "max_results_per_query": 8,
+  "max_story_age_days": 7,
+  "delivery_top_n": 12
+}

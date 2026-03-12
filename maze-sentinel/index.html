@@ -8,7 +8,7 @@
     :root {
       --bg-0: #020611;
       --bg-1: #071326;
-      --bg-2: #0e2040;
+      --bg-2: #0f2142;
       --ink: #eef7ff;
       --muted: #93a8c9;
       --cyan: #63f2ff;
@@ -19,13 +19,10 @@
       --green: #79ffb1;
       --danger: #ff7272;
       --glass: rgba(9, 18, 39, 0.64);
-      --glass-2: rgba(255, 255, 255, 0.05);
       --border: rgba(120, 217, 255, 0.18);
       --shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
     }
-
     * { box-sizing: border-box; }
-
     html, body {
       margin: 0;
       min-height: 100%;
@@ -38,345 +35,65 @@
         linear-gradient(180deg, #091226 0%, #040915 48%, #020611 100%);
       overflow-x: hidden;
     }
-
-    body {
-      display: flex;
-      justify-content: center;
-      padding: 16px;
-    }
-
-    .app {
-      width: min(1380px, 100%);
-      display: grid;
-      grid-template-columns: 350px minmax(0, 1fr);
-      gap: 18px;
-      align-items: start;
-    }
-
+    body { display:flex; justify-content:center; padding:16px; }
+    .app { width:min(1380px,100%); display:grid; grid-template-columns:350px minmax(0,1fr); gap:18px; align-items:start; }
     .panel {
-      position: relative;
-      overflow: hidden;
-      border-radius: 28px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03)),
-        linear-gradient(180deg, rgba(7,19,38,.94), rgba(4,10,22,.94));
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(22px);
+      position:relative; overflow:hidden; border-radius:28px;
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03)), linear-gradient(180deg, rgba(7,19,38,.94), rgba(4,10,22,.94));
+      border:1px solid var(--border); box-shadow:var(--shadow); backdrop-filter:blur(22px);
     }
-
-    .panel::before {
-      content: "";
-      position: absolute;
-      inset: -20% auto auto -10%;
-      width: 220px;
-      height: 220px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(99,242,255,.18), transparent 70%);
-      pointer-events: none;
-    }
-
-    .sidebar {
-      padding: 22px;
-      display: grid;
-      gap: 16px;
-    }
-
-    .brand {
-      display: grid;
-      gap: 10px;
-      padding-bottom: 18px;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-    }
-
-    .eyebrow {
-      text-transform: uppercase;
-      letter-spacing: .24em;
-      color: var(--cyan);
-      font-size: 12px;
-      font-weight: 800;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(2.2rem, 4vw, 3.4rem);
-      line-height: .92;
-      letter-spacing: -.05em;
-      text-shadow: 0 0 26px rgba(99,242,255,.22);
-    }
-
-    .tagline {
-      color: var(--muted);
-      line-height: 1.55;
-      font-size: .98rem;
-    }
-
-    .stat-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .stat-card,
-    .box {
-      position: relative;
-      overflow: hidden;
-      border-radius: 20px;
-      background: linear-gradient(180deg, rgba(255,255,255,.065), rgba(255,255,255,.028));
-      border: 1px solid rgba(255,255,255,.1);
-    }
-
-    .stat-card {
-      padding: 14px;
-      min-height: 104px;
-    }
-
-    .stat-card::after {
-      content: "";
-      position: absolute;
-      width: 130px;
-      height: 130px;
-      right: -36px;
-      bottom: -48px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(99,242,255,.18), transparent 70%);
-      pointer-events: none;
-    }
-
-    .label {
-      color: var(--muted);
-      font-size: .78rem;
-      text-transform: uppercase;
-      letter-spacing: .14em;
-    }
-
-    .value {
-      margin-top: 8px;
-      font-size: 1.8rem;
-      font-weight: 800;
-      letter-spacing: -.03em;
-    }
-
-    .sub {
-      margin-top: 6px;
-      font-size: .82rem;
-      color: rgba(255,255,255,.5);
-    }
-
-    .box {
-      padding: 15px;
-    }
-
-    .section-title {
-      margin: 0 0 12px;
-      font-size: .88rem;
-      text-transform: uppercase;
-      letter-spacing: .18em;
-      color: var(--cyan);
-      font-weight: 800;
-    }
-
-    .controls-row,
-    .hud-right,
-    .hud-left {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    button,
-    select {
-      border: 1px solid rgba(255,255,255,.12);
-      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.045));
-      color: var(--ink);
-      border-radius: 16px;
-      padding: 12px 14px;
-      min-height: 48px;
-      font-weight: 800;
-      cursor: pointer;
+    .panel::before { content:""; position:absolute; inset:-20% auto auto -10%; width:220px; height:220px; border-radius:50%; background:radial-gradient(circle, rgba(99,242,255,.18), transparent 70%); pointer-events:none; }
+    .sidebar { padding:22px; display:grid; gap:16px; }
+    .brand { display:grid; gap:10px; padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,.08); }
+    .eyebrow { text-transform:uppercase; letter-spacing:.24em; color:var(--cyan); font-size:12px; font-weight:800; }
+    h1 { margin:0; font-size:clamp(2.2rem,4vw,3.4rem); line-height:.92; letter-spacing:-.05em; text-shadow:0 0 26px rgba(99,242,255,.22); }
+    .tagline { color:var(--muted); line-height:1.55; font-size:.98rem; }
+    .stat-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .stat-card, .box { position:relative; overflow:hidden; border-radius:20px; background:linear-gradient(180deg, rgba(255,255,255,.065), rgba(255,255,255,.028)); border:1px solid rgba(255,255,255,.1); }
+    .stat-card { padding:14px; min-height:104px; }
+    .stat-card::after { content:""; position:absolute; width:130px; height:130px; right:-36px; bottom:-48px; border-radius:50%; background:radial-gradient(circle, rgba(99,242,255,.18), transparent 70%); pointer-events:none; }
+    .label { color:var(--muted); font-size:.78rem; text-transform:uppercase; letter-spacing:.14em; }
+    .value { margin-top:8px; font-size:1.8rem; font-weight:800; letter-spacing:-.03em; }
+    .sub { margin-top:6px; font-size:.82rem; color:rgba(255,255,255,.5); }
+    .box { padding:15px; }
+    .section-title { margin:0 0 12px; font-size:.88rem; text-transform:uppercase; letter-spacing:.18em; color:var(--cyan); font-weight:800; }
+    .controls-row, .hud-right, .hud-left { display:flex; flex-wrap:wrap; gap:10px; }
+    button, select {
+      border:1px solid rgba(255,255,255,.12); background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.045));
+      color:var(--ink); border-radius:16px; padding:12px 14px; min-height:48px; font-weight:800; cursor:pointer;
       transition: transform .14s ease, border-color .14s ease, box-shadow .14s ease, background .14s ease;
     }
-
-    button:hover,
-    select:hover {
-      transform: translateY(-1px);
-      border-color: rgba(99,242,255,.45);
-      box-shadow: 0 0 20px rgba(99,242,255,.12);
-    }
-
-    button.primary {
-      background: linear-gradient(135deg, rgba(99,242,255,.25), rgba(85,167,255,.24));
-      box-shadow: 0 0 24px rgba(99,242,255,.16);
-    }
-
-    ul {
-      margin: 0;
-      padding-left: 18px;
-      color: var(--muted);
-      line-height: 1.58;
-    }
-
-    .game-shell {
-      padding: 18px;
-      display: grid;
-      gap: 14px;
-    }
-
-    .hud {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .pill {
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.1);
-      color: var(--muted);
-      font-size: .9rem;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
-    }
-
-    .pill strong { color: var(--ink); }
-
-    .drone-legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: -2px;
-    }
-
-    .drone-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 16px;
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border: 1px solid rgba(255,255,255,.08);
-      color: rgba(255,255,255,.62);
-      font-size: .76rem;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-    }
-
-    .drone-chip strong {
-      color: var(--ink);
-      font-size: .86rem;
-      letter-spacing: 0;
-      text-transform: none;
-    }
-
-    .drone-swatch {
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      box-shadow: 0 0 16px currentColor;
-      flex: 0 0 auto;
-    }
-
+    button:hover, select:hover { transform:translateY(-1px); border-color:rgba(99,242,255,.45); box-shadow:0 0 20px rgba(99,242,255,.12); }
+    button.primary { background:linear-gradient(135deg, rgba(99,242,255,.25), rgba(85,167,255,.24)); box-shadow:0 0 24px rgba(99,242,255,.16); }
+    ul { margin:0; padding-left:18px; color:var(--muted); line-height:1.58; }
+    .game-shell { padding:18px; display:grid; gap:14px; }
+    .hud { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+    .pill { padding:10px 14px; border-radius:999px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); color:var(--muted); font-size:.9rem; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); }
+    .pill strong { color:var(--ink); }
     .canvas-wrap {
-      position: relative;
-      overflow: hidden;
-      aspect-ratio: 1;
-      min-height: 420px;
-      border-radius: 30px;
-      background:
-        radial-gradient(circle at 50% 35%, rgba(18,44,83,.95), rgba(4,8,20,.99) 68%),
-        linear-gradient(180deg, rgba(4,8,20,1), rgba(4,8,20,1));
-      border: 1px solid rgba(99,242,255,.16);
-      box-shadow:
-        inset 0 0 60px rgba(99,242,255,.06),
-        inset 0 0 120px rgba(159,116,255,.05),
-        0 26px 60px rgba(0,0,0,.42);
+      position:relative; overflow:hidden; aspect-ratio:1; min-height:420px; border-radius:30px;
+      background:radial-gradient(circle at 50% 35%, rgba(18,44,83,.95), rgba(4,8,20,.99) 68%), linear-gradient(180deg, rgba(4,8,20,1), rgba(4,8,20,1));
+      border:1px solid rgba(99,242,255,.16); box-shadow: inset 0 0 60px rgba(99,242,255,.06), inset 0 0 120px rgba(159,116,255,.05), 0 26px 60px rgba(0,0,0,.42);
     }
-
-    canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-      touch-action: none;
-    }
-
+    canvas { width:100%; height:100%; display:block; touch-action:none; }
     .overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      pointer-events: none;
-      transition: opacity .18s ease;
-      background: linear-gradient(180deg, rgba(2,6,17,.12), rgba(2,6,17,.66));
-      padding: 20px;
+      position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center;
+      transition:opacity .2s ease; background:linear-gradient(180deg, rgba(2,6,17,.15), rgba(2,6,17,.74)); padding:20px;
     }
-
-    .overlay.hidden { opacity: 0; }
-
+    .overlay.hidden { opacity:0; pointer-events:none; }
     .overlay-card {
-      max-width: 620px;
-      padding: 26px 28px;
-      border-radius: 24px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: linear-gradient(180deg, rgba(7,18,38,.72), rgba(7,18,38,.45));
-      box-shadow: 0 18px 50px rgba(0,0,0,.3);
-      backdrop-filter: blur(12px);
+      max-width:700px; padding:30px 32px; border-radius:26px; border:1px solid rgba(255,255,255,.12);
+      background:linear-gradient(180deg, rgba(7,18,38,.78), rgba(7,18,38,.48)); box-shadow:0 18px 50px rgba(0,0,0,.3); backdrop-filter:blur(12px);
     }
-
-    .overlay h2 {
-      margin: 0 0 10px;
-      font-size: clamp(2.1rem, 5vw, 3.4rem);
-      line-height: .95;
-      letter-spacing: -.05em;
-    }
-
-    .overlay p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 1rem;
-    }
-
-    .touch-pad {
-      display: none;
-      justify-content: center;
-      grid-template-columns: repeat(3, 72px);
-      gap: 10px;
-      margin-top: 2px;
-    }
-
-    .touch-pad button {
-      min-height: 64px;
-      font-size: 1.15rem;
-      border-radius: 20px;
-    }
-
-    .touch-pulse {
-      box-shadow: 0 0 24px rgba(99,242,255,.18);
-    }
-
-    .footnote {
-      color: rgba(255,255,255,.56);
-      font-size: .82rem;
-      line-height: 1.45;
-    }
-
-    @media (max-width: 1040px) {
-      .app { grid-template-columns: 1fr; }
-      .sidebar { order: 2; }
-      .game-shell { order: 1; }
-    }
-
-    @media (max-width: 720px) {
-      body { padding: 10px; }
-      .sidebar, .game-shell { padding: 14px; }
-      .touch-pad { display: grid; }
-      .canvas-wrap { min-height: 320px; }
-      .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
+    .overlay h2 { margin:0 0 10px; font-size:clamp(2.1rem,5vw,3.6rem); line-height:.95; letter-spacing:-.05em; }
+    .overlay p { margin:0; color:var(--muted); line-height:1.6; font-size:1rem; }
+    .title-actions { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:16px; }
+    .touch-pad { display:none; justify-content:center; grid-template-columns:repeat(3,72px); gap:10px; margin-top:2px; }
+    .touch-pad button { min-height:64px; font-size:1.15rem; border-radius:20px; }
+    .touch-pulse { box-shadow:0 0 24px rgba(99,242,255,.18); }
+    .footnote { color:rgba(255,255,255,.56); font-size:.82rem; line-height:1.45; }
+    @media (max-width:1040px) { .app { grid-template-columns:1fr; } .sidebar { order:2; } .game-shell { order:1; } }
+    @media (max-width:720px) { body { padding:10px; } .sidebar, .game-shell { padding:14px; } .touch-pad { display:grid; } .canvas-wrap { min-height:320px; } .stat-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
   </style>
 </head>
 <body>
@@ -385,18 +102,14 @@
       <div class="brand">
         <div class="eyebrow">Neon arcade prototype</div>
         <h1>Maze Sentinel</h1>
-        <div class="tagline">
-          A cinematic route-control maze chase. You are a sentient pulse core slipping through a radiant security district, redirecting hunters with charge bursts, gates, and clean lines.
-        </div>
+        <div class="tagline">A cinematic route-control maze chase. You are a sentient pulse core slipping through a radiant security district, redirecting hunters with charge bursts, gates, and clean lines.</div>
       </div>
-
       <div class="stat-grid">
         <div class="stat-card"><div class="label">Score</div><div id="score" class="value">0</div><div class="sub">Signal capture</div></div>
         <div class="stat-card"><div class="label">Level</div><div id="level" class="value">1</div><div class="sub">District threat</div></div>
         <div class="stat-card"><div class="label">Integrity</div><div id="health" class="value">3</div><div class="sub">Hull state</div></div>
         <div class="stat-card"><div class="label">Charge</div><div id="charge" class="value">0%</div><div class="sub">Pulse reserve</div></div>
       </div>
-
       <div class="box">
         <div class="section-title">Run Controls</div>
         <div class="controls-row">
@@ -405,15 +118,10 @@
           <button id="boostBtn">Pulse</button>
         </div>
         <div class="controls-row" style="margin-top:10px;">
-          <select id="difficultySelect">
-            <option value="cinematic">Cinematic</option>
-            <option value="normal" selected>Normal</option>
-            <option value="arcade">Arcade</option>
-          </select>
+          <select id="difficultySelect"><option value="cinematic">Cinematic</option><option value="normal" selected>Normal</option><option value="arcade">Arcade</option></select>
           <button id="fullscreenBtn">Fullscreen</button>
         </div>
       </div>
-
       <div class="box">
         <div class="section-title">Design Priorities</div>
         <ul>
@@ -423,20 +131,17 @@
           <li>Not Pac-Man themed — more sleek sci-fi pursuit than cartoon maze munching</li>
         </ul>
       </div>
-
       <div class="box">
         <div class="section-title">Current Gameplay</div>
         <ul>
           <li>Collect prism shards for score and charge</li>
           <li>Discharge pulse to scatter nearby drones</li>
           <li>Use gates to break chase routes and reposition cleanly</li>
-          <li>Hunter, ambusher, and flanker drones now pressure different lanes</li>
+          <li>Distinct enemy classes now force different route choices</li>
         </ul>
       </div>
-
       <div class="footnote">Controls: WASD / Arrow keys • Space = Pulse • Swipe on mobile • Tap the arena to start or pulse.</div>
     </aside>
-
     <main class="panel game-shell">
       <div class="hud">
         <div class="hud-left">
@@ -447,21 +152,22 @@
         <div class="hud-right">
           <div class="pill">Bursts <strong id="pulseCells">0</strong></div>
           <div class="pill">Drones <strong id="droneCount">0</strong></div>
+          <div class="pill">Wave <strong id="waveType">Scout</strong></div>
         </div>
       </div>
-
-      <div id="droneIntel" class="drone-legend"></div>
-
       <div class="canvas-wrap">
         <canvas id="game" width="1100" height="1100"></canvas>
         <div id="overlay" class="overlay">
-          <div class="overlay-card">
-            <h2>Route the district</h2>
-            <p>Pull clean lines through the neon lattice. Gather shards, trigger pulse bursts, and use gate jumps to break pursuit. This build favors atmosphere, readability, and feel over system complexity.</p>
+          <div class="overlay-card" id="overlayCard">
+            <h2>Maze Sentinel</h2>
+            <p>Slip through a luminous security lattice, charge your pulse core, and bend pursuit lines to your advantage. This build now has a cinematic intro, adaptive audio, enemy archetypes, and richer environmental FX.</p>
+            <div class="title-actions">
+              <button id="overlayStart" class="primary">Enter District</button>
+              <button id="audioBtn">Audio On</button>
+            </div>
           </div>
         </div>
       </div>
-
       <div class="touch-pad">
         <div></div><button data-dir="up">▲</button><div></div>
         <button data-dir="left">◀</button><button id="touchPulse" class="touch-pulse">●</button><button data-dir="right">▶</button>
@@ -469,14 +175,14 @@
       </div>
     </main>
   </div>
-
 <script>
 (() => {
   const canvas = document.getElementById('game');
   const ctx = canvas.getContext('2d');
   const overlay = document.getElementById('overlay');
-  const overlayCard = overlay.querySelector('.overlay-card');
-
+  const overlayCard = document.getElementById('overlayCard');
+  const overlayStart = document.getElementById('overlayStart');
+  const audioBtn = document.getElementById('audioBtn');
   const scoreEl = document.getElementById('score');
   const levelEl = document.getElementById('level');
   const healthEl = document.getElementById('health');
@@ -485,883 +191,178 @@
   const shardCountEl = document.getElementById('shardCount');
   const pulseCellsEl = document.getElementById('pulseCells');
   const droneCountEl = document.getElementById('droneCount');
-  const droneIntelEl = document.getElementById('droneIntel');
   const stateLabelEl = document.getElementById('stateLabel');
+  const waveTypeEl = document.getElementById('waveType');
   const startBtn = document.getElementById('startBtn');
   const pauseBtn = document.getElementById('pauseBtn');
   const boostBtn = document.getElementById('boostBtn');
   const fullscreenBtn = document.getElementById('fullscreenBtn');
   const difficultySelect = document.getElementById('difficultySelect');
-
   const GRID = 21;
   const TILE = canvas.width / GRID;
   const STORAGE_KEY = 'maze-sentinel-best';
   const difficulties = {
-    cinematic: { enemySpeed: 0.60, pulseCost: 42, spawnEvery: 4.4 },
+    cinematic: { enemySpeed: 0.56, pulseCost: 40, spawnEvery: 4.9 },
     normal:    { enemySpeed: 0.67, pulseCost: 50, spawnEvery: 4.1 },
     arcade:    { enemySpeed: 0.82, pulseCost: 60, spawnEvery: 3.0 }
   };
-
-  const DRONE_ARCHETYPES = {
-    hunter:   { label: 'Hunter',   hue: 194, unlockLevel: 1, speedMul: 1.00, summary: 'direct pursuit' },
-    ambusher: { label: 'Ambusher', hue: 322, unlockLevel: 2, speedMul: 0.96, summary: 'predicts ahead' },
-    flanker:  { label: 'Flanker',  hue:  42, unlockLevel: 3, speedMul: 1.04, summary: 'cuts side lanes' }
-  };
-
   const maze = [
-    '111111111111111111111',
-    '100000000010000000001',
-    '101111011010111101101',
-    '101000010000100001001',
-    '101011111011101111101',
-    '101000000010000000101',
-    '101111101110111101101',
-    '100000100000100000001',
-    '111101101111101101111',
-    '100001001000100100001',
-    '101111101010101111101',
-    '100000001010100000001',
-    '111011111010111110111',
-    '100010000000000010001',
-    '101110111101111011101',
-    '101000100001000100101',
-    '101011101111101110101',
-    '100000001000100000001',
-    '101111111010111111101',
-    '100000000000000000001',
-    '111111111111111111111'
+    '111111111111111111111','100000000010000000001','101111011010111101101','101000010000100001001','101011111011101111101','101000000010000000101','101111101110111101101','100000100000100000001','111101101111101101111','100001001000100100001','101111101010101111101','100000001010100000001','111011111010111110111','100010000000000010001','101110111101111011101','101000100001000100101','101011101111101110101','100000001000100000001','101111111010111111101','100000000000000000001','111111111111111111111'
   ].map(r => r.split('').map(Number));
-
   const state = {
-    running: false,
-    paused: false,
-    over: false,
-    score: 0,
-    level: 1,
-    health: 3,
-    charge: 0,
-    shards: 0,
-    best: Number(localStorage.getItem(STORAGE_KEY) || 0),
-    difficulty: 'normal',
-    player: null,
-    drones: [],
-    particles: [],
-    ribbons: [],
-    pulses: [],
-    shard: null,
-    gate: null,
-    lastTs: 0,
-    spawnTimer: 0,
-    ambience: [],
-    flash: 0,
-    cameraShake: 0,
-    shardGlow: 0,
-    pulseCounter: 0,
-    spawnIndex: 0
+    running:false, paused:false, over:false, introPulse:0,
+    score:0, level:1, health:3, charge:0, shards:0, best:Number(localStorage.getItem(STORAGE_KEY) || 0), difficulty:'normal',
+    player:null, drones:[], particles:[], ribbons:[], pulses:[], shard:null, gate:null, ambience:[], sparks:[],
+    lastTs:0, spawnTimer:0, flash:0, cameraShake:0, shardGlow:0, pulseCounter:0, waveType:'Scout', audioEnabled:true, audioStarted:false
   };
-
-  function rand(min, max) { return Math.random() * (max - min) + min; }
-  function randi(min, max) { return Math.floor(rand(min, max + 1)); }
-  function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
-  function dist(a, b) { return Math.hypot(a.x - b.x, a.y - b.y); }
-  function vibrate(ms) { if (navigator.vibrate) navigator.vibrate(ms); }
-  function cellCenter(cx, cy) { return { x: cx * TILE + TILE / 2, y: cy * TILE + TILE / 2, cx, cy }; }
-  function isWall(cx, cy) {
-    if (cx < 0 || cy < 0 || cx >= GRID || cy >= GRID) return true;
-    return maze[cy][cx] === 1;
+  let audioCtx = null, masterGain = null, musicGain = null;
+  function rand(min,max){ return Math.random()*(max-min)+min; }
+  function randi(min,max){ return Math.floor(rand(min,max+1)); }
+  function clamp(v,min,max){ return Math.max(min, Math.min(max,v)); }
+  function dist(a,b){ return Math.hypot(a.x-b.x,a.y-b.y); }
+  function vibrate(ms){ if (navigator.vibrate) navigator.vibrate(ms); }
+  function cellCenter(cx,cy){ return {x:cx*TILE+TILE/2,y:cy*TILE+TILE/2,cx,cy}; }
+  function isWall(cx,cy){ if (cx<0||cy<0||cx>=GRID||cy>=GRID) return true; return maze[cy][cx]===1; }
+  function randomOpenCell(){ let c; do c=cellCenter(randi(1,GRID-2),randi(1,GRID-2)); while(isWall(c.cx,c.cy)); return c; }
+  function canMoveTo(x,y,r){ const pts=[{x:x-r,y:y-r},{x:x+r,y:y-r},{x:x-r,y:y+r},{x:x+r,y:y+r}]; return pts.every(p=>!isWall(Math.floor(p.x/TILE),Math.floor(p.y/TILE))); }
+  function nearestCell(x,y){ return {cx:Math.floor(x/TILE), cy:Math.floor(y/TILE)}; }
+  function pathOptions(cx,cy){ return [{x:1,y:0},{x:-1,y:0},{x:0,y:1},{x:0,y:-1}].filter(d=>!isWall(cx+d.x, cy+d.y)); }
+  function initAudio(){
+    if(audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = audioCtx.createGain(); musicGain = audioCtx.createGain();
+    masterGain.gain.value = .14; musicGain.gain.value = .08;
+    musicGain.connect(masterGain); masterGain.connect(audioCtx.destination);
+    startMusic();
+    state.audioStarted = true;
   }
-
-  function randomOpenCell() {
-    let c;
-    do c = cellCenter(randi(1, GRID - 2), randi(1, GRID - 2));
-    while (isWall(c.cx, c.cy));
-    return c;
+  function tone(freq, type, duration, when=0, gain=.06){
+    if(!audioCtx || !state.audioEnabled) return;
+    const t = audioCtx.currentTime + when;
+    const osc = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    osc.type = type; osc.frequency.setValueAtTime(freq, t);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(gain, t+.01); g.gain.exponentialRampToValueAtTime(0.0001, t+duration);
+    osc.connect(g).connect(masterGain); osc.start(t); osc.stop(t+duration+.02);
   }
-
-  function canMoveTo(x, y, radius) {
-    const pts = [
-      { x: x - radius, y: y - radius },
-      { x: x + radius, y: y - radius },
-      { x: x - radius, y: y + radius },
-      { x: x + radius, y: y + radius }
-    ];
-    return pts.every(p => !isWall(Math.floor(p.x / TILE), Math.floor(p.y / TILE)));
+  function noiseBurst(duration=.12, gain=.04){
+    if(!audioCtx || !state.audioEnabled) return;
+    const buffer = audioCtx.createBuffer(1, audioCtx.sampleRate * duration, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0); for(let i=0;i<data.length;i++) data[i] = (Math.random()*2-1) * (1-i/data.length);
+    const src = audioCtx.createBufferSource(); const filter = audioCtx.createBiquadFilter(); const g = audioCtx.createGain();
+    filter.type='bandpass'; filter.frequency.value=1400; g.gain.value=gain; src.buffer=buffer; src.connect(filter).connect(g).connect(masterGain); src.start();
   }
-
-  function nearestCell(x, y) {
-    return { cx: Math.floor(x / TILE), cy: Math.floor(y / TILE) };
+  function startMusic(){
+    if(!audioCtx) return;
+    const seq = [220, 330, 294, 392, 330, 440, 392, 294];
+    let i = 0;
+    setInterval(() => {
+      if(!audioCtx || !state.audioEnabled || !state.audioStarted) return;
+      const t = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator(); const g = audioCtx.createGain(); const lfo = audioCtx.createOscillator(); const lfoG = audioCtx.createGain();
+      osc.type = 'triangle'; osc.frequency.value = seq[i % seq.length];
+      lfo.frequency.value = .2; lfoG.gain.value = 6; lfo.connect(lfoG).connect(osc.frequency);
+      g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.03,t+.02); g.gain.exponentialRampToValueAtTime(.0001,t+.42);
+      osc.connect(g).connect(musicGain); osc.start(t); lfo.start(t); osc.stop(t+.44); lfo.stop(t+.44); i++;
+    }, 430);
   }
-
-  function pathOptions(cx, cy) {
-    return [
-      { x: 1, y: 0 }, { x: -1, y: 0 }, { x: 0, y: 1 }, { x: 0, y: -1 }
-    ].filter(d => !isWall(cx + d.x, cy + d.y));
+  function playSfx(kind){
+    if(!state.audioEnabled) return;
+    if(kind==='shard'){ tone(880,'triangle',.12,0,.06); tone(1320,'sine',.16,.03,.035); }
+    if(kind==='pulse'){ tone(180,'sawtooth',.25,0,.05); tone(360,'triangle',.2,.04,.035); noiseBurst(.09,.03); }
+    if(kind==='hit'){ tone(120,'square',.22,0,.055); noiseBurst(.12,.045); }
+    if(kind==='gate'){ tone(620,'sine',.1,0,.045); tone(930,'sine',.16,.05,.03); }
+    if(kind==='start'){ tone(392,'triangle',.12,0,.04); tone(523,'triangle',.14,.06,.04); tone(784,'triangle',.18,.12,.03); }
   }
-
-  function clampCell(cx, cy) {
-    return { cx: clamp(cx, 1, GRID - 2), cy: clamp(cy, 1, GRID - 2) };
+  function addParticles(x,y,color,count,spread=3.2,life=1){ for(let i=0;i<count;i++) state.particles.push({x,y,vx:rand(-spread,spread),vy:rand(-spread,spread),size:rand(2,6),life:rand(life*.55,life),maxLife:life,color}); }
+  function addRibbon(x,y,color){ state.ribbons.push({x,y,color,life:1,maxLife:1,size:rand(10,22)}); }
+  function buildAmbience(){
+    state.ambience = Array.from({length:28},()=>({x:rand(0,canvas.width),y:rand(0,canvas.height),r:rand(60,180),hue:Math.random()>.5?190:290,alpha:rand(.035,.08),drift:rand(-.25,.25)}));
+    state.sparks = Array.from({length:50},()=>({x:rand(0,canvas.width), y:rand(0,canvas.height), a:rand(.05,.3), speed:rand(.3,1.3)}));
   }
-
-  function resolveTargetCell(cx, cy) {
-    const target = clampCell(cx, cy);
-    if (!isWall(target.cx, target.cy)) return target;
-    for (let radius = 1; radius < GRID; radius++) {
-      for (let y = target.cy - radius; y <= target.cy + radius; y++) {
-        for (let x = target.cx - radius; x <= target.cx + radius; x++) {
-          const cell = clampCell(x, y);
-          if (!isWall(cell.cx, cell.cy)) return cell;
-        }
-      }
-    }
-    return { cx: 1, cy: 1 };
+  function initPlayer(){ const c = cellCenter(1,1); return {x:c.x,y:c.y,radius:TILE*.31,speed:3.35,dir:{x:0,y:0},nextDir:{x:0,y:0},hitCooldown:0,trail:[]}; }
+  function spawnShard(){ let c; do c=randomOpenCell(); while(Math.abs(c.cx-1)<3&&Math.abs(c.cy-1)<3); state.shard={...c,rot:rand(0,Math.PI*2)}; }
+  function spawnGate(){ let a=randomOpenCell(), b=randomOpenCell(); while(Math.abs(a.cx-b.cx)+Math.abs(a.cy-b.cy)<8) b=randomOpenCell(); state.gate={a,b,cooldown:0,pulse:0}; }
+  function pickDroneType(){ const pool = ['scout','hunter','glimmer']; return pool[Math.min(pool.length-1, Math.floor((state.level-1)/2))] || 'scout'; }
+  function spawnDrone(){
+    let c=randomOpenCell(); while(Math.abs(c.cx-1)<5&&Math.abs(c.cy-1)<5) c=randomOpenCell();
+    const diff=difficulties[state.difficulty]; const type = pickDroneType();
+    const config = {
+      scout:   { hue:194, speed:diff.enemySpeed + state.level*.03, radius:TILE*.20, wobble:1.2 },
+      hunter:  { hue:322, speed:diff.enemySpeed + .12 + state.level*.04, radius:TILE*.22, wobble:1.8 },
+      glimmer: { hue:48,  speed:diff.enemySpeed + .02 + state.level*.025, radius:TILE*.18, wobble:2.3 }
+    }[type];
+    state.waveType = type[0].toUpperCase() + type.slice(1);
+    state.drones.push({ x:c.x, y:c.y, radius:config.radius, speed:config.speed, hue:config.hue, stunned:0, trail:[], wobble:rand(0,Math.PI*2), type });
   }
-
-  function findStepTowards(start, target) {
-    if (!target || (start.cx === target.cx && start.cy === target.cy)) return null;
-    const startKey = `${start.cx},${start.cy}`;
-    const targetKey = `${target.cx},${target.cy}`;
-    const queue = [start];
-    const seen = new Set([startKey]);
-    const parent = new Map();
-
-    while (queue.length) {
-      const cell = queue.shift();
-      const key = `${cell.cx},${cell.cy}`;
-      if (key === targetKey) break;
-      for (const dir of pathOptions(cell.cx, cell.cy)) {
-        const next = { cx: cell.cx + dir.x, cy: cell.cy + dir.y };
-        const nextKey = `${next.cx},${next.cy}`;
-        if (seen.has(nextKey)) continue;
-        seen.add(nextKey);
-        parent.set(nextKey, key);
-        queue.push(next);
-      }
-    }
-
-    if (!seen.has(targetKey)) return null;
-    let cursor = targetKey;
-    let prev = parent.get(cursor);
-    while (prev && prev !== startKey) {
-      cursor = prev;
-      prev = parent.get(cursor);
-    }
-    const [cx, cy] = cursor.split(',').map(Number);
-    return { x: cx - start.cx, y: cy - start.cy };
-  }
-
-  function activePlayerDir() {
-    const dir = state.player?.dir || { x: 0, y: 0 };
-    if (dir.x || dir.y) return dir;
-    return state.player?.nextDir || { x: 0, y: 0 };
-  }
-
-  function chooseDroneType() {
-    const unlocked = Object.entries(DRONE_ARCHETYPES)
-      .filter(([, data]) => state.level >= data.unlockLevel)
-      .map(([type]) => type);
-    const type = unlocked[state.spawnIndex % unlocked.length] || 'hunter';
-    state.spawnIndex += 1;
-    return type;
-  }
-
-  function getDroneTargetCell(drone, playerCell) {
-    const dir = activePlayerDir();
-    if (drone.type === 'ambusher') {
-      const lookAhead = dir.x || dir.y ? 3 : 0;
-      return resolveTargetCell(playerCell.cx + dir.x * lookAhead, playerCell.cy + dir.y * lookAhead);
-    }
-    if (drone.type === 'flanker') {
-      if (dir.x || dir.y) {
-        const perp = dir.x !== 0 ? { x: 0, y: drone.y < state.player.y ? -3 : 3 } : { x: drone.x < state.player.x ? -3 : 3, y: 0 };
-        return resolveTargetCell(playerCell.cx + perp.x, playerCell.cy + perp.y);
-      }
-      return resolveTargetCell(playerCell.cx + (drone.x < state.player.x ? -2 : 2), playerCell.cy + (drone.y < state.player.y ? -2 : 2));
-    }
-    return playerCell;
-  }
-
-  function syncDroneIntel() {
-    const unlocked = Object.entries(DRONE_ARCHETYPES).filter(([, data]) => state.level >= data.unlockLevel);
-    droneIntelEl.innerHTML = unlocked.map(([type, data]) => {
-      const count = state.drones.filter(drone => drone.type === type).length;
-      return `<div class="drone-chip"><span class="drone-swatch" style="color:hsl(${data.hue} 100% 65%); background:hsl(${data.hue} 100% 65%)"></span>${data.label} <strong>${count}</strong></div>`;
-    }).join('');
-  }
-
-  function addParticles(x, y, color, count, spread = 3.2, life = 1) {
-    for (let i = 0; i < count; i++) {
-      state.particles.push({
-        x, y,
-        vx: rand(-spread, spread),
-        vy: rand(-spread, spread),
-        size: rand(2, 6),
-        life: rand(life * 0.55, life),
-        maxLife: life,
-        color
-      });
-    }
-  }
-
-  function addRibbon(x, y, color) {
-    state.ribbons.push({ x, y, color, life: 1, maxLife: 1, size: rand(10, 22) });
-  }
-
-  function buildAmbience() {
-    state.ambience = Array.from({ length: 24 }, () => ({
-      x: rand(0, canvas.width),
-      y: rand(0, canvas.height),
-      r: rand(60, 160),
-      hue: Math.random() > 0.5 ? 190 : 290,
-      alpha: rand(0.035, 0.08),
-      drift: rand(-0.25, 0.25)
-    }));
-  }
-
-  function initPlayer() {
-    const c = cellCenter(1, 1);
-    return {
-      x: c.x,
-      y: c.y,
-      radius: TILE * 0.31,
-      speed: 3.35,
-      dir: { x: 0, y: 0 },
-      nextDir: { x: 0, y: 0 },
-      hitCooldown: 0,
-      trail: []
-    };
-  }
-
-  function spawnShard() {
-    let c;
-    do c = randomOpenCell();
-    while (Math.abs(c.cx - 1) < 3 && Math.abs(c.cy - 1) < 3);
-    state.shard = { ...c, rot: rand(0, Math.PI * 2) };
-  }
-
-  function spawnGate() {
-    let a = randomOpenCell();
-    let b = randomOpenCell();
-    while (Math.abs(a.cx - b.cx) + Math.abs(a.cy - b.cy) < 8) b = randomOpenCell();
-    state.gate = { a, b, cooldown: 0, pulse: 0 };
-  }
-
-  function spawnDrone(type = chooseDroneType()) {
-    let c = randomOpenCell();
-    while (Math.abs(c.cx - 1) < 5 && Math.abs(c.cy - 1) < 5) c = randomOpenCell();
-    const diff = difficulties[state.difficulty];
-    const archetype = DRONE_ARCHETYPES[type] || DRONE_ARCHETYPES.hunter;
-    state.drones.push({
-      x: c.x,
-      y: c.y,
-      radius: TILE * 0.22,
-      speed: (diff.enemySpeed + state.level * 0.038 + rand(0, 0.04)) * archetype.speedMul,
-      hue: archetype.hue + rand(-6, 6),
-      type,
-      stunned: 0,
-      trail: [],
-      wobble: rand(0, Math.PI * 2)
-    });
-  }
-
-  function resetGame() {
-    state.running = false;
-    state.paused = false;
-    state.over = false;
-    state.score = 0;
-    state.level = 1;
-    state.health = 3;
-    state.charge = 0;
-    state.shards = 0;
-    state.drones = [];
-    state.particles = [];
-    state.ribbons = [];
-    state.pulses = [];
-    state.spawnTimer = 0;
-    state.spawnIndex = 0;
-    state.pulseCounter = 0;
-    state.flash = 0;
-    state.cameraShake = 0;
-    state.shardGlow = 0;
-    state.player = initPlayer();
-    buildAmbience();
-    spawnShard();
-    spawnGate();
-    for (let i = 0; i < 3; i++) spawnDrone();
-    syncHud();
+  function resetGame(){
+    state.running=false; state.paused=false; state.over=false; state.score=0; state.level=1; state.health=3; state.charge=0; state.shards=0; state.drones=[]; state.particles=[]; state.ribbons=[]; state.pulses=[]; state.spawnTimer=0; state.flash=0; state.cameraShake=0; state.shardGlow=0; state.pulseCounter=0; state.waveType='Scout';
+    state.player=initPlayer(); buildAmbience(); spawnShard(); spawnGate(); for(let i=0;i<3;i++) spawnDrone(); syncHud();
     overlay.classList.remove('hidden');
-    overlayCard.innerHTML = '<h2>Route the district</h2><p>Pull clean lines through the neon lattice. Gather shards, trigger pulse bursts, and use gate jumps to break pursuit. Hunter drones chase directly, ambushers read ahead, and flankers try to seal side lanes.</p>';
   }
-
-  function syncHud() {
-    scoreEl.textContent = state.score;
-    levelEl.textContent = state.level;
-    healthEl.textContent = state.health;
-    chargeEl.textContent = `${Math.round(state.charge)}%`;
-    bestScoreEl.textContent = state.best;
-    shardCountEl.textContent = state.shards;
-    pulseCellsEl.textContent = state.pulseCounter;
-    droneCountEl.textContent = state.drones.length;
-    stateLabelEl.textContent = state.over ? 'Run Lost' : state.paused ? 'Paused' : state.running ? 'Active' : 'Standby';
-    syncDroneIntel();
+  function syncHud(){ scoreEl.textContent=state.score; levelEl.textContent=state.level; healthEl.textContent=state.health; chargeEl.textContent=`${Math.round(state.charge)}%`; bestScoreEl.textContent=state.best; shardCountEl.textContent=state.shards; pulseCellsEl.textContent=state.pulseCounter; droneCountEl.textContent=state.drones.length; waveTypeEl.textContent=state.waveType; stateLabelEl.textContent=state.over?'Run Lost':state.paused?'Paused':state.running?'Active':'Standby'; }
+  function tryChangeDir(dir){ state.player.nextDir=dir; }
+  function updatePlayer(dt){
+    const p=state.player; p.hitCooldown=Math.max(0,p.hitCooldown-dt);
+    const desiredX=p.x+p.nextDir.x*p.speed, desiredY=p.y+p.nextDir.y*p.speed; if((p.nextDir.x||p.nextDir.y)&&canMoveTo(desiredX,desiredY,p.radius)) p.dir={...p.nextDir};
+    const nx=p.x+p.dir.x*p.speed, ny=p.y+p.dir.y*p.speed; if(canMoveTo(nx,ny,p.radius)){ p.x=nx; p.y=ny; addRibbon(p.x,p.y,'rgba(99,242,255,.22)'); }
+    p.trail.push({x:p.x,y:p.y}); if(p.trail.length>18) p.trail.shift();
+    if(state.gate&&state.gate.cooldown<=0){ for(const [from,to,col] of [[state.gate.a,state.gate.b,'#63f2ff'],[state.gate.b,state.gate.a,'#ff63d4']]){ if(Math.hypot(p.x-from.x,p.y-from.y)<TILE*.34){ p.x=to.x; p.y=to.y; state.gate.cooldown=.9; state.cameraShake=.12; addParticles(to.x,to.y,col,24,4.5,1.2); playSfx('gate'); vibrate(16); break; } } }
   }
-
-  function tryChangeDir(dir) {
-    state.player.nextDir = dir;
-  }
-
-  function updatePlayer(dt) {
-    const p = state.player;
-    p.hitCooldown = Math.max(0, p.hitCooldown - dt);
-
-    const desiredX = p.x + p.nextDir.x * p.speed;
-    const desiredY = p.y + p.nextDir.y * p.speed;
-    if ((p.nextDir.x || p.nextDir.y) && canMoveTo(desiredX, desiredY, p.radius)) {
-      p.dir = { ...p.nextDir };
-    }
-
-    const nx = p.x + p.dir.x * p.speed;
-    const ny = p.y + p.dir.y * p.speed;
-    if (canMoveTo(nx, ny, p.radius)) {
-      p.x = nx;
-      p.y = ny;
-      addRibbon(p.x, p.y, 'rgba(99,242,255,.22)');
-    }
-
-    p.trail.push({ x: p.x, y: p.y });
-    if (p.trail.length > 18) p.trail.shift();
-
-    if (state.gate && state.gate.cooldown <= 0) {
-      for (const [from, to, col] of [
-        [state.gate.a, state.gate.b, '#63f2ff'],
-        [state.gate.b, state.gate.a, '#ff63d4']
-      ]) {
-        if (Math.hypot(p.x - from.x, p.y - from.y) < TILE * 0.34) {
-          p.x = to.x;
-          p.y = to.y;
-          state.gate.cooldown = .9;
-          state.cameraShake = .12;
-          addParticles(to.x, to.y, col, 24, 4.5, 1.2);
-          vibrate(16);
-          break;
-        }
-      }
-    }
-  }
-
-  function triggerPulse() {
-    if (!state.running || state.paused || state.over) return;
-    const cost = difficulties[state.difficulty].pulseCost;
-    if (state.charge < cost) return;
-    state.charge -= cost;
-    state.pulses.push({ x: state.player.x, y: state.player.y, radius: 18, life: .55, maxLife: .55, growth: 630 });
-    state.pulseCounter += 1;
-    state.cameraShake = .18;
-    addParticles(state.player.x, state.player.y, '#63f2ff', 34, 5.5, 1.1);
-    vibrate([18, 30, 18]);
-    syncHud();
-  }
-
-  function updateDrones(dt) {
-    const playerCell = nearestCell(state.player.x, state.player.y);
-    state.drones.forEach(drone => {
-      drone.wobble += dt * 4;
-      drone.stunned = Math.max(0, drone.stunned - dt);
-      const dc = nearestCell(drone.x, drone.y);
-      const opts = pathOptions(dc.cx, dc.cy);
-      const targetCell = getDroneTargetCell(drone, playerCell);
-      let choice = { x: 0, y: 0 };
-
-      if (opts.length) {
-        if (drone.stunned > 0) {
-          opts.sort((a, b) => {
-            const aScore = Math.abs((dc.cx + a.x) - playerCell.cx) + Math.abs((dc.cy + a.y) - playerCell.cy);
-            const bScore = Math.abs((dc.cx + b.x) - playerCell.cx) + Math.abs((dc.cy + b.y) - playerCell.cy);
-            return bScore - aScore;
-          });
-          choice = opts[0];
-        } else {
-          choice = findStepTowards(dc, targetCell) || opts.sort((a, b) => {
-            const aScore = Math.abs((dc.cx + a.x) - targetCell.cx) + Math.abs((dc.cy + a.y) - targetCell.cy);
-            const bScore = Math.abs((dc.cx + b.x) - targetCell.cx) + Math.abs((dc.cy + b.y) - targetCell.cy);
-            return aScore - bScore;
-          })[0];
-        }
-      }
-
-      const speed = (drone.speed * (drone.stunned > 0 ? .28 : 1)) * dt * TILE;
-      const nx = drone.x + choice.x * speed;
-      const ny = drone.y + choice.y * speed;
-      if (canMoveTo(nx, ny, drone.radius)) {
-        drone.x = nx;
-        drone.y = ny;
-      }
-      drone.trail.push({ x: drone.x, y: drone.y });
-      if (drone.trail.length > 10) drone.trail.shift();
-
-      if (state.gate && state.gate.cooldown <= 0) {
-        if (Math.hypot(drone.x - state.gate.a.x, drone.y - state.gate.a.y) < TILE * 0.28) {
-          drone.x = state.gate.b.x; drone.y = state.gate.b.y; state.gate.cooldown = .9;
-        } else if (Math.hypot(drone.x - state.gate.b.x, drone.y - state.gate.b.y) < TILE * 0.28) {
-          drone.x = state.gate.a.x; drone.y = state.gate.a.y; state.gate.cooldown = .9;
-        }
-      }
-
-      if (dist(drone, state.player) < drone.radius + state.player.radius && state.player.hitCooldown <= 0) {
-        state.player.hitCooldown = 1.3;
-        state.health -= 1;
-        state.flash = .55;
-        state.cameraShake = .22;
-        addParticles(state.player.x, state.player.y, '#ff7272', 38, 6, 1.3);
-        vibrate([24, 40, 24]);
-        if (state.health <= 0) gameOver();
-      }
+  function triggerPulse(){ if(!state.running||state.paused||state.over) return; const cost=difficulties[state.difficulty].pulseCost; if(state.charge<cost) return; state.charge-=cost; state.pulses.push({x:state.player.x,y:state.player.y,radius:18,life:.55,maxLife:.55,growth:630}); state.pulseCounter+=1; state.cameraShake=.18; addParticles(state.player.x,state.player.y,'#63f2ff',34,5.5,1.1); playSfx('pulse'); vibrate([18,30,18]); syncHud(); }
+  function updateDrones(dt){
+    const playerCell=nearestCell(state.player.x,state.player.y);
+    state.drones.forEach(drone=>{
+      drone.wobble += dt*(drone.type==='glimmer'?6:4); drone.stunned=Math.max(0,drone.stunned-dt); const dc=nearestCell(drone.x,drone.y); const opts=pathOptions(dc.cx,dc.cy); let choice={x:0,y:0};
+      if(opts.length){ opts.sort((a,b)=>{ const aScore=Math.abs((dc.cx+a.x)-playerCell.cx)+Math.abs((dc.cy+a.y)-playerCell.cy); const bScore=Math.abs((dc.cx+b.x)-playerCell.cx)+Math.abs((dc.cy+b.y)-playerCell.cy); return drone.stunned>0 ? bScore-aScore : aScore-bScore; });
+        if(drone.type==='glimmer' && Math.random()<.22) choice = opts[opts.length-1]; else if(drone.type==='hunter' && opts[1] && Math.random()<.15) choice = opts[1]; else choice=opts[0]; }
+      const speed=(drone.speed*(drone.stunned>0?.28:1))*dt*TILE; const nx=drone.x+choice.x*speed, ny=drone.y+choice.y*speed; if(canMoveTo(nx,ny,drone.radius)){ drone.x=nx; drone.y=ny; }
+      drone.trail.push({x:drone.x,y:drone.y}); if(drone.trail.length>10) drone.trail.shift();
+      if(state.gate&&state.gate.cooldown<=0){ if(Math.hypot(drone.x-state.gate.a.x,drone.y-state.gate.a.y)<TILE*.28){ drone.x=state.gate.b.x; drone.y=state.gate.b.y; state.gate.cooldown=.9; } else if(Math.hypot(drone.x-state.gate.b.x,drone.y-state.gate.b.y)<TILE*.28){ drone.x=state.gate.a.x; drone.y=state.gate.a.y; state.gate.cooldown=.9; } }
+      if(dist(drone,state.player)<drone.radius+state.player.radius&&state.player.hitCooldown<=0){ state.player.hitCooldown=1.3; state.health-=1; state.flash=.55; state.cameraShake=.22; addParticles(state.player.x,state.player.y,'#ff7272',38,6,1.3); playSfx('hit'); vibrate([24,40,24]); if(state.health<=0) gameOver(); }
     });
   }
-
-  function updatePulses(dt) {
-    state.pulses = state.pulses.filter(p => {
-      p.life -= dt;
-      p.radius += p.growth * dt;
-      state.drones.forEach(drone => {
-        if (dist(drone, p) < p.radius) drone.stunned = Math.max(drone.stunned, 1.4);
-      });
-      return p.life > 0;
-    });
+  function updatePulses(dt){ state.pulses=state.pulses.filter(p=>{ p.life-=dt; p.radius+=p.growth*dt; state.drones.forEach(drone=>{ if(dist(drone,p)<p.radius) drone.stunned=Math.max(drone.stunned, drone.type==='hunter'?1.05:1.5); }); return p.life>0; }); }
+  function updateParticles(dt){ state.particles=state.particles.filter(p=>{ p.x+=p.vx; p.y+=p.vy; p.vx*=.985; p.vy*=.985; p.life-=dt; return p.life>0; }); state.ribbons=state.ribbons.filter(r=>{ r.life-=dt*1.4; return r.life>0; }); }
+  function collectShard(){ if(!state.shard) return; if(Math.hypot(state.player.x-state.shard.x,state.player.y-state.shard.y)<TILE*.38){ state.score+=150; state.shards+=1; state.charge=clamp(state.charge+25,0,100); state.shardGlow=1; addParticles(state.shard.x,state.shard.y,'#ffd76a',28,5.2,1.3); playSfx('shard'); if(state.score>state.best){ state.best=state.score; localStorage.setItem(STORAGE_KEY,String(state.best)); } if(state.shards%4===0){ state.level+=1; spawnDrone(); spawnGate(); } spawnShard(); syncHud(); } }
+  function gameOver(){ state.running=false; state.over=true; overlay.classList.remove('hidden'); overlayCard.innerHTML = `<h2>Signal Lost</h2><p>You reached <strong>${state.score}</strong> points on level <strong>${state.level}</strong>. The build now includes cinematic intro treatment, adaptive synth tones, enemy classes, and richer environmental motion.</p><div class="title-actions"><button id="overlayRestart" class="primary">Run Again</button></div>`; document.getElementById('overlayRestart').addEventListener('click', startGame); syncHud(); }
+  function update(dt){ state.introPulse += dt; if(!state.running||state.paused||state.over) return; state.spawnTimer+=dt; state.flash=Math.max(0,state.flash-dt); state.cameraShake=Math.max(0,state.cameraShake-dt); state.shardGlow=Math.max(0,state.shardGlow-dt*1.6); if(state.gate){ state.gate.cooldown=Math.max(0,state.gate.cooldown-dt); state.gate.pulse+=dt*2.8; }
+    if(state.spawnTimer>=difficulties[state.difficulty].spawnEvery){ state.spawnTimer=0; if(state.drones.length<4+state.level*2) spawnDrone(); syncHud(); }
+    updatePlayer(dt); updateDrones(dt); updatePulses(dt); updateParticles(dt); collectShard(); }
+  function drawSceneBackground(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    const bg=ctx.createRadialGradient(canvas.width*.5,canvas.height*.35,40,canvas.width*.5,canvas.height*.5,canvas.width*.72); bg.addColorStop(0,'rgba(18,41,78,1)'); bg.addColorStop(.55,'rgba(7,18,38,1)'); bg.addColorStop(1,'rgba(2,6,17,1)'); ctx.fillStyle=bg; ctx.fillRect(0,0,canvas.width,canvas.height);
+    state.ambience.forEach(blob=>{ const g=ctx.createRadialGradient(blob.x,blob.y,0,blob.x,blob.y,blob.r); g.addColorStop(0,`hsla(${blob.hue},100%,60%,${blob.alpha})`); g.addColorStop(1,'rgba(0,0,0,0)'); ctx.fillStyle=g; ctx.fillRect(blob.x-blob.r, blob.y-blob.r, blob.r*2, blob.r*2); blob.x+=blob.drift; if(blob.x<-blob.r) blob.x=canvas.width+blob.r; if(blob.x>canvas.width+blob.r) blob.x=-blob.r; });
+    state.sparks.forEach(s=>{ s.y += s.speed; if(s.y>canvas.height) { s.y = -5; s.x = rand(0,canvas.width);} ctx.fillStyle=`rgba(255,255,255,${s.a})`; ctx.fillRect(s.x,s.y,1.4,1.4); });
+    for(let i=0;i<58;i++){ const y=i/58*canvas.height; ctx.fillStyle=i%2===0?'rgba(255,255,255,.012)':'rgba(99,242,255,.006)'; ctx.fillRect(0,y,canvas.width,1.2); }
   }
-
-  function updateParticles(dt) {
-    state.particles = state.particles.filter(p => {
-      p.x += p.vx;
-      p.y += p.vy;
-      p.vx *= .985;
-      p.vy *= .985;
-      p.life -= dt;
-      return p.life > 0;
-    });
-
-    state.ribbons = state.ribbons.filter(r => {
-      r.life -= dt * 1.4;
-      return r.life > 0;
-    });
-  }
-
-  function collectShard() {
-    if (!state.shard) return;
-    if (Math.hypot(state.player.x - state.shard.x, state.player.y - state.shard.y) < TILE * 0.38) {
-      state.score += 150;
-      state.shards += 1;
-      state.charge = clamp(state.charge + 25, 0, 100);
-      state.shardGlow = 1;
-      addParticles(state.shard.x, state.shard.y, '#ffd76a', 28, 5.2, 1.3);
-      if (state.score > state.best) {
-        state.best = state.score;
-        localStorage.setItem(STORAGE_KEY, String(state.best));
-      }
-      if (state.shards % 4 === 0) {
-        state.level += 1;
-        spawnDrone();
-        spawnGate();
-      }
-      spawnShard();
-      syncHud();
-    }
-  }
-
-  function gameOver() {
-    state.running = false;
-    state.over = true;
-    overlay.classList.remove('hidden');
-    overlayCard.innerHTML = `<h2>Signal Lost</h2><p>You reached <strong>${state.score}</strong> points on level <strong>${state.level}</strong>. Hunter, ambusher, and flanker pressure is online now — next passes can layer in audio, abilities, and progression.</p>`;
-    syncHud();
-  }
-
-  function update(dt) {
-    if (!state.running || state.paused || state.over) return;
-    state.spawnTimer += dt;
-    state.flash = Math.max(0, state.flash - dt);
-    state.cameraShake = Math.max(0, state.cameraShake - dt);
-    state.shardGlow = Math.max(0, state.shardGlow - dt * 1.6);
-    if (state.gate) {
-      state.gate.cooldown = Math.max(0, state.gate.cooldown - dt);
-      state.gate.pulse += dt * 2.8;
-    }
-
-    if (state.spawnTimer >= difficulties[state.difficulty].spawnEvery) {
-      state.spawnTimer = 0;
-      if (state.drones.length < 4 + state.level * 2) spawnDrone();
-      syncHud();
-    }
-
-    updatePlayer(dt);
-    updateDrones(dt);
-    updatePulses(dt);
-    updateParticles(dt);
-    collectShard();
-  }
-
-  function drawSceneBackground() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    const bg = ctx.createRadialGradient(canvas.width * .5, canvas.height * .35, 40, canvas.width * .5, canvas.height * .5, canvas.width * .72);
-    bg.addColorStop(0, 'rgba(18,41,78,1)');
-    bg.addColorStop(.55, 'rgba(7,18,38,1)');
-    bg.addColorStop(1, 'rgba(2,6,17,1)');
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    state.ambience.forEach(blob => {
-      const g = ctx.createRadialGradient(blob.x, blob.y, 0, blob.x, blob.y, blob.r);
-      g.addColorStop(0, `hsla(${blob.hue}, 100%, 60%, ${blob.alpha})`);
-      g.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = g;
-      ctx.fillRect(blob.x - blob.r, blob.y - blob.r, blob.r * 2, blob.r * 2);
-      blob.x += blob.drift;
-      if (blob.x < -blob.r) blob.x = canvas.width + blob.r;
-      if (blob.x > canvas.width + blob.r) blob.x = -blob.r;
-    });
-
-    for (let i = 0; i < 58; i++) {
-      const y = i / 58 * canvas.height;
-      ctx.fillStyle = i % 2 === 0 ? 'rgba(255,255,255,.012)' : 'rgba(99,242,255,.006)';
-      ctx.fillRect(0, y, canvas.width, 1.2);
-    }
-  }
-
-  function roundedRect(x, y, w, h, r, fill) {
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();
-    fill ? ctx.fill() : ctx.stroke();
-  }
-
-  function drawMaze() {
-    for (let y = 0; y < GRID; y++) {
-      for (let x = 0; x < GRID; x++) {
-        const px = x * TILE;
-        const py = y * TILE;
-        if (maze[y][x] === 1) {
-          const g = ctx.createLinearGradient(px, py, px + TILE, py + TILE);
-          g.addColorStop(0, 'rgba(90,169,255,.2)');
-          g.addColorStop(.5, 'rgba(35,72,130,.46)');
-          g.addColorStop(1, 'rgba(160,116,255,.18)');
-          ctx.fillStyle = g;
-          roundedRect(px + 3, py + 3, TILE - 6, TILE - 6, 8, true);
-
-          ctx.strokeStyle = 'rgba(99,242,255,.12)';
-          ctx.lineWidth = 1.4;
-          roundedRect(px + 3, py + 3, TILE - 6, TILE - 6, 8, false);
-
-          ctx.strokeStyle = 'rgba(255,255,255,.05)';
-          ctx.beginPath();
-          ctx.moveTo(px + 8, py + 10);
-          ctx.lineTo(px + TILE - 10, py + 10);
-          ctx.stroke();
-        } else {
-          ctx.fillStyle = 'rgba(255,255,255,.022)';
-          ctx.fillRect(px, py, TILE, TILE);
-          ctx.strokeStyle = 'rgba(99,242,255,.038)';
-          ctx.strokeRect(px + .5, py + .5, TILE - 1, TILE - 1);
-        }
-      }
-    }
-  }
-
-  function drawGate() {
-    if (!state.gate) return;
-    const p = state.gate.pulse;
-    [[state.gate.a, '#63f2ff', 0], [state.gate.b, '#ff63d4', Math.PI]].forEach(([g, col, off]) => {
-      ctx.save();
-      ctx.translate(g.x, g.y);
-      ctx.shadowBlur = 36;
-      ctx.shadowColor = col;
-      ctx.strokeStyle = col;
-      ctx.lineWidth = 4;
-      for (let i = 0; i < 3; i++) {
-        ctx.globalAlpha = .9 - i * .22;
-        ctx.beginPath();
-        ctx.arc(0, 0, TILE * (.18 + i * .08 + Math.sin(p + off) * .01), 0, Math.PI * 2);
-        ctx.stroke();
-      }
-      ctx.restore();
-    });
-    ctx.save();
-    ctx.setLineDash([9, 9]);
-    ctx.strokeStyle = 'rgba(255,255,255,.1)';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(state.gate.a.x, state.gate.a.y);
-    ctx.lineTo(state.gate.b.x, state.gate.b.y);
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  function drawShard() {
-    if (!state.shard) return;
-    state.shard.rot += 0.03;
-    const s = state.shard;
-    ctx.save();
-    ctx.translate(s.x, s.y);
-    ctx.rotate(s.rot);
-    ctx.shadowBlur = 34;
-    ctx.shadowColor = '#ffd76a';
-    const scale = 1.08 + state.shardGlow * .15;
-    ctx.scale(scale, scale);
-    const grad = ctx.createLinearGradient(-10, -10, 12, 12);
-    grad.addColorStop(0, '#fff4c2');
-    grad.addColorStop(1, '#ffd76a');
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    for (let i = 0; i < 8; i++) {
-      const a = Math.PI / 4 * i;
-      const r = i % 2 === 0 ? TILE * 0.2 : TILE * 0.09;
-      const x = Math.cos(a) * r;
-      const y = Math.sin(a) * r;
-      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-    }
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
-  }
-
-  function drawRibbons() {
-    state.ribbons.forEach(r => {
-      ctx.fillStyle = r.color.replace('.22', String(r.life * .28));
-      ctx.beginPath();
-      ctx.arc(r.x, r.y, r.size * r.life * .36, 0, Math.PI * 2);
-      ctx.fill();
-    });
-  }
-
-  function drawPulses() {
-    state.pulses.forEach(p => {
-      const alpha = p.life / p.maxLife;
-      ctx.save();
-      ctx.strokeStyle = `rgba(99,242,255,${alpha})`;
-      ctx.lineWidth = 10;
-      ctx.shadowBlur = 40;
-      ctx.shadowColor = '#63f2ff';
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.restore();
-    });
-  }
-
-  function drawPlayer() {
-    const p = state.player;
-    p.trail.forEach((t, idx) => {
-      ctx.fillStyle = `rgba(99,242,255,${idx / p.trail.length * .22})`;
-      ctx.beginPath();
-      ctx.arc(t.x, t.y, p.radius * (idx / p.trail.length) * .9, 0, Math.PI * 2);
-      ctx.fill();
-    });
-
-    ctx.save();
-    ctx.translate(p.x, p.y);
-    ctx.shadowBlur = 54;
-    ctx.shadowColor = '#63f2ff';
-
-    const outer = ctx.createRadialGradient(0, 0, 2, 0, 0, p.radius * 1.2);
-    outer.addColorStop(0, '#ffffff');
-    outer.addColorStop(.45, '#9cf9ff');
-    outer.addColorStop(1, '#3fc3ff');
-    ctx.fillStyle = outer;
-    ctx.beginPath();
-    ctx.arc(0, 0, p.radius, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.strokeStyle = 'rgba(255,255,255,.78)';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.arc(0, 0, p.radius * 1.22, 0, Math.PI * 2);
-    ctx.stroke();
-
-    ctx.fillStyle = 'rgba(255,255,255,.94)';
-    ctx.beginPath();
-    ctx.arc(p.radius * .22, -p.radius * .28, p.radius * .18, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  }
-
-  function drawDrones() {
-    state.drones.forEach(drone => {
-      drone.trail.forEach((t, idx) => {
-        ctx.fillStyle = `hsla(${drone.hue}, 100%, 65%, ${idx / drone.trail.length * .18})`;
-        ctx.beginPath();
-        ctx.arc(t.x, t.y, drone.radius * (idx / drone.trail.length), 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      const hover = Math.sin(drone.wobble) * 2.5;
-      ctx.save();
-      ctx.translate(drone.x, drone.y + hover);
-      ctx.shadowBlur = 28;
-      ctx.shadowColor = `hsla(${drone.hue},100%,60%,.9)`;
-      ctx.fillStyle = drone.stunned > 0 ? '#ffffff' : `hsl(${drone.hue} 100% 64%)`;
-      ctx.globalAlpha = drone.stunned > 0 ? 0.8 : 1;
-
-      ctx.beginPath();
-      if (drone.type === 'ambusher') {
-        ctx.moveTo(0, -drone.radius * 1.3);
-        ctx.lineTo(drone.radius * 1.16, 0);
-        ctx.lineTo(0, drone.radius * 1.05);
-        ctx.lineTo(-drone.radius * 1.16, 0);
-      } else if (drone.type === 'flanker') {
-        ctx.moveTo(-drone.radius * 1.18, -drone.radius * .26);
-        ctx.lineTo(0, -drone.radius * 1.22);
-        ctx.lineTo(drone.radius * 1.18, -drone.radius * .26);
-        ctx.lineTo(drone.radius * .52, drone.radius * 1.02);
-        ctx.lineTo(0, drone.radius * .5);
-        ctx.lineTo(-drone.radius * .52, drone.radius * 1.02);
-      } else {
-        ctx.moveTo(0, -drone.radius * 1.25);
-        ctx.lineTo(drone.radius * 1.08, drone.radius * .9);
-        ctx.lineTo(0, drone.radius * .45);
-        ctx.lineTo(-drone.radius * 1.08, drone.radius * .9);
-      }
-      ctx.closePath();
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(255,255,255,.5)';
-      ctx.lineWidth = 1.6;
-      ctx.stroke();
-      ctx.fillStyle = 'rgba(255,255,255,.96)';
-      ctx.beginPath();
-      ctx.arc(0, -drone.radius * .1, drone.radius * .2, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    });
-  }
-
-  function drawParticles() {
-    state.particles.forEach(p => {
-      const alpha = p.life / p.maxLife;
-      ctx.save();
-      ctx.globalAlpha = alpha;
-      ctx.fillStyle = p.color;
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size * alpha, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    });
-  }
-
-  function drawVignette() {
-    const g = ctx.createRadialGradient(canvas.width * .5, canvas.height * .5, canvas.width * .22, canvas.width * .5, canvas.height * .5, canvas.width * .78);
-    g.addColorStop(0, 'rgba(0,0,0,0)');
-    g.addColorStop(1, 'rgba(0,0,0,.62)');
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    if (state.flash > 0) {
-      ctx.fillStyle = `rgba(255,80,80,${state.flash * .22})`;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-    }
-  }
-
-  function render() {
-    drawSceneBackground();
-
-    const shake = state.cameraShake * 10;
-    ctx.save();
-    ctx.translate(rand(-shake, shake), rand(-shake, shake));
-    drawMaze();
-    drawGate();
-    drawRibbons();
-    drawShard();
-    drawPulses();
-    drawDrones();
-    drawPlayer();
-    drawParticles();
-    ctx.restore();
-
-    drawVignette();
-  }
-
-  function frame(ts) {
-    if (!state.lastTs) state.lastTs = ts;
-    const dt = Math.min((ts - state.lastTs) / 1000, 0.033);
-    state.lastTs = ts;
-    update(dt);
-    render();
-    requestAnimationFrame(frame);
-  }
-
-  function startGame() {
-    resetGame();
-    state.running = true;
-    overlay.classList.add('hidden');
-    syncHud();
-  }
-
-  function togglePause() {
-    if (!state.running || state.over) return;
-    state.paused = !state.paused;
-    syncHud();
-  }
-
-  const keyMap = {
-    ArrowUp: { x: 0, y: -1 }, KeyW: { x: 0, y: -1 },
-    ArrowDown: { x: 0, y: 1 }, KeyS: { x: 0, y: 1 },
-    ArrowLeft: { x: -1, y: 0 }, KeyA: { x: -1, y: 0 },
-    ArrowRight: { x: 1, y: 0 }, KeyD: { x: 1, y: 0 }
-  };
-
-  document.addEventListener('keydown', e => {
-    const dir = keyMap[e.code];
-    if (dir) { e.preventDefault(); tryChangeDir(dir); }
-    if (e.code === 'Space') { e.preventDefault(); triggerPulse(); }
-    if (e.code === 'Enter' && (!state.running || state.over)) startGame();
-  });
-
-  document.querySelectorAll('[data-dir]').forEach(btn => btn.addEventListener('click', () => {
-    const map = { up: {x:0,y:-1}, down: {x:0,y:1}, left: {x:-1,y:0}, right: {x:1,y:0} };
-    tryChangeDir(map[btn.dataset.dir]);
-  }));
+  function roundedRect(x,y,w,h,r,fill){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); fill?ctx.fill():ctx.stroke(); }
+  function drawMaze(){ for(let y=0;y<GRID;y++){ for(let x=0;x<GRID;x++){ const px=x*TILE, py=y*TILE; if(maze[y][x]===1){ const g=ctx.createLinearGradient(px,py,px+TILE,py+TILE); g.addColorStop(0,'rgba(90,169,255,.2)'); g.addColorStop(.5,'rgba(35,72,130,.46)'); g.addColorStop(1,'rgba(160,116,255,.18)'); ctx.fillStyle=g; roundedRect(px+3,py+3,TILE-6,TILE-6,8,true); ctx.strokeStyle='rgba(99,242,255,.12)'; ctx.lineWidth=1.4; roundedRect(px+3,py+3,TILE-6,TILE-6,8,false); ctx.strokeStyle='rgba(255,255,255,.05)'; ctx.beginPath(); ctx.moveTo(px+8,py+10); ctx.lineTo(px+TILE-10,py+10); ctx.stroke(); } else { ctx.fillStyle='rgba(255,255,255,.022)'; ctx.fillRect(px,py,TILE,TILE); ctx.strokeStyle='rgba(99,242,255,.038)'; ctx.strokeRect(px+.5,py+.5,TILE-1,TILE-1); } } } }
+  function drawGate(){ if(!state.gate) return; const p=state.gate.pulse; [[state.gate.a,'#63f2ff',0],[state.gate.b,'#ff63d4',Math.PI]].forEach(([g,col,off])=>{ ctx.save(); ctx.translate(g.x,g.y); ctx.shadowBlur=36; ctx.shadowColor=col; ctx.strokeStyle=col; ctx.lineWidth=4; for(let i=0;i<3;i++){ ctx.globalAlpha=.9-i*.22; ctx.beginPath(); ctx.arc(0,0,TILE*(.18+i*.08+Math.sin(p+off)*.01),0,Math.PI*2); ctx.stroke(); } ctx.restore(); }); ctx.save(); ctx.setLineDash([9,9]); ctx.strokeStyle='rgba(255,255,255,.1)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(state.gate.a.x,state.gate.a.y); ctx.lineTo(state.gate.b.x,state.gate.b.y); ctx.stroke(); ctx.restore(); }
+  function drawShard(){ if(!state.shard) return; state.shard.rot+=.03; const s=state.shard; ctx.save(); ctx.translate(s.x,s.y); ctx.rotate(s.rot); ctx.shadowBlur=34; ctx.shadowColor='#ffd76a'; const scale=1.08+state.shardGlow*.15; ctx.scale(scale,scale); const grad=ctx.createLinearGradient(-10,-10,12,12); grad.addColorStop(0,'#fff4c2'); grad.addColorStop(1,'#ffd76a'); ctx.fillStyle=grad; ctx.beginPath(); for(let i=0;i<8;i++){ const a=Math.PI/4*i; const r=i%2===0?TILE*.2:TILE*.09; const x=Math.cos(a)*r, y=Math.sin(a)*r; i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); } ctx.closePath(); ctx.fill(); ctx.restore(); }
+  function drawRibbons(){ state.ribbons.forEach(r=>{ ctx.fillStyle=r.color.replace('.22', String(r.life*.28)); ctx.beginPath(); ctx.arc(r.x,r.y,r.size*r.life*.36,0,Math.PI*2); ctx.fill(); }); }
+  function drawPulses(){ state.pulses.forEach(p=>{ const alpha=p.life/p.maxLife; ctx.save(); ctx.strokeStyle=`rgba(99,242,255,${alpha})`; ctx.lineWidth=10; ctx.shadowBlur=40; ctx.shadowColor='#63f2ff'; ctx.beginPath(); ctx.arc(p.x,p.y,p.radius,0,Math.PI*2); ctx.stroke(); ctx.restore(); }); }
+  function drawPlayer(){ const p=state.player; p.trail.forEach((t,idx)=>{ ctx.fillStyle=`rgba(99,242,255,${idx/p.trail.length*.22})`; ctx.beginPath(); ctx.arc(t.x,t.y,p.radius*(idx/p.trail.length)*.9,0,Math.PI*2); ctx.fill(); }); ctx.save(); ctx.translate(p.x,p.y); ctx.shadowBlur=54; ctx.shadowColor='#63f2ff'; const outer=ctx.createRadialGradient(0,0,2,0,0,p.radius*1.2); outer.addColorStop(0,'#ffffff'); outer.addColorStop(.45,'#9cf9ff'); outer.addColorStop(1,'#3fc3ff'); ctx.fillStyle=outer; ctx.beginPath(); ctx.arc(0,0,p.radius,0,Math.PI*2); ctx.fill(); ctx.strokeStyle='rgba(255,255,255,.78)'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(0,0,p.radius*1.22,0,Math.PI*2); ctx.stroke(); ctx.fillStyle='rgba(255,255,255,.94)'; ctx.beginPath(); ctx.arc(p.radius*.22,-p.radius*.28,p.radius*.18,0,Math.PI*2); ctx.fill(); ctx.restore(); }
+  function drawDrones(){ state.drones.forEach(drone=>{ drone.trail.forEach((t,idx)=>{ ctx.fillStyle=`hsla(${drone.hue}, 100%, 65%, ${idx/drone.trail.length*.18})`; ctx.beginPath(); ctx.arc(t.x,t.y,drone.radius*(idx/drone.trail.length),0,Math.PI*2); ctx.fill(); }); const hover=Math.sin(drone.wobble)*(drone.type==='glimmer'?4:2.5); ctx.save(); ctx.translate(drone.x,drone.y+hover); ctx.shadowBlur=28; ctx.shadowColor=`hsla(${drone.hue},100%,60%,.9)`; ctx.fillStyle=drone.stunned>0?'#ffffff':`hsl(${drone.hue} 100% 64%)`; ctx.globalAlpha=drone.stunned>0?0.8:1; if(drone.type==='hunter'){ ctx.beginPath(); ctx.moveTo(0,-drone.radius*1.35); ctx.lineTo(drone.radius*1.12,drone.radius*.95); ctx.lineTo(-drone.radius*1.12,drone.radius*.95); ctx.closePath(); ctx.fill(); }
+      else if(drone.type==='glimmer'){ ctx.beginPath(); for(let i=0;i<6;i++){ const a=Math.PI/3*i; const r=i%2===0?drone.radius*1.15:drone.radius*.55; const x=Math.cos(a)*r, y=Math.sin(a)*r; i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); } ctx.closePath(); ctx.fill(); }
+      else { ctx.beginPath(); ctx.moveTo(0,-drone.radius*1.25); ctx.lineTo(drone.radius*1.08,drone.radius*.9); ctx.lineTo(0,drone.radius*.45); ctx.lineTo(-drone.radius*1.08,drone.radius*.9); ctx.closePath(); ctx.fill(); }
+      ctx.restore(); }); }
+  function drawParticles(){ state.particles.forEach(p=>{ const alpha=p.life/p.maxLife; ctx.save(); ctx.globalAlpha=alpha; ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x,p.y,p.size*alpha,0,Math.PI*2); ctx.fill(); ctx.restore(); }); }
+  function drawVignette(){ const g=ctx.createRadialGradient(canvas.width*.5,canvas.height*.5,canvas.width*.22,canvas.width*.5,canvas.height*.5,canvas.width*.78); g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(1,'rgba(0,0,0,.62)'); ctx.fillStyle=g; ctx.fillRect(0,0,canvas.width,canvas.height); if(state.flash>0){ ctx.fillStyle=`rgba(255,80,80,${state.flash*.22})`; ctx.fillRect(0,0,canvas.width,canvas.height); } }
+  function render(){ drawSceneBackground(); const shake=state.cameraShake*8; ctx.save(); ctx.translate(rand(-shake,shake), rand(-shake,shake)); drawMaze(); drawGate(); drawRibbons(); drawShard(); drawPulses(); drawDrones(); drawPlayer(); drawParticles(); ctx.restore(); drawVignette(); }
+  function frame(ts){ if(!state.lastTs) state.lastTs=ts; const dt=Math.min((ts-state.lastTs)/1000,.033); state.lastTs=ts; update(dt); render(); requestAnimationFrame(frame); }
+  function startGame(){ initAudio(); if(audioCtx && audioCtx.state==='suspended') audioCtx.resume(); resetGame(); state.running=true; overlay.classList.add('hidden'); playSfx('start'); syncHud(); }
+  function togglePause(){ if(!state.running||state.over) return; state.paused=!state.paused; syncHud(); }
+  const keyMap={ ArrowUp:{x:0,y:-1}, KeyW:{x:0,y:-1}, ArrowDown:{x:0,y:1}, KeyS:{x:0,y:1}, ArrowLeft:{x:-1,y:0}, KeyA:{x:-1,y:0}, ArrowRight:{x:1,y:0}, KeyD:{x:1,y:0} };
+  document.addEventListener('keydown',e=>{ const dir=keyMap[e.code]; if(dir){ e.preventDefault(); tryChangeDir(dir); } if(e.code==='Space'){ e.preventDefault(); triggerPulse(); } if(e.code==='Enter'&&(!state.running||state.over)) startGame(); });
+  document.querySelectorAll('[data-dir]').forEach(btn=>btn.addEventListener('click',()=>{ const map={up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}}; tryChangeDir(map[btn.dataset.dir]); }));
   document.getElementById('touchPulse').addEventListener('click', triggerPulse);
-
-  let touchStart = null;
-  canvas.addEventListener('touchstart', e => {
-    const t = e.touches[0];
-    touchStart = { x: t.clientX, y: t.clientY };
-  }, { passive: true });
-  canvas.addEventListener('touchend', e => {
-    if (!touchStart) return;
-    const t = e.changedTouches[0];
-    const dx = t.clientX - touchStart.x;
-    const dy = t.clientY - touchStart.y;
-    if (Math.abs(dx) < 12 && Math.abs(dy) < 12) {
-      if (!state.running || state.over) startGame();
-      else triggerPulse();
-      touchStart = null;
-      return;
-    }
-    if (Math.abs(dx) > Math.abs(dy)) tryChangeDir(dx > 0 ? { x: 1, y: 0 } : { x: -1, y: 0 });
-    else tryChangeDir(dy > 0 ? { x: 0, y: 1 } : { x: 0, y: -1 });
-    touchStart = null;
-  }, { passive: true });
-
-  startBtn.addEventListener('click', startGame);
-  pauseBtn.addEventListener('click', togglePause);
-  boostBtn.addEventListener('click', triggerPulse);
-  difficultySelect.addEventListener('change', e => {
-    state.difficulty = e.target.value;
-    if (!state.running || state.over) resetGame();
-    syncHud();
-  });
-  fullscreenBtn.addEventListener('click', async () => {
-    const root = document.documentElement;
-    if (!document.fullscreenElement && root.requestFullscreen) await root.requestFullscreen();
-    else if (document.exitFullscreen) await document.exitFullscreen();
-  });
-
-  bestScoreEl.textContent = state.best;
-  resetGame();
-  render();
-  requestAnimationFrame(frame);
+  let touchStart=null; canvas.addEventListener('touchstart',e=>{ const t=e.touches[0]; touchStart={x:t.clientX,y:t.clientY}; },{passive:true}); canvas.addEventListener('touchend',e=>{ if(!touchStart) return; const t=e.changedTouches[0]; const dx=t.clientX-touchStart.x, dy=t.clientY-touchStart.y; if(Math.abs(dx)<12&&Math.abs(dy)<12){ if(!state.running||state.over) startGame(); else triggerPulse(); touchStart=null; return; } if(Math.abs(dx)>Math.abs(dy)) tryChangeDir(dx>0?{x:1,y:0}:{x:-1,y:0}); else tryChangeDir(dy>0?{x:0,y:1}:{x:0,y:-1}); touchStart=null; },{passive:true});
+  startBtn.addEventListener('click', startGame); overlayStart.addEventListener('click', startGame); pauseBtn.addEventListener('click', togglePause); boostBtn.addEventListener('click', triggerPulse);
+  difficultySelect.addEventListener('change',e=>{ state.difficulty=e.target.value; if(!state.running||state.over) resetGame(); syncHud(); });
+  audioBtn.addEventListener('click', ()=>{ state.audioEnabled=!state.audioEnabled; audioBtn.textContent = state.audioEnabled ? 'Audio On' : 'Audio Off'; if(state.audioEnabled) initAudio(); if(masterGain) masterGain.gain.value = state.audioEnabled ? .14 : 0.0001; });
+  fullscreenBtn.addEventListener('click', async()=>{ const root=document.documentElement; if(!document.fullscreenElement&&root.requestFullscreen) await root.requestFullscreen(); else if(document.exitFullscreen) await document.exitFullscreen(); });
+  bestScoreEl.textContent=state.best; resetGame(); render(); requestAnimationFrame(frame);
 })();
 </script>
 </body>

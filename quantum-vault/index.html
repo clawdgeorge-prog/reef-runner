@@ -174,9 +174,9 @@
     const touchStartBtn = document.getElementById('touchStart');
 
     const DIFF = {
-      easy: { enemySpeed: 0.82, enemyCount: 2 },
-      normal: { enemySpeed: 1.0, enemyCount: 3 },
-      hard: { enemySpeed: 1.16, enemyCount: 4 }
+      easy: { enemySpeed: 0.74, enemyCount: 2 },
+      normal: { enemySpeed: 0.92, enemyCount: 3 },
+      hard: { enemySpeed: 1.08, enemyCount: 4 }
     };
 
     const layouts = [
@@ -190,7 +190,7 @@
 
     const state = {
       running:false, paused:false, over:false,
-      score:0, level:1, lives:3, combo:1, keysCollected:0, keysTotal:0,
+      score:0, level:1, lives:3, combo:1, keysCollected:0, keysTotal:0, boostCharge:0,
       best:Number(localStorage.getItem(STORAGE_KEY)||0), difficulty:'normal',
       maze:null, player:null, enemies:[], keyOrbs:[], exit:null,
       particles:[], ribbons:[], pulses:[], ambient:[], stars:[],
@@ -315,6 +315,7 @@
         state.keyOrbs.push({...c,rot:rand(0,Math.PI*2)});
       }
       state.exit = {...cellCenter(GRID-2, GRID-2), active:false, pulse:0};
+      state.boostCharge = 0;
       const cfg = DIFF[state.difficulty];
       const enemyCount = cfg.enemyCount + Math.floor((level-1)/2);
       for(let i=0;i<enemyCount;i++) spawnEnemy(i);
@@ -332,7 +333,7 @@
         sweeper:{h:320,s:DIFF[state.difficulty].enemySpeed + .12 + state.level*.04,r:TILE*.23},
         phantom:{h:48,s:DIFF[state.difficulty].enemySpeed - .04 + state.level*.03,r:TILE*.19}
       }[type];
-      state.enemies.push({x:c.x,y:c.y,type,hue:conf.h,speed:conf.s,radius:conf.r,trail:[],wobble:rand(0,Math.PI*2)});
+      state.enemies.push({x:c.x,y:c.y,type,hue:conf.h,speed:conf.s,radius:conf.r,trail:[],wobble:rand(0,Math.PI*2),stunned:0});
     }
 
     function resetRun(){
@@ -388,6 +389,7 @@
       state.keyOrbs = state.keyOrbs.filter(k => {
         if(Math.hypot(k.x-state.player.x,k.y-state.player.y) < TILE*.34){
           state.score += 120 * state.combo;
+          state.boostCharge = clamp(state.boostCharge + 34, 0, 100);
           state.keysCollected += 1;
           addParticles(k.x,k.y,'#ffd86f',24,5,1.2);
           sfx('key');
@@ -411,14 +413,26 @@
       }
     }
 
+    function triggerBoost(){
+      if(!state.running || state.paused || state.over) return;
+      if(state.boostCharge < 100) return;
+      state.boostCharge = 0;
+      state.enemies.forEach(enemy => { enemy.stunned = 2.2; });
+      addParticles(state.player.x, state.player.y, '#63f2ff', 44, 6.2, 1.3);
+      state.cameraShake = .18;
+      sfx('unlock');
+      syncHud();
+    }
+
     function updatePlayer(){
       const p = state.player;
       p.hitCooldown = Math.max(0, p.hitCooldown - 1/60);
-      const dx = p.nextDir.x * p.speed;
-      const dy = p.nextDir.y * p.speed;
+      const speedMul = state.boostCharge >= 100 ? 1.08 : 1;
+      const dx = p.nextDir.x * p.speed * speedMul;
+      const dy = p.nextDir.y * p.speed * speedMul;
       if((p.nextDir.x || p.nextDir.y) && canMoveTo(p.x+dx,p.y+dy,p.radius)) p.dir = {...p.nextDir};
-      const nx = p.x + p.dir.x * p.speed;
-      const ny = p.y + p.dir.y * p.speed;
+      const nx = p.x + p.dir.x * p.speed * speedMul;
+      const ny = p.y + p.dir.y * p.speed * speedMul;
       if(canMoveTo(nx,ny,p.radius)){ p.x=nx; p.y=ny; addRibbon(p.x,p.y,'rgba(99,242,255,.22)'); }
       p.trail.push({x:p.x,y:p.y}); if(p.trail.length>18) p.trail.shift();
     }
@@ -427,6 +441,7 @@
       const pc = nearestCell(state.player.x, state.player.y);
       state.enemies.forEach(enemy => {
         enemy.wobble += dt * (enemy.type==='phantom'?6:4);
+        enemy.stunned = Math.max(0, enemy.stunned - dt);
         const ec = nearestCell(enemy.x, enemy.y);
         const opts = pathOptions(ec.cx, ec.cy);
         let choice = {x:0,y:0};
@@ -440,7 +455,7 @@
           else if(enemy.type==='sweeper' && opts[1] && Math.random()<.16) choice = opts[1];
           else choice = opts[0];
         }
-        const speed = enemy.speed * dt * TILE;
+        const speed = enemy.speed * (enemy.stunned ? .35 : 1) * dt * TILE;
         const nx = enemy.x + choice.x * speed;
         const ny = enemy.y + choice.y * speed;
         if(canMoveTo(nx,ny,enemy.radius)){ enemy.x = nx; enemy.y = ny; }
@@ -542,7 +557,7 @@
       state.enemies.forEach(enemy => {
         enemy.trail.forEach((t,idx)=>{ ctx.fillStyle=`hsla(${enemy.hue},100%,65%,${idx/enemy.trail.length*.18})`; ctx.beginPath(); ctx.arc(t.x,t.y,enemy.radius*(idx/enemy.trail.length),0,Math.PI*2); ctx.fill(); });
         const hover = Math.sin(enemy.wobble) * (enemy.type==='phantom'?4:2.5);
-        ctx.save(); ctx.translate(enemy.x, enemy.y+hover); ctx.shadowBlur=28; ctx.shadowColor=`hsla(${enemy.hue},100%,60%,.9)`; ctx.fillStyle=`hsl(${enemy.hue} 100% 64%)`;
+        ctx.save(); ctx.translate(enemy.x, enemy.y+hover); ctx.shadowBlur=28; ctx.shadowColor=`hsla(${enemy.hue},100%,60%,.9)`; ctx.fillStyle=enemy.stunned>0?'#ffffff':`hsl(${enemy.hue} 100% 64%)`; ctx.globalAlpha = enemy.stunned>0 ? .82 : 1;
         if(enemy.type==='sweeper'){
           ctx.beginPath(); ctx.moveTo(0,-enemy.radius*1.34); ctx.lineTo(enemy.radius*1.1,enemy.radius*.92); ctx.lineTo(-enemy.radius*1.1,enemy.radius*.92); ctx.closePath(); ctx.fill();
         } else if(enemy.type==='phantom'){
@@ -554,7 +569,20 @@
       });
     }
     function drawParticles(){ state.particles.forEach(p => { const a=p.life/p.maxLife; ctx.save(); ctx.globalAlpha=a; ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x,p.y,p.size*a,0,Math.PI*2); ctx.fill(); ctx.restore(); }); }
-    function drawVignette(){ const g=ctx.createRadialGradient(canvas.width*.5,canvas.height*.5,canvas.width*.22,canvas.width*.5,canvas.height*.5,canvas.width*.78); g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(1,'rgba(0,0,0,.62)'); ctx.fillStyle=g; ctx.fillRect(0,0,canvas.width,canvas.height); if(state.flash>0){ ctx.fillStyle=`rgba(255,80,80,${state.flash*.22})`; ctx.fillRect(0,0,canvas.width,canvas.height); } }
+    function drawBoostMeter(){
+      const x = canvas.width * .5 - 140, y = canvas.height - 38, w = 280, h = 12;
+      ctx.fillStyle = 'rgba(255,255,255,.08)';
+      rr(x, y, w, h, 8, true);
+      const grad = ctx.createLinearGradient(x, y, x+w, y);
+      grad.addColorStop(0, '#63f2ff'); grad.addColorStop(1, '#45e0c4');
+      ctx.fillStyle = grad;
+      rr(x, y, w * (state.boostCharge/100), h, 8, true);
+      ctx.fillStyle = 'rgba(255,255,255,.72)';
+      ctx.font = '700 18px Inter, system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(state.boostCharge >= 100 ? 'BOOST READY' : 'CHARGE', canvas.width/2, y - 10);
+    }
+    function drawVignette(){ const g=ctx.createRadialGradient(canvas.width*.5,canvas.height*.5,canvas.width*.22,canvas.width*.5,canvas.height*.5,canvas.width*.78); g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(1,'rgba(0,0,0,.62)'); ctx.fillStyle=g; ctx.fillRect(0,0,canvas.width,canvas.height); drawBoostMeter(); if(state.flash>0){ ctx.fillStyle=`rgba(255,80,80,${state.flash*.22})`; ctx.fillRect(0,0,canvas.width,canvas.height); } }
 
     function render(){
       drawBg();
@@ -579,6 +607,7 @@
     document.addEventListener('keydown', e => {
       const dir = keyMap[e.code];
       if(dir){ e.preventDefault(); if(state.player) setDir(dir); }
+      if(e.code==='Space') { e.preventDefault(); triggerBoost(); }
       if(e.code==='Enter' && (!state.running || state.over)) startGame();
     });
     document.querySelectorAll('[data-dir]').forEach(btn => btn.addEventListener('click',()=> setDir({up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}}[btn.dataset.dir])));
@@ -598,7 +627,7 @@
     audioBtn.addEventListener('click',()=>{ state.audioOn=!state.audioOn; audioBtn.textContent=state.audioOn?'Audio On':'Audio Off'; if(state.audioOn){ initAudio(); if(masterGain) masterGain.gain.value=.16; } else if(masterGain) masterGain.gain.value=.0001; });
     fullscreenBtn.addEventListener('click', async()=>{ const root=document.documentElement; if(!document.fullscreenElement&&root.requestFullscreen) await root.requestFullscreen(); else if(document.exitFullscreen) await document.exitFullscreen(); });
     difficultySelect.addEventListener('change',e=>{ state.difficulty=e.target.value; resetRun(); });
-    touchStartBtn.addEventListener('click',()=>{ if(!state.running||state.over) startGame(); });
+    touchStartBtn.addEventListener('click',()=>{ if(!state.running||state.over) startGame(); else triggerBoost(); });
 
     bestEl.textContent = state.best;
     resetRun();

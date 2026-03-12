@@ -98,7 +98,7 @@
     .overlay h2 { margin:0 0 10px; font-size:clamp(2.1rem,5vw,3.6rem); line-height:.95; letter-spacing:-.05em; }
     .overlay p { margin:0; color:var(--muted); line-height:1.6; font-size:1rem; }
     .title-actions { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:16px; }
-    .touch-pad { display:none; justify-content:center; grid-template-columns:repeat(3,72px); gap:10px; margin-top:2px; }
+    .touch-pad { display:none; justify-content:center; grid-template-columns:repeat(4,72px); gap:10px; margin-top:2px; }
     .touch-pad button { min-height:64px; font-size:1.15rem; border-radius:20px; }
     .touch-pulse { box-shadow:0 0 24px rgba(99,242,255,.18); }
     .footnote { color:rgba(255,255,255,.56); font-size:.82rem; line-height:1.45; }
@@ -126,6 +126,7 @@
           <button id="startBtn" class="primary">Start Run</button>
           <button id="pauseBtn">Pause</button>
           <button id="boostBtn">Pulse</button>
+          <button id="decoyBtn">Decoy</button>
         </div>
         <div class="controls-row" style="margin-top:10px;">
           <select id="difficultySelect"><option value="cinematic">Cinematic</option><option value="normal" selected>Normal</option><option value="arcade">Arcade</option></select>
@@ -147,11 +148,12 @@
           <li>Collect prism shards for score and charge</li>
           <li>Discharge pulse to scatter nearby drones</li>
           <li>Use gates to break chase routes and reposition cleanly</li>
+          <li>Deploy a decoy beacon to bend pursuit lines and buy a clean escape lane</li>
           <li>Distinct enemy classes now force different route choices</li>
           <li>Hunter drones now telegraph lock-ons before a high-speed surge</li>
         </ul>
       </div>
-      <div class="footnote">Controls: WASD / Arrow keys • Space = Pulse • Swipe on mobile • Tap the arena to start or pulse.</div>
+      <div class="footnote">Controls: WASD / Arrow keys • Space = Pulse • Shift / X = Decoy • Swipe on mobile • Tap the arena to start or pulse.</div>
     </aside>
     <main class="panel game-shell">
       <div class="hud">
@@ -162,6 +164,7 @@
         </div>
         <div class="hud-right">
           <div class="pill">Bursts <strong id="pulseCells">0</strong></div>
+          <div class="pill">Decoys <strong id="decoyCount">0</strong></div>
           <div class="pill">Drones <strong id="droneCount">0</strong></div>
           <div class="pill">District <strong id="districtName">Astra</strong></div>
           <div class="pill">Wave <strong id="waveType">Scout</strong></div>
@@ -173,7 +176,7 @@
           <div id="districtBanner" class="district-banner">District Shift</div>
           <div class="overlay-card" id="overlayCard">
             <h2>Maze Sentinel</h2>
-            <p>Slip through a luminous security lattice, charge your pulse core, and bend pursuit lines to your advantage. This build now has a cinematic intro, adaptive audio, telegraphed hunter surges, and richer environmental FX.</p>
+            <p>Slip through a luminous security lattice, charge your pulse core, and bend pursuit lines to your advantage. This build now has a cinematic intro, adaptive audio, telegraphed hunter surges, richer environmental FX, and decoy beacons for cleaner route-control plays.</p>
             <div class="title-actions">
               <button id="overlayStart" class="primary">Enter District</button>
               <button id="audioBtn">Audio On</button>
@@ -183,7 +186,7 @@
       </div>
       <div class="touch-pad">
         <div></div><button data-dir="up">▲</button><div></div>
-        <button data-dir="left">◀</button><button id="touchPulse" class="touch-pulse">●</button><button data-dir="right">▶</button>
+        <button data-dir="left">◀</button><button id="touchPulse" class="touch-pulse">●</button><button id="touchDecoy">◆</button><button data-dir="right">▶</button>
         <div></div><button data-dir="down">▼</button><div></div>
       </div>
     </main>
@@ -204,6 +207,7 @@
   const bestScoreEl = document.getElementById('bestScore');
   const shardCountEl = document.getElementById('shardCount');
   const pulseCellsEl = document.getElementById('pulseCells');
+  const decoyCountEl = document.getElementById('decoyCount');
   const droneCountEl = document.getElementById('droneCount');
   const districtNameEl = document.getElementById('districtName');
   const stateLabelEl = document.getElementById('stateLabel');
@@ -211,6 +215,7 @@
   const startBtn = document.getElementById('startBtn');
   const pauseBtn = document.getElementById('pauseBtn');
   const boostBtn = document.getElementById('boostBtn');
+  const decoyBtn = document.getElementById('decoyBtn');
   const fullscreenBtn = document.getElementById('fullscreenBtn');
   const difficultySelect = document.getElementById('difficultySelect');
   const GRID = 21;
@@ -253,8 +258,8 @@
   const state = {
     running:false, paused:false, over:false, introPulse:0,
     score:0, level:1, health:3, charge:0, shards:0, best:Number(localStorage.getItem(STORAGE_KEY) || 0), difficulty:'normal',
-    player:null, drones:[], particles:[], ribbons:[], pulses:[], shard:null, gate:null, ambience:[], sparks:[],
-    lastTs:0, spawnTimer:0, flash:0, cameraShake:0, shardGlow:0, pulseCounter:0, waveType:'Scout', audioEnabled:true, audioStarted:false,
+    player:null, drones:[], particles:[], ribbons:[], pulses:[], decoys:[], shard:null, gate:null, ambience:[], sparks:[],
+    lastTs:0, spawnTimer:0, flash:0, cameraShake:0, shardGlow:0, pulseCounter:0, decoyCharges:1, waveType:'Scout', audioEnabled:true, audioStarted:false,
     themeIndex:0, currentTheme:districts[0], districtBannerTimer:0
   };
   let audioCtx = null, masterGain = null, musicGain = null;
@@ -315,6 +320,7 @@
     if(kind==='hit'){ tone(120,'square',.22,0,.055); noiseBurst(.12,.045); }
     if(kind==='gate'){ tone(620,'sine',.1,0,.045); tone(930,'sine',.16,.05,.03); }
     if(kind==='surge'){ tone(240,'sawtooth',.18,0,.04); tone(480,'triangle',.24,.05,.03); tone(920,'sine',.14,.1,.022); }
+    if(kind==='decoy'){ tone(510,'triangle',.12,0,.04); tone(760,'sine',.2,.04,.03); tone(1140,'triangle',.18,.08,.022); }
     if(kind==='start'){ tone(392,'triangle',.12,0,.04); tone(523,'triangle',.14,.06,.04); tone(784,'triangle',.18,.12,.03); }
   }
   function addParticles(x,y,color,count,spread=3.2,life=1){ for(let i=0;i<count;i++) state.particles.push({x,y,vx:rand(-spread,spread),vy:rand(-spread,spread),size:rand(2,6),life:rand(life*.55,life),maxLife:life,color}); }
@@ -367,11 +373,11 @@
     });
   }
   function resetGame(){
-    state.running=false; state.paused=false; state.over=false; state.score=0; state.level=1; state.health=3; state.charge=0; state.shards=0; state.drones=[]; state.particles=[]; state.ribbons=[]; state.pulses=[]; state.spawnTimer=0; state.flash=0; state.cameraShake=0; state.shardGlow=0; state.pulseCounter=0; state.waveType='Scout'; state.districtBannerTimer=0;
+    state.running=false; state.paused=false; state.over=false; state.score=0; state.level=1; state.health=3; state.charge=0; state.shards=0; state.drones=[]; state.particles=[]; state.ribbons=[]; state.pulses=[]; state.decoys=[]; state.spawnTimer=0; state.flash=0; state.cameraShake=0; state.shardGlow=0; state.pulseCounter=0; state.decoyCharges=1; state.waveType='Scout'; state.districtBannerTimer=0;
     state.player=initPlayer(); setDistrictTheme(0, false); spawnShard(); spawnGate(); for(let i=0;i<3;i++) spawnDrone(); syncHud();
     overlay.classList.remove('hidden');
   }
-  function syncHud(){ scoreEl.textContent=state.score; levelEl.textContent=state.level; healthEl.textContent=state.health; chargeEl.textContent=`${Math.round(state.charge)}%`; bestScoreEl.textContent=state.best; shardCountEl.textContent=state.shards; pulseCellsEl.textContent=state.pulseCounter; droneCountEl.textContent=state.drones.length; districtNameEl.textContent=state.currentTheme.name; waveTypeEl.textContent=state.waveType; stateLabelEl.textContent=state.over?'Run Lost':state.paused?'Paused':state.running?'Active':'Standby'; }
+  function syncHud(){ scoreEl.textContent=state.score; levelEl.textContent=state.level; healthEl.textContent=state.health; chargeEl.textContent=`${Math.round(state.charge)}%`; bestScoreEl.textContent=state.best; shardCountEl.textContent=state.shards; pulseCellsEl.textContent=state.pulseCounter; decoyCountEl.textContent=state.decoyCharges; droneCountEl.textContent=state.drones.length; districtNameEl.textContent=state.currentTheme.name; waveTypeEl.textContent=state.waveType; stateLabelEl.textContent=state.over?'Run Lost':state.paused?'Paused':state.running?'Active':'Standby'; }
   function tryChangeDir(dir){ state.player.nextDir=dir; }
   function updatePlayer(dt){
     const p=state.player; p.hitCooldown=Math.max(0,p.hitCooldown-dt);
@@ -381,8 +387,22 @@
     if(state.gate&&state.gate.cooldown<=0){ for(const [from,to,col] of [[state.gate.a,state.gate.b,'#63f2ff'],[state.gate.b,state.gate.a,'#ff63d4']]){ if(Math.hypot(p.x-from.x,p.y-from.y)<TILE*.34){ p.x=to.x; p.y=to.y; state.gate.cooldown=.9; state.cameraShake=.12; addParticles(to.x,to.y,col,24,4.5,1.2); playSfx('gate'); vibrate(16); break; } } }
   }
   function triggerPulse(){ if(!state.running||state.paused||state.over) return; const cost=difficulties[state.difficulty].pulseCost; if(state.charge<cost) return; state.charge-=cost; state.pulses.push({x:state.player.x,y:state.player.y,radius:18,life:.55,maxLife:.55,growth:630}); state.pulseCounter+=1; state.cameraShake=.18; addParticles(state.player.x,state.player.y,'#63f2ff',34,5.5,1.1); playSfx('pulse'); vibrate([18,30,18]); syncHud(); }
+  function deployDecoy(){
+    if(!state.running || state.paused || state.over || state.decoyCharges<=0) return;
+    const cell = nearestCell(state.player.x, state.player.y);
+    if(isWall(cell.cx, cell.cy)) return;
+    const spot = cellCenter(cell.cx, cell.cy);
+    state.decoys.push({x:spot.x, y:spot.y, cx:cell.cx, cy:cell.cy, life:4.8, maxLife:4.8, pulse:0});
+    state.decoyCharges = Math.max(0, state.decoyCharges - 1);
+    state.cameraShake = Math.max(state.cameraShake, .1);
+    addParticles(spot.x, spot.y, state.currentTheme.gateB, 28, 4.6, 1.1);
+    playSfx('decoy');
+    vibrate(12);
+    syncHud();
+  }
   function updateDrones(dt){
     const playerCell=nearestCell(state.player.x,state.player.y);
+    const activeDecoy = state.decoys.length ? state.decoys[state.decoys.length - 1] : null;
     state.drones.forEach(drone=>{
       drone.wobble += dt*(drone.type==='glimmer'?6:4);
       drone.stunned=Math.max(0,drone.stunned-dt);
@@ -413,7 +433,18 @@
       }
       const dc=nearestCell(drone.x,drone.y); const opts=pathOptions(dc.cx,dc.cy); let choice={x:0,y:0};
       if(opts.length){
-        opts.sort((a,b)=>{ const aScore=Math.abs((dc.cx+a.x)-playerCell.cx)+Math.abs((dc.cy+a.y)-playerCell.cy); const bScore=Math.abs((dc.cx+b.x)-playerCell.cx)+Math.abs((dc.cy+b.y)-playerCell.cy); return drone.stunned>0 ? bScore-aScore : aScore-bScore; });
+        const decoyWeight = activeDecoy ? (drone.type==='hunter' ? 0.72 : drone.type==='scout' ? 0.58 : 0.3) : 0;
+        opts.sort((a,b)=>{
+          const nextA = { cx: dc.cx + a.x, cy: dc.cy + a.y };
+          const nextB = { cx: dc.cx + b.x, cy: dc.cy + b.y };
+          const aPlayer = Math.abs(nextA.cx-playerCell.cx)+Math.abs(nextA.cy-playerCell.cy);
+          const bPlayer = Math.abs(nextB.cx-playerCell.cx)+Math.abs(nextB.cy-playerCell.cy);
+          const aDecoy = activeDecoy ? Math.abs(nextA.cx-activeDecoy.cx)+Math.abs(nextA.cy-activeDecoy.cy) : aPlayer;
+          const bDecoy = activeDecoy ? Math.abs(nextB.cx-activeDecoy.cx)+Math.abs(nextB.cy-activeDecoy.cy) : bPlayer;
+          const aScore = aPlayer * (1-decoyWeight) + aDecoy * decoyWeight;
+          const bScore = bPlayer * (1-decoyWeight) + bDecoy * decoyWeight;
+          return drone.stunned>0 ? bScore-aScore : aScore-bScore;
+        });
         if(drone.type==='glimmer' && Math.random()<.22) choice = opts[opts.length-1];
         else if(drone.type==='hunter' && drone.surgeBurst>0) choice = opts[0];
         else if(drone.type==='hunter' && opts[1] && Math.random()<.15) choice = opts[1];
@@ -427,12 +458,23 @@
     });
   }
   function updatePulses(dt){ state.pulses=state.pulses.filter(p=>{ p.life-=dt; p.radius+=p.growth*dt; state.drones.forEach(drone=>{ if(dist(drone,p)<p.radius) drone.stunned=Math.max(drone.stunned, drone.type==='hunter'?1.05:1.5); }); return p.life>0; }); }
+  function updateDecoys(dt){
+    state.decoys = state.decoys.filter(decoy => {
+      decoy.life -= dt;
+      decoy.pulse += dt * 3.2;
+      if(decoy.life <= 0){
+        addParticles(decoy.x, decoy.y, 'rgba(255,255,255,.85)', 18, 3.2, .8);
+        return false;
+      }
+      return true;
+    });
+  }
   function updateParticles(dt){ state.particles=state.particles.filter(p=>{ p.x+=p.vx; p.y+=p.vy; p.vx*=.985; p.vy*=.985; p.life-=dt; return p.life>0; }); state.ribbons=state.ribbons.filter(r=>{ r.life-=dt*1.4; return r.life>0; }); }
-  function collectShard(){ if(!state.shard) return; if(Math.hypot(state.player.x-state.shard.x,state.player.y-state.shard.y)<TILE*.38){ state.score+=150; state.shards+=1; state.charge=clamp(state.charge+25,0,100); state.shardGlow=1; addParticles(state.shard.x,state.shard.y,state.currentTheme.shardB,28,5.2,1.3); playSfx('shard'); if(state.score>state.best){ state.best=state.score; localStorage.setItem(STORAGE_KEY,String(state.best)); } if(state.shards%4===0){ state.level+=1; spawnDrone(); spawnGate(); advanceDistrict(); } spawnShard(); syncHud(); } }
-  function gameOver(){ state.running=false; state.over=true; overlay.classList.remove('hidden'); overlayCard.innerHTML = `<h2>Signal Lost</h2><p>You reached <strong>${state.score}</strong> points on level <strong>${state.level}</strong>. The build now includes cinematic intro treatment, adaptive synth tones, telegraphed hunter surges, and richer environmental motion.</p><div class="title-actions"><button id="overlayRestart" class="primary">Run Again</button></div>`; document.getElementById('overlayRestart').addEventListener('click', startGame); syncHud(); }
+  function collectShard(){ if(!state.shard) return; if(Math.hypot(state.player.x-state.shard.x,state.player.y-state.shard.y)<TILE*.38){ state.score+=150; state.shards+=1; state.charge=clamp(state.charge+25,0,100); if(state.shards % 3 === 0) state.decoyCharges = Math.min(3, state.decoyCharges + 1); state.shardGlow=1; addParticles(state.shard.x,state.shard.y,state.currentTheme.shardB,28,5.2,1.3); playSfx('shard'); if(state.score>state.best){ state.best=state.score; localStorage.setItem(STORAGE_KEY,String(state.best)); } if(state.shards%4===0){ state.level+=1; spawnDrone(); spawnGate(); advanceDistrict(); } spawnShard(); syncHud(); } }
+  function gameOver(){ state.running=false; state.over=true; overlay.classList.remove('hidden'); overlayCard.innerHTML = `<h2>Signal Lost</h2><p>You reached <strong>${state.score}</strong> points on level <strong>${state.level}</strong>. The build now includes cinematic intro treatment, adaptive synth tones, telegraphed hunter surges, richer environmental motion, and deployable decoy beacons for route control.</p><div class="title-actions"><button id="overlayRestart" class="primary">Run Again</button></div>`; document.getElementById('overlayRestart').addEventListener('click', startGame); syncHud(); }
   function update(dt){ state.introPulse += dt; state.districtBannerTimer=Math.max(0,state.districtBannerTimer-dt); if(state.districtBannerTimer<=0) districtBanner.classList.remove('visible'); if(!state.running||state.paused||state.over) return; state.spawnTimer+=dt; state.flash=Math.max(0,state.flash-dt); state.cameraShake=Math.max(0,state.cameraShake-dt); state.shardGlow=Math.max(0,state.shardGlow-dt*1.6); if(state.gate){ state.gate.cooldown=Math.max(0,state.gate.cooldown-dt); state.gate.pulse+=dt*2.8; }
     if(state.spawnTimer>=difficulties[state.difficulty].spawnEvery){ state.spawnTimer=0; if(state.drones.length<4+state.level*2) spawnDrone(); syncHud(); }
-    updatePlayer(dt); updateDrones(dt); updatePulses(dt); updateParticles(dt); collectShard(); }
+    updatePlayer(dt); updateDrones(dt); updatePulses(dt); updateDecoys(dt); updateParticles(dt); collectShard(); }
   function drawSceneBackground(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     const theme = state.currentTheme;
@@ -447,6 +489,34 @@
   function drawShard(){ if(!state.shard) return; state.shard.rot+=.03; const s=state.shard; ctx.save(); ctx.translate(s.x,s.y); ctx.rotate(s.rot); ctx.shadowBlur=34; ctx.shadowColor=state.currentTheme.shardB; const scale=1.08+state.shardGlow*.15; ctx.scale(scale,scale); const grad=ctx.createLinearGradient(-10,-10,12,12); grad.addColorStop(0,state.currentTheme.shardA); grad.addColorStop(1,state.currentTheme.shardB); ctx.fillStyle=grad; ctx.beginPath(); for(let i=0;i<8;i++){ const a=Math.PI/4*i; const r=i%2===0?TILE*.2:TILE*.09; const x=Math.cos(a)*r, y=Math.sin(a)*r; i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); } ctx.closePath(); ctx.fill(); ctx.restore(); }
   function drawRibbons(){ state.ribbons.forEach(r=>{ ctx.fillStyle=r.color.replace('.22', String(r.life*.28)); ctx.beginPath(); ctx.arc(r.x,r.y,r.size*r.life*.36,0,Math.PI*2); ctx.fill(); }); }
   function drawPulses(){ state.pulses.forEach(p=>{ const alpha=p.life/p.maxLife; ctx.save(); ctx.strokeStyle=`rgba(99,242,255,${alpha})`; ctx.lineWidth=10; ctx.shadowBlur=40; ctx.shadowColor='#63f2ff'; ctx.beginPath(); ctx.arc(p.x,p.y,p.radius,0,Math.PI*2); ctx.stroke(); ctx.restore(); }); }
+  function drawDecoys(){
+    state.decoys.forEach(decoy => {
+      const lifeAlpha = decoy.life / decoy.maxLife;
+      const pulseR = TILE * (0.2 + Math.sin(decoy.pulse) * 0.04 + (1 - lifeAlpha) * 0.08);
+      ctx.save();
+      ctx.translate(decoy.x, decoy.y);
+      ctx.shadowBlur = 34;
+      ctx.shadowColor = state.currentTheme.gateB;
+      ctx.strokeStyle = `rgba(255,99,212,${0.4 + lifeAlpha * 0.45})`;
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.arc(0, 0, pulseR * 1.8, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.rotate(decoy.pulse * 0.7);
+      const grad = ctx.createLinearGradient(-14, -14, 14, 14);
+      grad.addColorStop(0, '#ffffff');
+      grad.addColorStop(1, state.currentTheme.gateB);
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(0, -pulseR * 1.22);
+      ctx.lineTo(pulseR * .88, 0);
+      ctx.lineTo(0, pulseR * 1.22);
+      ctx.lineTo(-pulseR * .88, 0);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    });
+  }
   function drawThreatTelegraphs(){
     state.drones.forEach(drone=>{
       if(drone.type!=='hunter' || (drone.surgeTelegraph<=0 && drone.surgeBurst<=0)) return;
@@ -488,16 +558,17 @@
       ctx.restore(); }); }
   function drawParticles(){ state.particles.forEach(p=>{ const alpha=p.life/p.maxLife; ctx.save(); ctx.globalAlpha=alpha; ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x,p.y,p.size*alpha,0,Math.PI*2); ctx.fill(); ctx.restore(); }); }
   function drawVignette(){ const g=ctx.createRadialGradient(canvas.width*.5,canvas.height*.5,canvas.width*.22,canvas.width*.5,canvas.height*.5,canvas.width*.78); g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(1,state.currentTheme.vignette); ctx.fillStyle=g; ctx.fillRect(0,0,canvas.width,canvas.height); if(state.flash>0){ ctx.fillStyle=`rgba(255,80,80,${state.flash*.22})`; ctx.fillRect(0,0,canvas.width,canvas.height); } }
-  function render(){ drawSceneBackground(); const shake=state.cameraShake*8; ctx.save(); ctx.translate(rand(-shake,shake), rand(-shake,shake)); drawMaze(); drawGate(); drawRibbons(); drawShard(); drawPulses(); drawThreatTelegraphs(); drawDrones(); drawPlayer(); drawParticles(); ctx.restore(); drawVignette(); }
+  function render(){ drawSceneBackground(); const shake=state.cameraShake*8; ctx.save(); ctx.translate(rand(-shake,shake), rand(-shake,shake)); drawMaze(); drawGate(); drawRibbons(); drawShard(); drawDecoys(); drawPulses(); drawThreatTelegraphs(); drawDrones(); drawPlayer(); drawParticles(); ctx.restore(); drawVignette(); }
   function frame(ts){ if(!state.lastTs) state.lastTs=ts; const dt=Math.min((ts-state.lastTs)/1000,.033); state.lastTs=ts; update(dt); render(); requestAnimationFrame(frame); }
   function startGame(){ initAudio(); if(audioCtx && audioCtx.state==='suspended') audioCtx.resume(); resetGame(); state.running=true; overlay.classList.add('hidden'); playSfx('start'); syncHud(); }
   function togglePause(){ if(!state.running||state.over) return; state.paused=!state.paused; syncHud(); }
   const keyMap={ ArrowUp:{x:0,y:-1}, KeyW:{x:0,y:-1}, ArrowDown:{x:0,y:1}, KeyS:{x:0,y:1}, ArrowLeft:{x:-1,y:0}, KeyA:{x:-1,y:0}, ArrowRight:{x:1,y:0}, KeyD:{x:1,y:0} };
-  document.addEventListener('keydown',e=>{ const dir=keyMap[e.code]; if(dir){ e.preventDefault(); tryChangeDir(dir); } if(e.code==='Space'){ e.preventDefault(); triggerPulse(); } if(e.code==='Enter'&&(!state.running||state.over)) startGame(); });
+  document.addEventListener('keydown',e=>{ const dir=keyMap[e.code]; if(dir){ e.preventDefault(); tryChangeDir(dir); } if(e.code==='Space'){ e.preventDefault(); triggerPulse(); } if(e.code==='ShiftLeft' || e.code==='ShiftRight' || e.code==='KeyX'){ e.preventDefault(); deployDecoy(); } if(e.code==='Enter'&&(!state.running||state.over)) startGame(); });
   document.querySelectorAll('[data-dir]').forEach(btn=>btn.addEventListener('click',()=>{ const map={up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}}; tryChangeDir(map[btn.dataset.dir]); }));
   document.getElementById('touchPulse').addEventListener('click', triggerPulse);
+  document.getElementById('touchDecoy').addEventListener('click', deployDecoy);
   let touchStart=null; canvas.addEventListener('touchstart',e=>{ const t=e.touches[0]; touchStart={x:t.clientX,y:t.clientY}; },{passive:true}); canvas.addEventListener('touchend',e=>{ if(!touchStart) return; const t=e.changedTouches[0]; const dx=t.clientX-touchStart.x, dy=t.clientY-touchStart.y; if(Math.abs(dx)<12&&Math.abs(dy)<12){ if(!state.running||state.over) startGame(); else triggerPulse(); touchStart=null; return; } if(Math.abs(dx)>Math.abs(dy)) tryChangeDir(dx>0?{x:1,y:0}:{x:-1,y:0}); else tryChangeDir(dy>0?{x:0,y:1}:{x:0,y:-1}); touchStart=null; },{passive:true});
-  startBtn.addEventListener('click', startGame); overlayStart.addEventListener('click', startGame); pauseBtn.addEventListener('click', togglePause); boostBtn.addEventListener('click', triggerPulse);
+  startBtn.addEventListener('click', startGame); overlayStart.addEventListener('click', startGame); pauseBtn.addEventListener('click', togglePause); boostBtn.addEventListener('click', triggerPulse); decoyBtn.addEventListener('click', deployDecoy);
   difficultySelect.addEventListener('change',e=>{ state.difficulty=e.target.value; if(!state.running||state.over) resetGame(); syncHud(); });
   audioBtn.addEventListener('click', ()=>{ state.audioEnabled=!state.audioEnabled; audioBtn.textContent = state.audioEnabled ? 'Audio On' : 'Audio Off'; if(state.audioEnabled) initAudio(); if(masterGain) masterGain.gain.value = state.audioEnabled ? .14 : 0.0001; });
   fullscreenBtn.addEventListener('click', async()=>{ const root=document.documentElement; if(!document.fullscreenElement&&root.requestFullscreen) await root.requestFullscreen(); else if(document.exitFullscreen) await document.exitFullscreen(); });

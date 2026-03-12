@@ -164,7 +164,7 @@
           <div class="pill"><strong id="stateLabel">Standby</strong></div>
           <div class="pill">Best <strong id="bestScore">0</strong></div>
           <div class="pill">Shards <strong id="shardCount">0</strong></div>
-          <div class="pill">Breach <strong id="objectiveCount">0 / 4</strong></div>
+          <div class="pill">Objective <strong id="objectiveCount">0 / 4</strong></div>
         </div>
         <div class="hud-right">
           <div class="pill">Bursts <strong id="pulseCells">0</strong></div>
@@ -276,7 +276,8 @@
     player:null, drones:[], particles:[], ribbons:[], pulses:[], decoys:[], links:[], shard:null, gate:null, exitPortal:null, ambience:[], sparks:[],
     routePath:[], routeType:'shard', routePulse:0,
     lastTs:0, spawnTimer:0, flash:0, cameraShake:0, shardGlow:0, pulseCounter:0, decoyCharges:1, waveType:'Scout', audioEnabled:true, audioStarted:false,
-    themeIndex:0, currentTheme:districts[0], districtBannerTimer:0, dangerLevel:0, dangerLabel:'Clear', hunterPressure:false, threatVectors:[]
+    themeIndex:0, currentTheme:districts[0], districtBannerTimer:0, dangerLevel:0, dangerLabel:'Clear', hunterPressure:false, threatVectors:[],
+    exitTimer:0, exitTimerMax:0, exitAlarmTimer:0, exitRelocations:0
   };
   let audioCtx = null, masterGain = null, musicGain = null;
   function rand(min,max){ return Math.random()*(max-min)+min; }
@@ -354,6 +355,7 @@
     if(kind==='surge'){ tone(240,'sawtooth',.18,0,.04); tone(480,'triangle',.24,.05,.03); tone(920,'sine',.14,.1,.022); }
     if(kind==='decoy'){ tone(510,'triangle',.12,0,.04); tone(760,'sine',.2,.04,.03); tone(1140,'triangle',.18,.08,.022); }
     if(kind==='link'){ tone(260,'sawtooth',.16,0,.038); tone(520,'triangle',.22,.03,.03); tone(1040,'sine',.24,.08,.018); noiseBurst(.08,.025); }
+    if(kind==='alarm'){ tone(980,'square',.08,0,.022); tone(740,'triangle',.14,.05,.018); }
     if(kind==='start'){ tone(392,'triangle',.12,0,.04); tone(523,'triangle',.14,.06,.04); tone(784,'triangle',.18,.12,.03); }
   }
   function addParticles(x,y,color,count,spread=3.2,life=1){ for(let i=0;i<count;i++) state.particles.push({x,y,vx:rand(-spread,spread),vy:rand(-spread,spread),size:rand(2,6),life:rand(life*.55,life),maxLife:life,color}); }
@@ -393,13 +395,49 @@
   function spawnExitPortal(){
     let c = randomOpenCell();
     let tries = 0;
-    while((Math.abs(c.cx - nearestCell(state.player.x, state.player.y).cx) + Math.abs(c.cy - nearestCell(state.player.x, state.player.y).cy) < 8 || (state.gate && (Math.hypot(c.x - state.gate.a.x, c.y - state.gate.a.y) < TILE * 1.5 || Math.hypot(c.x - state.gate.b.x, c.y - state.gate.b.y) < TILE * 1.5))) && tries < 120){
+    const playerCell = nearestCell(state.player.x, state.player.y);
+    while((Math.abs(c.cx - playerCell.cx) + Math.abs(c.cy - playerCell.cy) < 8 || (state.gate && (Math.hypot(c.x - state.gate.a.x, c.y - state.gate.a.y) < TILE * 1.5 || Math.hypot(c.x - state.gate.b.x, c.y - state.gate.b.y) < TILE * 1.5))) && tries < 120){
       c = randomOpenCell();
       tries += 1;
     }
-    state.exitPortal = {...c, pulse:0};
+    state.exitPortal = {...c, pulse:0, flare:1};
+    state.exitTimerMax = Math.max(7.5, 10.5 - Math.min(2.5, state.level * 0.2));
+    state.exitTimer = state.exitTimerMax;
+    state.exitAlarmTimer = 0;
+    state.exitRelocations = 0;
+    districtBanner.textContent = `Exit Breach • Reach the portal before it shifts`;
+    state.districtBannerTimer = 1.8;
+    districtBanner.classList.add('visible');
     addParticles(c.x, c.y, state.currentTheme.gateA, 28, 4.8, 1.1);
+    addParticles(state.player.x, state.player.y, state.currentTheme.gateB, 18, 3.6, .8);
     playSfx('gate');
+    playSfx('alarm');
+  }
+  function relocateExitPortal(){
+    if(!state.exitPortal) return;
+    const old = state.exitPortal;
+    let c = randomOpenCell();
+    let tries = 0;
+    const playerCell = nearestCell(state.player.x, state.player.y);
+    while((Math.abs(c.cx - playerCell.cx) + Math.abs(c.cy - playerCell.cy) < 6 || Math.abs(c.cx - old.cx) + Math.abs(c.cy - old.cy) < 7 || (state.gate && (Math.hypot(c.x - state.gate.a.x, c.y - state.gate.a.y) < TILE * 1.5 || Math.hypot(c.x - state.gate.b.x, c.y - state.gate.b.y) < TILE * 1.5))) && tries < 120){
+      c = randomOpenCell();
+      tries += 1;
+    }
+    addParticles(old.x, old.y, state.currentTheme.gateB, 20, 4.8, .95);
+    state.exitPortal = {...c, pulse:0, flare:1};
+    state.exitTimer = Math.max(5.8, state.exitTimerMax - 1.2 - state.exitRelocations * .35);
+    state.exitAlarmTimer = .15;
+    state.exitRelocations += 1;
+    districtBanner.textContent = `Portal Shift • Exit lane rerouted`;
+    state.districtBannerTimer = 1.2;
+    districtBanner.classList.add('visible');
+    state.cameraShake = Math.max(state.cameraShake, .2);
+    addParticles(c.x, c.y, state.currentTheme.gateA, 28, 5.2, 1.15);
+    playSfx('alarm');
+    playSfx('gate');
+    vibrate([20, 30, 20]);
+    updateRouteAssist();
+    syncHud();
   }
   function completeLevel(){
     state.score += 350 + state.level * 120;
@@ -439,11 +477,11 @@
     });
   }
   function resetGame(){
-    state.running=false; state.paused=false; state.over=false; state.score=0; state.level=1; state.health=3; state.charge=0; state.shards=0; state.levelShards=0; state.objectiveTarget=4; state.drones=[]; state.particles=[]; state.ribbons=[]; state.pulses=[]; state.decoys=[]; state.links=[]; state.routePath=[]; state.routeType='shard'; state.routePulse=0; state.spawnTimer=0; state.flash=0; state.cameraShake=0; state.shardGlow=0; state.pulseCounter=0; state.decoyCharges=1; state.waveType='Scout'; state.districtBannerTimer=0; state.exitPortal=null; state.dangerLevel=0; state.dangerLabel='Clear'; state.hunterPressure=false; state.threatVectors=[];
+    state.running=false; state.paused=false; state.over=false; state.score=0; state.level=1; state.health=3; state.charge=0; state.shards=0; state.levelShards=0; state.objectiveTarget=4; state.drones=[]; state.particles=[]; state.ribbons=[]; state.pulses=[]; state.decoys=[]; state.links=[]; state.routePath=[]; state.routeType='shard'; state.routePulse=0; state.spawnTimer=0; state.flash=0; state.cameraShake=0; state.shardGlow=0; state.pulseCounter=0; state.decoyCharges=1; state.waveType='Scout'; state.districtBannerTimer=0; state.exitPortal=null; state.dangerLevel=0; state.dangerLabel='Clear'; state.hunterPressure=false; state.threatVectors=[]; state.exitTimer=0; state.exitTimerMax=0; state.exitAlarmTimer=0; state.exitRelocations=0;
     state.player=initPlayer(); setDistrictTheme(0, false); spawnShard(); spawnGate(); for(let i=0;i<3;i++) spawnDrone(); updateRouteAssist(); syncHud();
     overlay.classList.remove('hidden');
   }
-  function syncHud(){ scoreEl.textContent=state.score; levelEl.textContent=state.level; healthEl.textContent=state.health; chargeEl.textContent=`${Math.round(state.charge)}%`; bestScoreEl.textContent=state.best; shardCountEl.textContent=state.shards; objectiveCountEl.textContent=`${state.levelShards} / ${state.objectiveTarget}`; pulseCellsEl.textContent=state.pulseCounter; decoyCountEl.textContent=state.decoyCharges; droneCountEl.textContent=state.drones.length; districtNameEl.textContent=state.currentTheme.name; districtTraitEl.textContent=state.currentTheme.trait; districtTraitEl.parentElement.title = state.currentTheme.traitDesc; navLabelEl.textContent = state.routeType === 'exit' ? 'Exit' : 'Shard'; navLabelEl.parentElement.title = state.routeType === 'exit' ? 'Breadcrumb line is guiding you to the open portal.' : 'Breadcrumb line is guiding you to the next shard.'; waveTypeEl.textContent=state.waveType; dangerLabelEl.textContent = state.dangerLabel; dangerLabelEl.style.color = state.hunterPressure ? '#ffd1f0' : state.dangerLevel > .68 ? '#ff8a8a' : state.dangerLevel > .38 ? '#ffd76a' : '#bfffee'; dangerLabelEl.parentElement.title = state.hunterPressure ? 'Hunter surge telegraph is active.' : state.dangerLevel > .68 ? 'Multiple drones are in striking range.' : state.dangerLevel > .38 ? 'Nearby drone pressure rising.' : 'Nearby routes are relatively safe.'; stateLabelEl.textContent=state.over?'Run Lost':state.paused?'Paused':state.running?(state.exitPortal?'Exit Open':'Active'):'Standby'; }
+  function syncHud(){ scoreEl.textContent=state.score; levelEl.textContent=state.level; healthEl.textContent=state.health; chargeEl.textContent=`${Math.round(state.charge)}%`; bestScoreEl.textContent=state.best; shardCountEl.textContent=state.shards; objectiveCountEl.textContent = state.exitPortal ? `Escape ${Math.max(0, state.exitTimer).toFixed(1)}s` : `${state.levelShards} / ${state.objectiveTarget}`; objectiveCountEl.parentElement.title = state.exitPortal ? 'Exit breach window before the portal relocates.' : 'Collect enough shards to breach the district exit.'; pulseCellsEl.textContent=state.pulseCounter; decoyCountEl.textContent=state.decoyCharges; droneCountEl.textContent=state.drones.length; districtNameEl.textContent=state.currentTheme.name; districtTraitEl.textContent=state.currentTheme.trait; districtTraitEl.parentElement.title = state.currentTheme.traitDesc; navLabelEl.textContent = state.routeType === 'exit' ? 'Exit' : 'Shard'; navLabelEl.parentElement.title = state.routeType === 'exit' ? 'Breadcrumb line is guiding you to the open portal before it shifts.' : 'Breadcrumb line is guiding you to the next shard.'; waveTypeEl.textContent=state.waveType; dangerLabelEl.textContent = state.dangerLabel; dangerLabelEl.style.color = state.hunterPressure ? '#ffd1f0' : state.dangerLevel > .68 ? '#ff8a8a' : state.dangerLevel > .38 ? '#ffd76a' : '#bfffee'; dangerLabelEl.parentElement.title = state.hunterPressure ? 'Hunter surge telegraph is active.' : state.dangerLevel > .68 ? 'Multiple drones are in striking range.' : state.dangerLevel > .38 ? 'Nearby drone pressure rising.' : 'Nearby routes are relatively safe.'; stateLabelEl.textContent=state.over?'Run Lost':state.paused?'Paused':state.running?(state.exitPortal?'Exit Open':'Active'):'Standby'; }
   function tryChangeDir(dir){ state.player.nextDir=dir; }
   function updatePlayer(dt){
     const p=state.player; p.hitCooldown=Math.max(0,p.hitCooldown-dt);
@@ -674,9 +712,23 @@
   }
   function gameOver(){ state.running=false; state.over=true; overlay.classList.remove('hidden'); overlayCard.innerHTML = `<h2>Signal Lost</h2><p>You reached <strong>${state.score}</strong> points on level <strong>${state.level}</strong>. This build now has a real breach loop: collect enough shards to open the district exit, then survive the sprint to the portal while drones collapse the route.</p><div class="title-actions"><button id="overlayRestart" class="primary">Run Again</button></div>`; document.getElementById('overlayRestart').addEventListener('click', startGame); syncHud(); }
   function update(dt){ state.introPulse += dt; state.routePulse += dt; state.districtBannerTimer=Math.max(0,state.districtBannerTimer-dt); if(state.districtBannerTimer<=0) districtBanner.classList.remove('visible'); if(!state.running||state.paused||state.over) return; state.spawnTimer+=dt; state.flash=Math.max(0,state.flash-dt); state.cameraShake=Math.max(0,state.cameraShake-dt); state.shardGlow=Math.max(0,state.shardGlow-dt*1.6); if(state.gate){ state.gate.cooldown=Math.max(0,state.gate.cooldown-dt); state.gate.pulse+=dt*2.8; }
-    if(state.exitPortal) state.exitPortal.pulse += dt * 2.4;
+    if(state.exitPortal){
+      state.exitPortal.pulse += dt * (2.4 + (state.exitTimer <= 4 ? 1.6 : 0));
+      state.exitPortal.flare = Math.max(0, (state.exitPortal.flare || 0) - dt * 1.8);
+      state.exitTimer = Math.max(0, state.exitTimer - dt);
+      state.exitAlarmTimer -= dt;
+      const urgency = state.exitTimerMax ? 1 - state.exitTimer / state.exitTimerMax : 0;
+      const beepEvery = urgency > .72 ? .42 : urgency > .45 ? .7 : 1.05;
+      if(state.exitAlarmTimer <= 0){
+        playSfx('alarm');
+        state.exitAlarmTimer = beepEvery;
+      }
+      if(state.exitTimer <= 0){
+        relocateExitPortal();
+      }
+    }
     if(state.spawnTimer>=difficulties[state.difficulty].spawnEvery){ state.spawnTimer=0; if(state.drones.length<4+state.level*2) spawnDrone(); syncHud(); }
-    updatePlayer(dt); updateDrones(dt); updatePulses(dt); updateDecoys(dt); updateLinks(dt); updateParticles(dt); collectShard(); updateRouteAssist(); updateDangerState();
+    updatePlayer(dt); updateDrones(dt); updatePulses(dt); updateDecoys(dt); updateLinks(dt); updateParticles(dt); collectShard(); updateRouteAssist(); updateDangerState(); syncHud();
     if(state.exitPortal && Math.hypot(state.player.x - state.exitPortal.x, state.player.y - state.exitPortal.y) < TILE * .44){
       completeLevel();
     }
@@ -697,20 +749,55 @@
     if(!state.exitPortal) return;
     const p = state.exitPortal;
     const pulse = p.pulse || 0;
+    const urgency = state.exitTimerMax ? 1 - state.exitTimer / state.exitTimerMax : 0;
+    const flare = p.flare || 0;
     ctx.save();
     ctx.translate(p.x, p.y);
     for(let i = 0; i < 3; i++){
-      const ring = TILE * (.24 + i * .1 + Math.sin(pulse + i) * .018);
+      const ring = TILE * (.24 + i * .1 + Math.sin(pulse + i) * (.018 + urgency * .01));
       ctx.strokeStyle = i % 2 === 0 ? state.currentTheme.gateA : state.currentTheme.gateB;
-      ctx.globalAlpha = .28 + i * .12;
+      ctx.globalAlpha = .28 + i * .12 + urgency * .08;
       ctx.lineWidth = 5 - i;
-      ctx.shadowBlur = 28;
+      ctx.shadowBlur = 28 + urgency * 12;
       ctx.shadowColor = i % 2 === 0 ? state.currentTheme.gateA : state.currentTheme.gateB;
       ctx.beginPath();
       ctx.arc(0, 0, ring, 0, Math.PI * 2);
       ctx.stroke();
     }
-    ctx.rotate(pulse * 0.9);
+    for(let i = 0; i < 4; i++){
+      ctx.save();
+      ctx.rotate(Math.PI * .5 * i + pulse * .45);
+      const beam = TILE * (1.8 + urgency * .75 + flare * .25);
+      const beamGrad = ctx.createLinearGradient(0, 0, beam, 0);
+      beamGrad.addColorStop(0, 'rgba(255,255,255,0)');
+      beamGrad.addColorStop(.2, i % 2 === 0 ? state.currentTheme.gateA : state.currentTheme.gateB);
+      beamGrad.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.strokeStyle = beamGrad;
+      ctx.globalAlpha = .18 + urgency * .18 + flare * .22;
+      ctx.lineWidth = 8 - i;
+      ctx.shadowBlur = 24;
+      ctx.beginPath();
+      ctx.moveTo(-beam, 0);
+      ctx.lineTo(beam, 0);
+      ctx.stroke();
+      ctx.restore();
+    }
+    const countdownR = TILE * .42;
+    ctx.save();
+    ctx.rotate(-Math.PI * .5);
+    ctx.strokeStyle = 'rgba(255,255,255,.16)';
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.arc(0, 0, countdownR, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.strokeStyle = urgency > .72 ? '#ff8d8d' : '#fff0b0';
+    ctx.shadowBlur = 18;
+    ctx.shadowColor = ctx.strokeStyle;
+    ctx.beginPath();
+    ctx.arc(0, 0, countdownR, 0, Math.PI * 2 * clamp(state.exitTimer / Math.max(.001, state.exitTimerMax), 0, 1));
+    ctx.stroke();
+    ctx.restore();
+    ctx.rotate(pulse * (0.9 + urgency * .6));
     ctx.fillStyle = 'rgba(255,255,255,.92)';
     ctx.beginPath();
     ctx.moveTo(0, -TILE * .18);

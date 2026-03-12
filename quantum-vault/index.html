@@ -5,58 +5,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <title>Quantum Vault</title>
   <style>
-    :root {
-      --bg0:#030712;
-      --bg1:#071424;
-      --bg2:#102341;
-      --cyan:#63f2ff;
-      --teal:#45e0c4;
-      --blue:#61a8ff;
-      --violet:#9c7cff;
-      --pink:#ff65d4;
-      --gold:#ffd86f;
-      --lime:#a6ff7b;
-      --orange:#ff9f67;
-      --danger:#ff7272;
-      --ink:#eef7ff;
-      --muted:#97a9ca;
-      --glass:rgba(11,20,38,.72);
-      --border:rgba(117,208,255,.18);
-      --shadow:0 24px 80px rgba(0,0,0,.45);
+    :root{
+      --bg0:#030814;
+      --bg1:#071527;
+      --bg2:#12284a;
+      --cyan:#71f0ff;
+      --teal:#59eac7;
+      --blue:#79aaff;
+      --violet:#aa8cff;
+      --pink:#ff7ade;
+      --gold:#ffd977;
+      --danger:#ff7b84;
+      --ink:#eff8ff;
+      --muted:#95a8ca;
+      --glass:rgba(9,18,34,.74);
+      --line:rgba(120,210,255,.16);
+      --shadow:0 26px 80px rgba(0,0,0,.42);
     }
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     html,body{margin:0;min-height:100%;background:
-      radial-gradient(circle at 15% 10%, rgba(99,242,255,.16), transparent 24%),
-      radial-gradient(circle at 85% 12%, rgba(156,124,255,.18), transparent 28%),
-      radial-gradient(circle at 50% 100%, rgba(255,101,212,.10), transparent 28%),
-      linear-gradient(180deg,var(--bg2),var(--bg1) 40%,var(--bg0));
+      radial-gradient(circle at 18% 10%, rgba(113,240,255,.18), transparent 24%),
+      radial-gradient(circle at 84% 10%, rgba(170,140,255,.18), transparent 28%),
+      radial-gradient(circle at 52% 110%, rgba(255,122,222,.12), transparent 34%),
+      linear-gradient(180deg,var(--bg2),var(--bg1) 42%,var(--bg0));
       color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}
     body{padding:12px;display:flex;justify-content:center}
-    .app{width:min(1420px,100%);display:grid;grid-template-columns:360px minmax(0,1fr);gap:16px;align-items:start}
+    .app{width:min(1320px,100%);display:grid;grid-template-columns:320px minmax(0,1fr);gap:16px;align-items:start}
     .panel{position:relative;overflow:hidden;border-radius:28px;background:
       linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03)),
-      linear-gradient(180deg, rgba(8,18,36,.95), rgba(5,10,22,.96));
-      border:1px solid var(--border);box-shadow:var(--shadow);backdrop-filter:blur(22px)}
-    .panel::before{content:"";position:absolute;inset:-18% auto auto -10%;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle, rgba(99,242,255,.16), transparent 70%);pointer-events:none}
+      linear-gradient(180deg, rgba(8,17,34,.96), rgba(4,9,20,.98));
+      border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(20px)}
+    .panel::before{content:"";position:absolute;inset:-16% auto auto -8%;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle, rgba(113,240,255,.14), transparent 70%);pointer-events:none}
     .sidebar{padding:20px;display:grid;gap:14px}
     .brand{display:grid;gap:10px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.08)}
     .eyebrow{text-transform:uppercase;letter-spacing:.22em;color:var(--cyan);font-size:12px;font-weight:800}
-    h1{margin:0;font-size:clamp(2.2rem,4vw,3.3rem);line-height:.92;letter-spacing:-.05em;text-shadow:0 0 26px rgba(99,242,255,.22)}
+    h1{margin:0;font-size:clamp(2.1rem,4vw,3.2rem);line-height:.92;letter-spacing:-.05em;text-shadow:0 0 28px rgba(113,240,255,.22)}
     .tagline{color:var(--muted);line-height:1.55;font-size:.98rem}
     .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
     .card,.box{border-radius:20px;background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
-    .card{padding:14px;min-height:104px}
-    .card::after{content:"";position:absolute;right:-30px;bottom:-40px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle, rgba(99,242,255,.16), transparent 70%)}
-    .label{color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.14em}
-    .value{margin-top:8px;font-size:1.85rem;font-weight:800;letter-spacing:-.03em}
-    .sub{margin-top:6px;font-size:.82rem;color:rgba(255,255,255,.5)}
+    .card{padding:14px;min-height:102px}
+    .card::after{content:"";position:absolute;right:-28px;bottom:-38px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle, rgba(113,240,255,.16), transparent 70%)}
+    .label{color:var(--muted);font-size:.76rem;text-transform:uppercase;letter-spacing:.14em}
+    .value{margin-top:8px;font-size:1.78rem;font-weight:900;letter-spacing:-.03em}
+    .sub{margin-top:6px;font-size:.82rem;color:rgba(255,255,255,.54)}
     .box{padding:14px}
     .section{margin:0 0 10px;font-size:.88rem;text-transform:uppercase;letter-spacing:.16em;color:var(--cyan);font-weight:800}
     .row{display:flex;flex-wrap:wrap;gap:10px}
-    button,select{border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.045));color:var(--ink);border-radius:16px;padding:12px 14px;min-height:48px;font-weight:800;cursor:pointer;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease}
-    button:hover,select:hover{transform:translateY(-1px);border-color:rgba(99,242,255,.45);box-shadow:0 0 20px rgba(99,242,255,.12)}
-    .primary{background:linear-gradient(135deg, rgba(99,242,255,.25), rgba(97,168,255,.24));box-shadow:0 0 24px rgba(99,242,255,.16)}
-    .warn{background:linear-gradient(135deg, rgba(255,216,111,.25), rgba(255,159,103,.22));box-shadow:0 0 24px rgba(255,216,111,.14)}
+    button{border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.045));color:var(--ink);border-radius:16px;padding:12px 14px;min-height:48px;font-weight:800;cursor:pointer;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease}
+    button:hover{transform:translateY(-1px);border-color:rgba(113,240,255,.45);box-shadow:0 0 20px rgba(113,240,255,.12)}
+    .primary{background:linear-gradient(135deg, rgba(113,240,255,.24), rgba(121,170,255,.24));box-shadow:0 0 24px rgba(113,240,255,.14)}
+    .burst{background:linear-gradient(135deg, rgba(255,217,119,.25), rgba(255,122,222,.24));box-shadow:0 0 24px rgba(255,217,119,.14)}
     ul{margin:0;padding-left:18px;color:var(--muted);line-height:1.6}
     .leaderboard{display:grid;gap:8px}
     .leader-item{display:grid;grid-template-columns:24px 1fr auto;gap:10px;align-items:center;padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.06);color:var(--muted)}
@@ -68,18 +66,17 @@
     .hud-group{display:flex;flex-wrap:wrap;gap:10px}
     .pill{padding:10px 14px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);color:var(--muted);font-size:.9rem}
     .pill strong{color:var(--ink)}
-    .pill.accent{background:rgba(99,242,255,.1);border-color:rgba(99,242,255,.24)}
-    .canvas-wrap{position:relative;overflow:hidden;border-radius:30px;aspect-ratio:1;min-height:380px;background:radial-gradient(circle at 50% 35%, rgba(18,44,83,.95), rgba(4,8,20,.99) 68%);border:1px solid rgba(99,242,255,.16);box-shadow:inset 0 0 60px rgba(99,242,255,.06), inset 0 0 120px rgba(156,124,255,.05), 0 26px 60px rgba(0,0,0,.42)}
+    .pill.accent{background:rgba(113,240,255,.1);border-color:rgba(113,240,255,.24)}
+    .canvas-wrap{position:relative;overflow:hidden;border-radius:30px;aspect-ratio:1;min-height:380px;background:radial-gradient(circle at 50% 35%, rgba(18,44,83,.95), rgba(4,8,20,.99) 68%);border:1px solid rgba(113,240,255,.16);box-shadow:inset 0 0 70px rgba(113,240,255,.07), inset 0 0 140px rgba(170,140,255,.05), 0 26px 60px rgba(0,0,0,.42)}
     canvas{display:block;width:100%;height:100%;touch-action:none}
     .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:18px;background:linear-gradient(180deg, rgba(2,6,17,.18), rgba(2,6,17,.78));transition:opacity .2s ease}
     .overlay.hidden{opacity:0;pointer-events:none}
-    .overlay-card{max-width:760px;padding:28px 30px;border-radius:26px;border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg, rgba(7,18,38,.82), rgba(7,18,38,.5));box-shadow:0 18px 50px rgba(0,0,0,.3);backdrop-filter:blur(12px);text-align:center}
+    .overlay-card{max-width:680px;padding:28px 30px;border-radius:26px;border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg, rgba(7,18,38,.82), rgba(7,18,38,.5));box-shadow:0 18px 50px rgba(0,0,0,.3);backdrop-filter:blur(12px);text-align:center}
     .overlay h2{margin:0 0 10px;font-size:clamp(2rem,5vw,3.5rem);line-height:.94;letter-spacing:-.05em}
     .overlay p{margin:0;color:var(--muted);line-height:1.6}
     .actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:16px}
     .touch{display:none;grid-template-columns:repeat(3,84px);gap:10px;justify-content:center}
-    .touch button{min-height:70px;font-size:1.2rem;border-radius:22px}
-    .burst{background:linear-gradient(135deg, rgba(255,216,111,.25), rgba(255,101,212,.24))}
+    .touch button{min-height:72px;font-size:1.2rem;border-radius:22px}
     .foot{color:rgba(255,255,255,.56);font-size:.82rem;line-height:1.45}
     @media (max-width:1024px){.app{grid-template-columns:1fr}.sidebar{order:2}.game-shell{order:1}}
     @media (max-width:720px){body{padding:10px}.sidebar,.game-shell{padding:14px}.touch{display:grid}.canvas-wrap{min-height:320px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.hud{gap:8px}.pill{font-size:.84rem;padding:9px 12px}}
@@ -89,19 +86,20 @@
   <div class="app">
     <aside class="panel sidebar">
       <div class="brand">
-        <div class="eyebrow">Mobile-first arcade run</div>
+        <div class="eyebrow">Mobile-first arcade maze</div>
         <h1>Quantum Vault</h1>
-        <div class="tagline">Steal every key shard, decide whether risky bonus caches are worth the detour, trigger your pulse burst at the right moment, then sprint the newly powered exit before the district fully locks down.</div>
+        <div class="tagline">Grab every shard in the district, light up the exit, and get out alive. One clear goal, fast restarts, prettier motion, and thumb-friendly controls.</div>
       </div>
+
       <div class="stats">
-        <div class="card"><div class="label">Score</div><div id="score" class="value">0</div><div class="sub">Run credits</div></div>
-        <div class="card"><div class="label">Best</div><div id="bestHero" class="value">0</div><div class="sub">Local top score</div></div>
+        <div class="card"><div class="label">Score</div><div id="score" class="value">0</div><div class="sub">This run</div></div>
+        <div class="card"><div class="label">Best</div><div id="bestHero" class="value">0</div><div class="sub">Top local run</div></div>
         <div class="card"><div class="label">Level</div><div id="level" class="value">1</div><div class="sub" id="districtName">Prism Lock</div></div>
-        <div class="card"><div class="label">Integrity</div><div id="lives" class="value">3</div><div class="sub">Chassis remaining</div></div>
-        <div class="card"><div class="label">Keys</div><div id="keys" class="value">0 / 0</div><div class="sub">Main objective</div></div>
-        <div class="card"><div class="label">Cores</div><div id="cores" class="value">0 / 0</div><div class="sub">Risk bonus route</div></div>
-        <div class="card"><div class="label">Caches</div><div id="caches" class="value">0 / 0</div><div class="sub">Fast-expiring stash</div></div>
+        <div class="card"><div class="label">Lives</div><div id="lives" class="value">3</div><div class="sub">Crashes left</div></div>
+        <div class="card"><div class="label">Shards</div><div id="shards" class="value">0 / 0</div><div class="sub">Collect them all</div></div>
+        <div class="card"><div class="label">Burst</div><div id="burstState" class="value">0%</div><div class="sub">Emergency stun</div></div>
       </div>
+
       <div class="box">
         <div class="section">Run Controls</div>
         <div class="row">
@@ -110,61 +108,56 @@
           <button id="audioBtn">Audio On</button>
         </div>
         <div class="row" style="margin-top:10px;">
-          <select id="difficultySelect">
-            <option value="easy">Easy</option>
-            <option value="normal" selected>Normal</option>
-            <option value="hard">Hard</option>
-          </select>
           <button id="fullscreenBtn">Fullscreen</button>
-          <button id="burstBtn" class="warn">Pulse Burst</button>
+          <button id="burstBtn" class="burst">Pulse Burst</button>
         </div>
       </div>
+
       <div class="box">
-        <div class="section">Scoring Feel</div>
+        <div class="section">How it works</div>
         <ul>
-          <li>Key shards grow score flow and refill your burst meter</li>
-          <li>Optional vault cores pay huge points and jam the gate grid open</li>
-          <li>Bonus credit caches expire fast, forcing greedy route calls</li>
-          <li>Near-miss dodges, speed lanes, and clean routing keep your combo alive</li>
-          <li>Level exits pay integrity, speed, chain, stash, and full-sweep bonuses</li>
+          <li>Collect every glowing shard in the maze</li>
+          <li>The exit portal opens when the maze is clear</li>
+          <li>Pulse Burst stuns nearby drones when the meter is full</li>
+          <li>Clear fast and stay alive for bigger scores</li>
         </ul>
       </div>
+
       <div class="box">
         <div class="section">Local Leaderboard</div>
         <div id="leaderboard" class="leaderboard"></div>
       </div>
-      <div class="foot">Controls: drag / swipe or D-pad on mobile • WASD / Arrow keys on desktop • Space / Burst for pulse stun • hit score surges, decide on the jackpot greed route, then escape.</div>
+
+      <div class="foot">Controls: swipe / drag or D-pad on mobile • WASD / Arrow keys on desktop • tap Burst or press Space when charged.</div>
     </aside>
+
     <main class="panel game-shell">
       <div class="hud">
         <div class="hud-group">
           <div class="pill accent"><strong id="state">Standby</strong></div>
           <div class="pill">Best <strong id="best">0</strong></div>
           <div class="pill">Rank <strong id="rank">Rookie</strong></div>
-          <div class="pill">Enemies <strong id="enemies">0</strong></div>
+          <div class="pill">Drones <strong id="enemies">0</strong></div>
           <div class="pill">District <strong id="theme">Prism Lock</strong></div>
         </div>
         <div class="hud-group">
-          <div class="pill">Exit <strong id="exitState">Locked</strong></div>
-          <div class="pill">Chain <strong id="combo">x1</strong></div>
-          <div class="pill">Flow <strong id="flow">0%</strong></div>
-          <div class="pill">Surge <strong id="surge">x1.0</strong></div>
-          <div class="pill">Stash <strong id="stash">0</strong></div>
-          <div class="pill">Clock <strong id="timer">60</strong></div>
+          <div class="pill">Goal <strong id="goal">Collect shards</strong></div>
+          <div class="pill">Chain <strong id="chain">x1</strong></div>
+          <div class="pill">Clear <strong id="clearPct">0%</strong></div>
         </div>
       </div>
+
       <div class="canvas-wrap">
         <canvas id="game" width="1200" height="1200"></canvas>
         <div id="overlay" class="overlay">
           <div id="overlayCard" class="overlay-card">
             <h2>Quantum Vault</h2>
-            <p>A brighter, greedier arcade run: clean the district, gamble on side-route cores, and hit pulse burst when the room gets mean. Built to read cleanly and feel snappy on mobile.</p>
-            <div class="actions">
-              <button id="overlayStart" class="primary">Enter Vault</button>
-            </div>
+            <p>Clean the maze. Unlock the gate. Escape. It’s built to read instantly on a phone and still feel juicy on a bigger screen.</p>
+            <div class="actions"><button id="overlayStart" class="primary">Enter Vault</button></div>
           </div>
         </div>
       </div>
+
       <div class="touch">
         <div></div><button data-dir="up">▲</button><div></div>
         <button data-dir="left">◀</button><button id="touchBurst" class="burst">✦</button><button data-dir="right">▶</button>
@@ -172,34 +165,31 @@
       </div>
     </main>
   </div>
+
   <script>
   (() => {
     const canvas = document.getElementById('game');
     const ctx = canvas.getContext('2d');
     const GRID = 21;
     const TILE = canvas.width / GRID;
-    const BEST_KEY = 'quantum-vault-best';
-    const BOARD_KEY = 'quantum-vault-board';
+    const BEST_KEY = 'quantum-vault-best-simpler';
+    const BOARD_KEY = 'quantum-vault-board-simpler';
 
     const scoreEl = document.getElementById('score');
     const bestHeroEl = document.getElementById('bestHero');
     const levelEl = document.getElementById('level');
     const livesEl = document.getElementById('lives');
-    const keysEl = document.getElementById('keys');
-    const coresEl = document.getElementById('cores');
-    const cachesEl = document.getElementById('caches');
+    const shardsEl = document.getElementById('shards');
+    const burstStateEl = document.getElementById('burstState');
     const stateEl = document.getElementById('state');
     const bestEl = document.getElementById('best');
-    const enemiesEl = document.getElementById('enemies');
-    const exitStateEl = document.getElementById('exitState');
-    const comboEl = document.getElementById('combo');
     const rankEl = document.getElementById('rank');
-    const comboFlowEl = document.getElementById('flow');
-    const stashEl = document.getElementById('stash');
-    const surgeEl = document.getElementById('surge');
+    const enemiesEl = document.getElementById('enemies');
     const themeEl = document.getElementById('theme');
-    const timerEl = document.getElementById('timer');
     const districtNameEl = document.getElementById('districtName');
+    const goalEl = document.getElementById('goal');
+    const chainEl = document.getElementById('chain');
+    const clearPctEl = document.getElementById('clearPct');
     const leaderboardEl = document.getElementById('leaderboard');
     const overlay = document.getElementById('overlay');
     const overlayCard = document.getElementById('overlayCard');
@@ -209,14 +199,7 @@
     const audioBtn = document.getElementById('audioBtn');
     const fullscreenBtn = document.getElementById('fullscreenBtn');
     const burstBtn = document.getElementById('burstBtn');
-    const difficultySelect = document.getElementById('difficultySelect');
     const touchBurstBtn = document.getElementById('touchBurst');
-
-    const DIFF = {
-      easy: { enemySpeed: 0.75, enemyCount: 2, timer: 74 },
-      normal: { enemySpeed: 0.93, enemyCount: 3, timer: 66 },
-      hard: { enemySpeed: 1.1, enemyCount: 4, timer: 58 }
-    };
 
     const layouts = [
       [
@@ -231,19 +214,18 @@
     ];
 
     const THEMES = [
-      { name:'Prism Lock', wallA:'rgba(90,169,255,.24)', wallB:'rgba(36,72,130,.48)', wallC:'rgba(156,124,255,.22)', floor:'rgba(99,242,255,.034)', glow:'hsla(193,100%,60%,.12)', key:'#ffd86f', core:'#ff9f67', cache:'#ffeaa5', speed:'rgba(99,242,255,.28)', hue:193, gateRate:.92, gateOpen:.92, jamBoost:1, comboBoost:1, cacheLife:11.5, timerBias:0, keyBoost:1, coreBoost:1, speedBoost:1.16, rule:'Flux gates cycle extra fast — keep your route moving.' },
-      { name:'Ion Bloom', wallA:'rgba(84,255,196,.24)', wallB:'rgba(21,105,98,.48)', wallC:'rgba(99,242,255,.2)', floor:'rgba(69,224,196,.038)', glow:'hsla(164,100%,56%,.11)', key:'#a6ff7b', core:'#63f2ff', cache:'#d6fff1', speed:'rgba(84,255,196,.24)', hue:164, gateRate:1, gateOpen:1, jamBoost:1.45, comboBoost:1.04, cacheLife:13.5, timerBias:2, keyBoost:1, coreBoost:1.08, speedBoost:1.18, rule:'Core pickups jam security doors even longer here.' },
-      { name:'Velvet Circuit', wallA:'rgba(255,101,212,.22)', wallB:'rgba(116,39,117,.48)', wallC:'rgba(156,124,255,.22)', floor:'rgba(255,101,212,.034)', glow:'hsla(319,100%,64%,.11)', key:'#ffb1f5', core:'#ffd86f', cache:'#ffc7f0', speed:'rgba(255,101,212,.24)', hue:319, gateRate:1.02, gateOpen:.98, jamBoost:1, comboBoost:1.2, cacheLife:12.25, timerBias:0, keyBoost:1.12, coreBoost:1.08, speedBoost:1.17, rule:'Long flow chains pay harder — clean routing is king.' },
-      { name:'Solar Breach', wallA:'rgba(255,190,92,.25)', wallB:'rgba(127,67,28,.5)', wallC:'rgba(255,113,113,.22)', floor:'rgba(255,183,77,.032)', glow:'hsla(30,100%,58%,.11)', key:'#ffd86f', core:'#ff7272', cache:'#ffd2ba', speed:'rgba(255,190,92,.23)', hue:28, gateRate:1.12, gateOpen:.88, jamBoost:.92, comboBoost:1.02, cacheLife:10.25, timerBias:-4, keyBoost:1, coreBoost:1.12, speedBoost:1.22, rule:'Lockdown hits earlier, but boost lanes run hotter.' }
+      { name:'Prism Lock', hue:194, wallA:'rgba(108,184,255,.25)', wallB:'rgba(34,79,146,.56)', wallC:'rgba(171,137,255,.24)', floor:'rgba(113,240,255,.04)', shard:'#ffd977', exit:'#71f0ff', playerA:'#ffffff', playerB:'#8af7ff', enemy:'#ff7ade', sky:'rgba(113,240,255,.11)' },
+      { name:'Ion Bloom', hue:160, wallA:'rgba(84,255,206,.22)', wallB:'rgba(17,105,92,.54)', wallC:'rgba(113,240,255,.22)', floor:'rgba(89,234,199,.038)', shard:'#baff8b', exit:'#63f2ff', playerA:'#ffffff', playerB:'#9effdb', enemy:'#ff9b7a', sky:'rgba(89,234,199,.11)' },
+      { name:'Velvet Circuit', hue:319, wallA:'rgba(255,122,222,.22)', wallB:'rgba(118,40,122,.56)', wallC:'rgba(170,140,255,.22)', floor:'rgba(255,122,222,.035)', shard:'#ffc3f4', exit:'#ffd977', playerA:'#ffffff', playerB:'#ffc0f1', enemy:'#71f0ff', sky:'rgba(255,122,222,.11)' },
+      { name:'Solar Breach', hue:28, wallA:'rgba(255,190,92,.24)', wallB:'rgba(125,66,26,.58)', wallC:'rgba(255,123,132,.22)', floor:'rgba(255,190,92,.032)', shard:'#ffe08e', exit:'#ff9f78', playerA:'#ffffff', playerB:'#ffe1b4', enemy:'#ff6e8d', sky:'rgba(255,190,92,.1)' }
     ];
 
     const RANKS = [
-      { score: 0, name: 'Rookie' },
-      { score: 1500, name: 'Runner' },
-      { score: 4500, name: 'Vault Fox' },
-      { score: 9000, name: 'Ghost' },
-      { score: 16000, name: 'Ace' },
-      { score: 26000, name: 'Legend' }
+      { score:0, name:'Rookie' },
+      { score:1500, name:'Runner' },
+      { score:4200, name:'Ghost' },
+      { score:9000, name:'Ace' },
+      { score:16000, name:'Legend' }
     ];
 
     const state = {
@@ -253,53 +235,34 @@
       score:0,
       level:1,
       lives:3,
-      combo:1,
-      comboTimer:0,
-      comboWindow:6.5,
-      keysCollected:0,
-      keysTotal:0,
-      coresCollected:0,
-      coresTotal:0,
-      cachesCollected:0,
-      cachesTotal:0,
-      pulseCharge:0,
-      scorePulse:0,
-      securityDoors:[],
-      doorJam:0,
-      doorTick:0,
-      best:Number(localStorage.getItem(BEST_KEY)||0),
+      shardCount:0,
+      shardTotal:0,
+      burst:0,
+      streak:1,
+      streakTimer:0,
+      best:Number(localStorage.getItem(BEST_KEY) || 0),
       leaderboard:JSON.parse(localStorage.getItem(BOARD_KEY) || '[]'),
-      difficulty:'normal',
       maze:null,
       player:null,
       enemies:[],
-      keyOrbs:[],
-      vaultCores:[],
-      bonusCaches:[],
-      speedPads:[],
-      surgeNodes:[],
-      jackpot:null,
+      shards:[],
       exit:null,
       particles:[],
+      rings:[],
       ribbons:[],
+      popups:[],
       ambient:[],
       stars:[],
-      popups:[],
-      waves:[],
-      sparks:[],
       lastTs:0,
       flash:0,
-      cameraShake:0,
-      districtLabel:'',
-      surge:0,
+      shake:0,
       audioOn:true,
       audioStarted:false,
-      exitUnlocked:false,
       theme:THEMES[0],
-      levelClock:66,
-      nearMissCooldown:0,
+      clearGlow:0,
       newBestGlow:0,
-      lastBreakdown:null,
+      exitUnlocked:false,
+      touchAim:null,
       message:'Standby'
     };
 
@@ -311,12 +274,7 @@
     const dist = (a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
     const vibrate = ms => navigator.vibrate && navigator.vibrate(ms);
     const cellCenter = (cx,cy)=>({x:cx*TILE+TILE/2,y:cy*TILE+TILE/2,cx,cy});
-    const shuffle = arr => arr.map(v=>({v,s:Math.random()})).sort((a,b)=>a.s-b.s).map(o=>o.v);
-    const getRankName = score => {
-      let current = RANKS[0].name;
-      for (const rank of RANKS) if (score >= rank.score) current = rank.name;
-      return current;
-    };
+    const getRankName = score => { let current = RANKS[0].name; for(const rank of RANKS) if(score >= rank.score) current = rank.name; return current; };
 
     function initAudio(){
       if(audioCtx) return;
@@ -324,7 +282,7 @@
       masterGain = audioCtx.createGain();
       musicGain = audioCtx.createGain();
       masterGain.gain.value = .16;
-      musicGain.gain.value = .08;
+      musicGain.gain.value = .05;
       musicGain.connect(masterGain);
       masterGain.connect(audioCtx.destination);
       startMusic();
@@ -344,7 +302,7 @@
       osc.connect(g).connect(masterGain);
       osc.start(t); osc.stop(t + dur + .02);
     }
-    function noise(dur=.1, gain=.035, freq=1400){
+    function noise(dur=.08, gain=.03, freq=1200){
       if(!audioCtx || !state.audioOn) return;
       const buffer = audioCtx.createBuffer(1, audioCtx.sampleRate*dur, audioCtx.sampleRate);
       const data = buffer.getChannelData(0);
@@ -357,18 +315,16 @@
     }
     function sfx(kind){
       if(kind==='start'){ tone(392,'triangle',.12,0,.04); tone(523,'triangle',.16,.05,.04); tone(784,'sine',.18,.11,.03); }
-      if(kind==='key'){ tone(880,'triangle',.11,0,.06); tone(1320,'sine',.15,.04,.04); }
-      if(kind==='core'){ tone(310,'sawtooth',.14,0,.06,620); tone(930,'triangle',.18,.06,.04); }
+      if(kind==='shard'){ tone(880,'triangle',.1,0,.05); tone(1244,'sine',.15,.04,.03); }
       if(kind==='unlock'){ tone(330,'sawtooth',.18,0,.05); tone(494,'triangle',.22,.08,.04); tone(659,'sine',.24,.16,.03); }
-      if(kind==='exit'){ tone(520,'triangle',.14,0,.05); tone(780,'triangle',.16,.08,.045); tone(1040,'sine',.22,.16,.04); }
+      if(kind==='clear'){ tone(520,'triangle',.14,0,.05); tone(780,'triangle',.16,.08,.045); tone(1040,'sine',.22,.16,.04); }
       if(kind==='hit'){ tone(120,'square',.2,0,.055); noise(.12,.04,900); }
-      if(kind==='burst'){ tone(210,'sawtooth',.2,0,.05,520); tone(740,'triangle',.18,.08,.04); noise(.12,.03,1800); }
-      if(kind==='miss'){ tone(1160,'sine',.09,0,.035); }
+      if(kind==='burst'){ tone(220,'sawtooth',.18,0,.05,540); tone(740,'triangle',.18,.08,.04); noise(.12,.03,1800); }
       if(kind==='best'){ tone(622,'triangle',.11,0,.05); tone(932,'triangle',.14,.06,.04); tone(1244,'sine',.18,.12,.03); }
     }
     function startMusic(){
       if(musicTimer) return;
-      const seq = [220,262,330,294,392,330,262,196];
+      const seq = [220,262,330,392,330,262,196,262];
       let i = 0;
       musicTimer = setInterval(() => {
         if(!audioCtx || !state.audioOn || !state.audioStarted) return;
@@ -378,7 +334,7 @@
         osc.type = 'triangle';
         osc.frequency.value = seq[i % seq.length] * (1 + Math.sin(i*.7)*.02);
         g.gain.setValueAtTime(.0001, t);
-        g.gain.exponentialRampToValueAtTime(.028, t + .02);
+        g.gain.exponentialRampToValueAtTime(.02, t + .02);
         g.gain.exponentialRampToValueAtTime(.0001, t + .34);
         osc.connect(g).connect(musicGain);
         osc.start(t); osc.stop(t + .36);
@@ -386,34 +342,28 @@
       }, 360);
     }
 
-    function buildAmbient(){
-      state.ambient = Array.from({length:32},()=>({x:rand(0,canvas.width),y:rand(0,canvas.height),r:rand(90,210),h:state.theme.hue + rand(-30,30),a:rand(.03,.08),d:rand(-.22,.22)}));
-      state.stars = Array.from({length:86},()=>({x:rand(0,canvas.width),y:rand(0,canvas.height),a:rand(.04,.28),s:rand(.3,1.3)}));
-      state.sparks = Array.from({length:24},()=>({x:rand(0,canvas.width),y:rand(0,canvas.height),vx:rand(-.18,.18),vy:rand(.12,.42),r:rand(1,2.8)}));
+    function rr(x,y,w,h,r,fill){
+      ctx.beginPath();
+      ctx.moveTo(x+r,y);
+      ctx.arcTo(x+w,y,x+w,y+h,r);
+      ctx.arcTo(x+w,y+h,x,y+h,r);
+      ctx.arcTo(x,y+h,x,y,r);
+      ctx.arcTo(x,y,x+w,y,r);
+      ctx.closePath();
+      fill ? ctx.fill() : ctx.stroke();
     }
 
     function isWall(cx,cy){
       if(cx<0||cy<0||cx>=GRID||cy>=GRID) return true;
       return state.maze[cy][cx]===1;
     }
-    function doorAt(cx,cy){
-      return state.securityDoors.find(door => door.cx===cx && door.cy===cy);
-    }
-    function isDoorClosed(cx,cy){
-      const door = doorAt(cx,cy);
-      if(!door) return false;
-      if(state.doorJam > 0) return false;
-      const cycle = (state.doorTick + door.phase) % door.period;
-      return cycle > door.openSpan;
-    }
-    function isBlocked(cx,cy){
-      return isWall(cx,cy) || isDoorClosed(cx,cy);
-    }
+    function isBlocked(cx,cy){ return isWall(cx,cy); }
     function randomOpenCell(){
       let c;
       do c = cellCenter(randi(1,GRID-2),randi(1,GRID-2)); while(isWall(c.cx,c.cy));
       return c;
     }
+    function nearestCell(x,y){ return {cx:Math.floor(x/TILE), cy:Math.floor(y/TILE)}; }
     function canMoveTo(x,y,r){
       const pts=[{x:x-r,y:y-r},{x:x+r,y:y-r},{x:x-r,y:y+r},{x:x+r,y:y+r}];
       return pts.every(p=>!isBlocked(Math.floor(p.x/TILE),Math.floor(p.y/TILE)));
@@ -421,31 +371,28 @@
     function pathOptions(cx,cy){
       return [{x:1,y:0},{x:-1,y:0},{x:0,y:1},{x:0,y:-1}].filter(d=>!isBlocked(cx+d.x,cy+d.y));
     }
-    function nearestCell(x,y){ return {cx:Math.floor(x/TILE), cy:Math.floor(y/TILE)}; }
 
-    function rr(x,y,w,h,r,fill){
-      ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
-      fill ? ctx.fill() : ctx.stroke();
+    function buildAmbient(){
+      state.ambient = Array.from({length:28},()=>({x:rand(0,canvas.width),y:rand(0,canvas.height),r:rand(100,240),h:state.theme.hue + rand(-24,24),a:rand(.03,.08),d:rand(-.18,.18)}));
+      state.stars = Array.from({length:78},()=>({x:rand(0,canvas.width),y:rand(0,canvas.height),a:rand(.04,.28),s:rand(.25,1.2)}));
     }
 
     function addParticles(x,y,color,count,spread=3.2,life=1){
       for(let i=0;i<count;i++) state.particles.push({x,y,vx:rand(-spread,spread),vy:rand(-spread,spread),size:rand(2,6),life:rand(life*.55,life),maxLife:life,color});
     }
+    function addPopup(text,x,y,color='#fff',big=false){ state.popups.push({text,x,y,color,life:1,big}); }
+    function addRing(x,y,color,r=16,max=84){ state.rings.push({x,y,color,r,max,life:1}); }
     function addRibbon(x,y,color,size=14){ state.ribbons.push({x,y,color,life:1,size}); }
-    function addPopup(text,x,y,color='#fff',score=false){ state.popups.push({text,x,y,color,life:1,maxLife:1,score}); }
-    function addWave(x,y,color,r=18,max=84){ state.waves.push({x,y,color,r,max,life:1}); }
 
-    function saveLeaderboard(){
-      localStorage.setItem(BOARD_KEY, JSON.stringify(state.leaderboard));
-    }
+    function saveLeaderboard(){ localStorage.setItem(BOARD_KEY, JSON.stringify(state.leaderboard)); }
     function renderLeaderboard(){
       const rows = state.leaderboard.slice(0,3);
       leaderboardEl.innerHTML = rows.length ? rows.map((row,i)=>`
-        <div class="leader-item" style="${i===0 ? 'border-color:rgba(255,216,111,.25);background:linear-gradient(180deg, rgba(255,216,111,.08), rgba(255,255,255,.04));' : ''}">
+        <div class="leader-item" style="${i===0 ? 'border-color:rgba(255,217,119,.25);background:linear-gradient(180deg, rgba(255,217,119,.08), rgba(255,255,255,.04));' : ''}">
           <div class="leader-rank">${['👑','2','3'][i] || i+1}</div>
           <div class="leader-meta"><strong>${row.score.toLocaleString()}</strong><small>${row.label}</small></div>
           <div>${row.level}</div>
-        </div>`).join('') : '<div class="leader-item"><div class="leader-rank">—</div><div class="leader-meta"><strong>No runs yet</strong><small>Your best local scores will land here.</small></div><div></div></div>';
+        </div>`).join('') : '<div class="leader-item"><div class="leader-rank">—</div><div class="leader-meta"><strong>No runs yet</strong><small>Your cleanest escapes land here.</small></div><div></div></div>';
     }
     function maybeRecordBest(){
       const wasNewBest = state.score > state.best;
@@ -453,10 +400,10 @@
         state.best = state.score;
         state.newBestGlow = 2.6;
         localStorage.setItem(BEST_KEY, String(state.best));
-        addPopup('NEW BEST', canvas.width/2, 110, '#ffd86f');
+        addPopup('NEW BEST', canvas.width/2, 110, '#ffd977', true);
         sfx('best');
       }
-      const label = `${getRankName(state.score)} • ${state.theme.name} • ${state.difficulty}`;
+      const label = `${getRankName(state.score)} • ${state.theme.name}`;
       state.leaderboard.push({score:state.score, level:`L${state.level}`, label});
       state.leaderboard.sort((a,b)=>b.score-a.score);
       state.leaderboard = state.leaderboard.slice(0,5);
@@ -466,397 +413,192 @@
       return { wasNewBest, place };
     }
 
-    function spawnSecurityDoors(level){
-      state.securityDoors = [];
-      const desired = Math.min(5, 2 + Math.floor(level / 2));
-      const blockedCells = new Set([
-        '1,1',
-        `${GRID-2},${GRID-2}`,
-        ...state.keyOrbs.map(k => `${k.cx},${k.cy}`),
-        ...state.vaultCores.map(k => `${k.cx},${k.cy}`)
-      ]);
-      const candidates = [];
-      for(let y=2; y<GRID-2; y++) for(let x=2; x<GRID-2; x++){
-        if(state.maze[y][x] === 1 || blockedCells.has(`${x},${y}`)) continue;
-        const opts = [{x:1,y:0},{x:-1,y:0},{x:0,y:1},{x:0,y:-1}].filter(d => !isWall(x+d.x, y+d.y));
-        if(opts.length !== 2) continue;
-        const straight = (opts[0].x === -opts[1].x && opts[0].y === -opts[1].y);
-        if(!straight) continue;
-        if(Math.abs(x-1) + Math.abs(y-1) < 6) continue;
-        if(Math.abs(x-(GRID-2)) + Math.abs(y-(GRID-2)) < 4) continue;
-        candidates.push({cx:x, cy:y});
-      }
-      for(const cell of shuffle(candidates)){
-        if(state.securityDoors.length >= desired) break;
-        if(state.securityDoors.some(door => Math.abs(door.cx-cell.cx) + Math.abs(door.cy-cell.cy) < 4)) continue;
-        state.securityDoors.push({
-          ...cell,
-          phase: rand(0, 2.6),
-          period: clamp((3.15 - Math.min(1.1, level * .09) + rand(-.18,.22)) * state.theme.gateRate, 1.65, 3.4),
-          openSpan: clamp((1.1 - Math.min(.2, level * .02) + rand(-.08,.12)) * state.theme.gateOpen, .72, 1.3),
-          hue: state.theme.hue + rand(-18, 18)
-        });
-      }
+    function awardScore(amount, text, x, y, color='#fff'){
+      const total = Math.round(amount);
+      state.score += total;
+      addPopup(text || `+${total}`, x, y, color, true);
+      if(state.score > state.best) localStorage.setItem(BEST_KEY, String(state.score));
+      syncHud();
     }
 
-    function feedCombo(seconds, bonus=0){
-      state.comboTimer = clamp(state.comboTimer + seconds, 0, state.comboWindow);
-      if(bonus) state.combo = clamp(state.combo + bonus, 1, 12);
-    }
-
-    function breakFlow(levels=1){
-      const oldCombo = state.combo;
-      state.combo = Math.max(1, state.combo - levels);
-      state.comboTimer = state.combo > 1 ? state.comboWindow * .38 : 0;
-      if(oldCombo > state.combo) addPopup('FLOW BROKE', state.player.x, state.player.y - 34, '#ff9f67');
+    function syncHud(){
+      const clearPct = state.shardTotal ? Math.round((state.shardCount / state.shardTotal) * 100) : 0;
+      scoreEl.textContent = state.score.toLocaleString();
+      bestHeroEl.textContent = state.best.toLocaleString();
+      levelEl.textContent = state.level;
+      livesEl.textContent = state.lives;
+      shardsEl.textContent = `${state.shardCount} / ${state.shardTotal}`;
+      burstStateEl.textContent = `${Math.round(state.burst)}%`;
+      stateEl.textContent = state.over ? 'Run Lost' : state.paused ? 'Paused' : state.running ? (state.exitUnlocked ? 'Exit Open' : 'Collecting') : 'Standby';
+      bestEl.textContent = state.best.toLocaleString();
+      rankEl.textContent = getRankName(state.score);
+      enemiesEl.textContent = state.enemies.length;
+      themeEl.textContent = state.theme.name;
+      districtNameEl.textContent = state.theme.name;
+      goalEl.textContent = state.exitUnlocked ? 'Reach the exit' : 'Collect shards';
+      chainEl.textContent = `x${state.streak}`;
+      clearPctEl.textContent = `${clearPct}%`;
     }
 
     function setupLevel(level){
       state.theme = THEMES[(level - 1) % THEMES.length];
-      state.districtLabel = state.theme.rule;
-      state.maze = layouts[(level-1)%layouts.length].map(r=>r.split('').map(Number));
-      state.player = {x:cellCenter(1,1).x,y:cellCenter(1,1).y,radius:TILE*.29,speed:3.55,dir:{x:0,y:0},nextDir:{x:0,y:0},hitCooldown:0,trail:[],dashGlow:0};
-      state.keysCollected = 0;
-      state.coresCollected = 0;
-      state.cachesCollected = 0;
-      state.exitUnlocked = false;
-      state.keyOrbs = [];
-      state.vaultCores = [];
-      state.bonusCaches = [];
-      state.speedPads = [];
-      state.surgeNodes = [];
-      state.jackpot = null;
+      state.maze = layouts[(level - 1) % layouts.length].map(r=>r.split('').map(Number));
+      state.player = {
+        x:cellCenter(1,1).x,
+        y:cellCenter(1,1).y,
+        radius:TILE*.29,
+        speed:3.5 + Math.min(.55, level * .05),
+        dir:{x:0,y:0},
+        nextDir:{x:0,y:0},
+        trail:[],
+        hitCooldown:0,
+        burstGlow:0
+      };
       state.enemies = [];
-      state.securityDoors = [];
-      state.ribbons = [];
+      state.shards = [];
       state.particles = [];
+      state.rings = [];
+      state.ribbons = [];
       state.popups = [];
-      state.waves = [];
-      state.nearMissCooldown = 0;
-      state.comboWindow = 6.5 * state.theme.comboBoost;
-      state.comboTimer = Math.min(state.comboWindow * .65, state.comboTimer + 1.6);
-      state.doorJam = 0;
-      state.doorTick = 0;
-      const totalKeys = 5 + Math.min(7, level-1);
-      const totalCores = 2 + Math.floor((level-1) % 3 === 2 ? 2 : 1);
-      const totalCaches = 2 + ((level - 1) % 2);
-      state.keysTotal = totalKeys;
-      state.coresTotal = totalCores;
-      state.cachesTotal = totalCaches;
-      for(let i=0;i<totalKeys;i++){
-        let c=randomOpenCell();
-        while((Math.abs(c.cx-1)<3&&Math.abs(c.cy-1)<3) || state.keyOrbs.some(k=>k.cx===c.cx&&k.cy===c.cy)) c=randomOpenCell();
-        state.keyOrbs.push({...c,rot:rand(0,Math.PI*2),pulse:rand(0,Math.PI*2)});
+      state.flash = 0;
+      state.shake = 0;
+      state.clearGlow = 0;
+      state.exitUnlocked = false;
+      state.exit = {...cellCenter(GRID-2, GRID-2), pulse:0};
+      state.shardCount = 0;
+      state.streakTimer = Math.min(3.8, state.streakTimer + 1.2);
+      state.burst = clamp(state.burst + 16, 0, 100);
+
+      const totalShards = 7 + Math.min(7, level - 1);
+      state.shardTotal = totalShards;
+      for(let i=0;i<totalShards;i++){
+        let c = randomOpenCell();
+        while((Math.abs(c.cx-1)<3&&Math.abs(c.cy-1)<3) || state.shards.some(s=>s.cx===c.cx&&s.cy===c.cy) || (c.cx===GRID-2&&c.cy===GRID-2)) c = randomOpenCell();
+        state.shards.push({...c,rot:rand(0,Math.PI*2),pulse:rand(0,Math.PI*2)});
       }
-      for(let i=0;i<totalCores;i++){
-        let c=randomOpenCell();
-        while((Math.abs(c.cx-1)<5&&Math.abs(c.cy-1)<5) || state.keyOrbs.some(k=>k.cx===c.cx&&k.cy===c.cy) || state.vaultCores.some(k=>k.cx===c.cx&&k.cy===c.cy)) c=randomOpenCell();
-        state.vaultCores.push({...c,rot:rand(0,Math.PI*2),pulse:rand(0,Math.PI*2),value:Math.round((350 + level*60) * state.theme.coreBoost)});
-      }
-      for(let i=0;i<totalCaches;i++){
-        let c=randomOpenCell();
-        while((Math.abs(c.cx-1)<4&&Math.abs(c.cy-1)<4) || state.keyOrbs.some(k=>k.cx===c.cx&&k.cy===c.cy) || state.vaultCores.some(k=>k.cx===c.cx&&k.cy===c.cy) || state.bonusCaches.some(k=>k.cx===c.cx&&k.cy===c.cy)) c=randomOpenCell();
-        state.bonusCaches.push({...c,rot:rand(0,Math.PI*2),pulse:rand(0,Math.PI*2),life:state.theme.cacheLife - i*1.1,value:Math.round(240 + level*55 + i*70)});
-      }
-      const padCount = 3 + (level % 2);
-      for(let i=0;i<padCount;i++){
-        let c=randomOpenCell();
-        while((Math.abs(c.cx-1)<3&&Math.abs(c.cy-1)<3) || state.keyOrbs.some(k=>k.cx===c.cx&&k.cy===c.cy) || state.vaultCores.some(k=>k.cx===c.cx&&k.cy===c.cy) || state.bonusCaches.some(k=>k.cx===c.cx&&k.cy===c.cy) || state.speedPads.some(k=>k.cx===c.cx&&k.cy===c.cy)) c=randomOpenCell();
-        state.speedPads.push({...c,pulse:rand(0,Math.PI*2)});
-      }
-      const surgeCount = 1 + (level % 3 === 0 ? 1 : 0);
-      for(let i=0;i<surgeCount;i++){
-        let c=randomOpenCell();
-        while((Math.abs(c.cx-1)<4&&Math.abs(c.cy-1)<4) || Math.abs(c.cx-(GRID-2)) + Math.abs(c.cy-(GRID-2)) < 5 || state.keyOrbs.some(k=>k.cx===c.cx&&k.cy===c.cy) || state.vaultCores.some(k=>k.cx===c.cx&&k.cy===c.cy) || state.bonusCaches.some(k=>k.cx===c.cx&&k.cy===c.cy) || state.speedPads.some(k=>k.cx===c.cx&&k.cy===c.cy) || state.surgeNodes.some(k=>k.cx===c.cx&&k.cy===c.cy)) c=randomOpenCell();
-        state.surgeNodes.push({...c,rot:rand(0,Math.PI*2),pulse:rand(0,Math.PI*2),life:9.8 + level * .18});
-      }
-      spawnSecurityDoors(level);
-      state.exit = {...cellCenter(GRID-2, GRID-2), active:false, pulse:0};
-      state.pulseCharge = clamp(state.pulseCharge * .4 + 18, 0, 100);
-      state.levelClock = DIFF[state.difficulty].timer + Math.max(0, 10 - level * 2) + state.theme.timerBias;
-      const cfg = DIFF[state.difficulty];
-      const enemyCount = cfg.enemyCount + Math.floor((level-1)/2);
+
+      const enemyCount = Math.min(5, 2 + Math.floor((level - 1) / 2));
       for(let i=0;i<enemyCount;i++) spawnEnemy(i);
       buildAmbient();
       syncHud();
     }
 
     function spawnEnemy(i){
-      let c=randomOpenCell();
-      while(Math.abs(c.cx-1)<4&&Math.abs(c.cy-1)<4) c=randomOpenCell();
-      const archetypes = ['sentry','sweeper','phantom','hunter'];
-      const type = archetypes[i % archetypes.length];
+      let c = randomOpenCell();
+      while(Math.abs(c.cx-1)<4&&Math.abs(c.cy-1)<4) c = randomOpenCell();
+      const types = ['drift','hunter','orbiter'];
+      const type = types[i % types.length];
       const conf = {
-        sentry:{h:193,s:DIFF[state.difficulty].enemySpeed + state.level*.05,r:TILE*.21},
-        sweeper:{h:320,s:DIFF[state.difficulty].enemySpeed + .14 + state.level*.045,r:TILE*.23},
-        phantom:{h:48,s:DIFF[state.difficulty].enemySpeed - .02 + state.level*.04,r:TILE*.18},
-        hunter:{h:8,s:DIFF[state.difficulty].enemySpeed + .1 + state.level*.06,r:TILE*.2}
+        drift:{speed:0.96 + state.level*.04,r:TILE*.2,h:state.theme.hue + 120},
+        hunter:{speed:1.05 + state.level*.05,r:TILE*.22,h:state.theme.hue + 150},
+        orbiter:{speed:0.9 + state.level*.045,r:TILE*.18,h:state.theme.hue + 90}
       }[type];
-      state.enemies.push({x:c.x,y:c.y,type,hue:conf.h,speed:conf.s,radius:conf.r,trail:[],wobble:rand(0,Math.PI*2),stunned:0,charge:0,telegraph:0,dir:{x:0,y:0}});
+      state.enemies.push({x:c.x,y:c.y,type,hue:conf.h,speed:conf.speed,radius:conf.r,trail:[],wobble:rand(0,Math.PI*2),stunned:0,dir:{x:0,y:0},turnBias:Math.random()<.5?-1:1});
     }
 
     function resetRun(){
-      state.running=false;
-      state.paused=false;
-      state.over=false;
-      state.score=0;
-      state.level=1;
-      state.lives=3;
-      state.combo=1;
-      state.flash=0;
-      state.cameraShake=0;
+      state.running = false;
+      state.paused = false;
+      state.over = false;
+      state.score = 0;
+      state.level = 1;
+      state.lives = 3;
+      state.burst = 0;
+      state.streak = 1;
+      state.streakTimer = 0;
       state.newBestGlow = 0;
-      state.scorePulse = 0;
-      state.comboTimer = 0;
       setupLevel(1);
       overlay.classList.remove('hidden');
-      overlayCard.innerHTML = `<h2>Quantum Vault</h2><p>A brighter, greedier arcade run: clean the district, gamble on side-route cores, and hit pulse burst when the room gets mean. Built to read cleanly and feel snappy on mobile.</p><div class="actions"><button id="restartAction" class="primary">Enter Vault</button></div>`;
+      overlayCard.innerHTML = `<h2>Quantum Vault</h2><p>Collect every shard, unlock the exit, and dash out before the drones box you in. Fast, readable, and better on a phone.</p><div class="actions"><button id="restartAction" class="primary">Enter Vault</button></div>`;
       document.getElementById('restartAction').addEventListener('click', startGame);
       syncHud();
-    }
-
-    const scoreMultiplier = () => 1 + (state.surge > 0 ? 0.85 + Math.min(.55, state.level * .04) : 0);
-
-    function syncHud(){
-      scoreEl.textContent = state.score.toLocaleString();
-      bestHeroEl.textContent = state.best.toLocaleString();
-      levelEl.textContent = state.level;
-      livesEl.textContent = state.lives;
-      keysEl.textContent = `${state.keysCollected} / ${state.keysTotal}`;
-      coresEl.textContent = `${state.coresCollected} / ${state.coresTotal}`;
-      cachesEl.textContent = `${state.cachesCollected} / ${state.cachesTotal}`;
-      stateEl.textContent = state.over ? 'Run Lost' : state.paused ? 'Paused' : state.running ? (state.jackpot ? 'Jackpot Live' : state.surge > 0 ? 'Surging' : 'Active') : 'Standby';
-      bestEl.textContent = state.score >= state.best && state.score > 0 ? `★ ${state.best.toLocaleString()}` : state.best.toLocaleString();
-      enemiesEl.textContent = state.enemies.length;
-      exitStateEl.textContent = state.exitUnlocked ? (state.jackpot ? `Jackpot ${Math.ceil(state.jackpot.life)}` : 'Online') : `${state.securityDoors.length} Gates`;
-      comboEl.textContent = `x${state.combo}`;
-      comboFlowEl.textContent = `${Math.round((state.comboTimer / state.comboWindow) * 100)}%`;
-      surgeEl.textContent = `x${scoreMultiplier().toFixed(1)}`;
-      stashEl.textContent = state.jackpot ? `JP ${Math.ceil(state.jackpot.life)}s` : state.bonusCaches.length ? `${state.bonusCaches.length}` : `${state.cachesCollected}`;
-      rankEl.textContent = getRankName(state.score);
-      themeEl.textContent = state.theme.name;
-      districtNameEl.textContent = state.theme.name;
-      timerEl.textContent = Math.ceil(state.levelClock);
     }
 
     function startGame(){
       initAudio();
       if(audioCtx && audioCtx.state==='suspended') audioCtx.resume();
       resetRun();
-      state.running=true;
+      state.running = true;
       overlay.classList.add('hidden');
       sfx('start');
       syncHud();
     }
 
-    function awardScore(amount, text, x, y, color='#fff'){
-      const mult = scoreMultiplier();
-      const total = Math.round(amount * mult);
-      state.score += total;
-      state.scorePulse = Math.min(1, state.scorePulse + .18 + Math.max(0, mult - 1) * .06);
-      addPopup(text ? `${text}${mult > 1 ? ` ×${mult.toFixed(1)}` : ''}` : `+${total}`, x, y, color, true);
-      if(state.score > state.best) localStorage.setItem(BEST_KEY, String(state.score));
+    function openExit(){
+      state.exitUnlocked = true;
+      state.clearGlow = 1.3;
+      addParticles(state.exit.x, state.exit.y, state.theme.exit, 40, 6, 1.2);
+      addRing(state.exit.x, state.exit.y, state.theme.exit, 24, 110);
+      addPopup('EXIT ONLINE', state.exit.x, state.exit.y - 26, state.theme.exit, true);
+      sfx('unlock');
       syncHud();
-      return total;
+    }
+
+    function collectShards(){
+      state.shards = state.shards.filter(shard => {
+        if(Math.hypot(shard.x - state.player.x, shard.y - state.player.y) < TILE*.35){
+          state.shardCount += 1;
+          state.burst = clamp(state.burst + 24, 0, 100);
+          state.streakTimer = 3.2;
+          state.streak = clamp(state.streak + 1, 1, 9);
+          const clearBonus = Math.round((state.shardCount / state.shardTotal) * 80);
+          awardScore(90 + (state.streak - 1) * 18 + clearBonus, `SHARD x${state.streak}`, shard.x, shard.y - 18, state.theme.shard);
+          addParticles(shard.x, shard.y, state.theme.shard, 26, 5, 1.1);
+          addRing(shard.x, shard.y, state.theme.shard, 18, 72);
+          sfx('shard');
+          if(state.shardCount >= state.shardTotal) openExit();
+          return false;
+        }
+        return true;
+      });
     }
 
     function nextLevel(){
-      const timeBonus = Math.max(0, Math.floor(state.levelClock * 18));
-      const integrityBonus = state.lives * 240;
-      const chainBonus = state.combo * 140;
-      const coreSweepBonus = state.coresCollected >= state.coresTotal ? 520 : state.coresCollected * 120;
-      const cacheSweepBonus = state.cachesCollected >= state.cachesTotal ? 420 : state.cachesCollected * 140;
-      awardScore(timeBonus + integrityBonus + chainBonus + coreSweepBonus + cacheSweepBonus + 500, 'DISTRICT CLEAR', state.exit.x, state.exit.y - 50, '#a6ff7b');
+      const levelBonus = 600 + state.level * 180;
+      const lifeBonus = state.lives * 250;
+      const streakBonus = state.streak * 110;
+      awardScore(levelBonus + lifeBonus + streakBonus, 'DISTRICT CLEAR', state.exit.x, state.exit.y - 48, '#baff8b');
       state.level += 1;
-      state.combo = clamp(state.combo + 1, 1, 12);
-      feedCombo(2.2);
+      state.streak = clamp(state.streak + 1, 1, 9);
+      state.streakTimer = 2.4;
       setupLevel(state.level);
       state.running = true;
-      addWave(state.player.x, state.player.y, '#63f2ff', 20, 100);
-      addPopup('FLOW BANKED', state.player.x, state.player.y - 30, '#63f2ff');
-      sfx('exit');
+      addRing(state.player.x, state.player.y, state.theme.exit, 22, 90);
+      addPopup('LEVEL UP', state.player.x, state.player.y - 26, state.theme.exit, true);
+      sfx('clear');
       syncHud();
     }
 
-    function gameOver(reason='Vault Breached'){
+    function gameOver(reason='System Crashed'){
       state.over = true;
       state.running = false;
       const result = maybeRecordBest();
       overlay.classList.remove('hidden');
-      const medal = result.wasNewBest ? '🏆 New local best' : result.place === 2 ? '🥈 Second-best local run' : result.place === 3 ? '🥉 Third-best local run' : state.score >= Math.max(2500, state.best * .7) ? '✨ Hot run' : '⚡ Warm-up run';
-      const cacheLine = `${state.cachesCollected}/${state.cachesTotal} caches • ${state.coresCollected}/${state.coresTotal} cores • chain x${state.combo}`;
-      overlayCard.innerHTML = `<h2>${reason}</h2><p><strong>${medal}</strong></p><p>You reached <strong>level ${state.level}</strong> with <strong>${state.score.toLocaleString()}</strong> credits as a <strong>${getRankName(state.score)}</strong>. Local board place: <strong>#${result.place}</strong>. Best local score: <strong>${state.best.toLocaleString()}</strong>.</p><p style="margin-top:10px;color:rgba(255,255,255,.8)">${cacheLine}</p><p style="margin-top:10px;color:rgba(255,255,255,.66)">${state.theme.rule}</p><div class="actions"><button id="restartBtn" class="primary">Run Again</button></div>`;
+      const medal = result.wasNewBest ? '🏆 New local best' : result.place === 2 ? '🥈 Second-best local run' : result.place === 3 ? '🥉 Third-best local run' : '✨ Solid run';
+      overlayCard.innerHTML = `<h2>${reason}</h2><p><strong>${medal}</strong></p><p>You reached <strong>level ${state.level}</strong> with <strong>${state.score.toLocaleString()}</strong> points as a <strong>${getRankName(state.score)}</strong>. Local board place: <strong>#${result.place}</strong>.</p><p style="margin-top:10px;color:rgba(255,255,255,.72)">Best local score: <strong>${state.best.toLocaleString()}</strong> • Shards cleared this level: <strong>${state.shardCount}/${state.shardTotal}</strong></p><div class="actions"><button id="restartBtn" class="primary">Run Again</button></div>`;
       document.getElementById('restartBtn').addEventListener('click', startGame);
       syncHud();
     }
 
-    function collectKeys(){
-      state.keyOrbs = state.keyOrbs.filter(k => {
-        if(Math.hypot(k.x-state.player.x,k.y-state.player.y) < TILE*.34){
-          state.combo = clamp(state.combo + 1, 1, 12);
-          feedCombo(1.65);
-          state.pulseCharge = clamp(state.pulseCharge + 28, 0, 100);
-          state.keysCollected += 1;
-          awardScore(Math.round((110 + Math.max(0, Math.floor(state.levelClock * .7))) * state.combo * state.theme.keyBoost), `KEY x${state.combo}`, k.x, k.y - 18, state.theme.key);
-          addParticles(k.x,k.y,state.theme.key,24,5,1.2);
-          addWave(k.x,k.y,state.theme.key,18,68);
-          sfx('key');
-          if(state.keysCollected >= state.keysTotal){
-            state.exitUnlocked = true;
-            state.exit.active = true;
-            if(!state.jackpot) spawnJackpot();
-            addParticles(state.exit.x,state.exit.y,'#63f2ff',40,6,1.4);
-            addWave(state.exit.x,state.exit.y,'#63f2ff',18,96);
-            addPopup('EXIT ONLINE', state.exit.x, state.exit.y - 24, '#63f2ff');
-            sfx('unlock');
-          }
-          return false;
-        }
-        return true;
-      });
-    }
-
-    function collectCores(){
-      state.vaultCores = state.vaultCores.filter(core => {
-        if(Math.hypot(core.x-state.player.x,core.y-state.player.y) < TILE*.36){
-          state.coresCollected += 1;
-          state.pulseCharge = clamp(state.pulseCharge + 40, 0, 100);
-          state.doorJam = Math.max(state.doorJam, 4.4 * state.theme.jamBoost);
-          state.cameraShake = .12;
-          state.combo = clamp(state.combo + 1, 1, 12);
-          feedCombo(2.25 * state.theme.comboBoost);
-          awardScore((core.value + Math.floor(state.levelClock * 6)) * state.combo, `CORE ${(core.value + Math.floor(state.levelClock * 6)) * state.combo}`, core.x, core.y - 20, state.theme.core);
-          addParticles(core.x,core.y,state.theme.core,34,6.6,1.35);
-          addWave(core.x,core.y,state.theme.core,24,90);
-          addPopup('GATES JAMMED', state.player.x, state.player.y - 42, '#63f2ff');
-          sfx('core');
-          return false;
-        }
-        return true;
-      });
-    }
-
-    function collectCaches(dt){
-      const kept = [];
-      for (const cache of state.bonusCaches){
-        cache.life -= dt;
-        cache.pulse += .085;
-        if(Math.hypot(cache.x-state.player.x,cache.y-state.player.y) < TILE*.35){
-          state.cachesCollected += 1;
-          const hurry = clamp(cache.life / state.theme.cacheLife, .2, 1);
-          const payout = Math.round((cache.value + cache.life * 26 + state.levelClock * 4) * state.combo * hurry);
-          state.pulseCharge = clamp(state.pulseCharge + 24, 0, 100);
-          state.levelClock = Math.min(state.levelClock + 4.5, DIFF[state.difficulty].timer + 18);
-          state.combo = clamp(state.combo + 1, 1, 12);
-          feedCombo(1.8 * state.theme.comboBoost);
-          awardScore(payout, `CACHE ${payout}`, cache.x, cache.y - 22, state.theme.cache);
-          addParticles(cache.x, cache.y, state.theme.cache, 28, 5.8, 1.2);
-          addWave(cache.x, cache.y, state.theme.cache, 18, 80);
-          addPopup('+TIME', cache.x, cache.y + 26, '#63f2ff');
-          sfx('key');
-          continue;
-        }
-        if(cache.life <= 0){
-          addParticles(cache.x, cache.y, 'rgba(255,159,103,.8)', 12, 3.5, .85);
-          addPopup('CACHE LOST', cache.x, cache.y - 16, '#ff9f67');
-          continue;
-        }
-        kept.push(cache);
-      }
-      state.bonusCaches = kept;
-    }
-
-    function spawnJackpot(){
-      let c=randomOpenCell();
-      while((Math.abs(c.cx-state.player.x/TILE)<3&&Math.abs(c.cy-state.player.y/TILE)<3) || Math.abs(c.cx-(GRID-2)) + Math.abs(c.cy-(GRID-2)) < 4 || state.keyOrbs.some(k=>k.cx===c.cx&&k.cy===c.cy) || state.vaultCores.some(k=>k.cx===c.cx&&k.cy===c.cy) || state.bonusCaches.some(k=>k.cx===c.cx&&k.cy===c.cy) || state.speedPads.some(k=>k.cx===c.cx&&k.cy===c.cy) || state.surgeNodes.some(k=>k.cx===c.cx&&k.cy===c.cy)) c=randomOpenCell();
-      state.jackpot = {...c, rot:rand(0, Math.PI*2), pulse:rand(0, Math.PI*2), life:8.8 + Math.min(2.2, state.level * .15), value:Math.round(920 + state.level * 170)};
-      addPopup('JACKPOT LIVE', c.x, c.y - 22, '#ffd86f');
-      addWave(c.x, c.y, '#ffd86f', 20, 92);
-    }
-
-    function collectSurges(dt){
-      const kept = [];
-      for (const surge of state.surgeNodes){
-        surge.life -= dt;
-        surge.rot += .045;
-        surge.pulse += .08;
-        if(Math.hypot(surge.x-state.player.x,surge.y-state.player.y) < TILE*.35){
-          state.surge = Math.max(state.surge, 9.5 + state.level * .35);
-          state.pulseCharge = clamp(state.pulseCharge + 34, 0, 100);
-          state.levelClock = Math.min(state.levelClock + 2.2, DIFF[state.difficulty].timer + 18);
-          feedCombo(2.1, 1);
-          awardScore(180 + state.level * 38, 'SURGE ONLINE', surge.x, surge.y - 22, '#ffd86f');
-          addParticles(surge.x, surge.y, '#ffd86f', 28, 5.6, 1.15);
-          addWave(surge.x, surge.y, '#ffd86f', 20, 84);
-          sfx('unlock');
-          continue;
-        }
-        if(surge.life <= 0){
-          addPopup('SURGE GONE', surge.x, surge.y - 18, '#ff9f67');
-          continue;
-        }
-        kept.push(surge);
-      }
-      state.surgeNodes = kept;
-    }
-
-    function collectJackpot(dt){
-      if(!state.jackpot) return;
-      state.jackpot.life -= dt;
-      state.jackpot.rot += .055;
-      state.jackpot.pulse += .09;
-      if(Math.hypot(state.jackpot.x-state.player.x,state.jackpot.y-state.player.y) < TILE*.42){
-        const payout = state.jackpot.value + Math.floor(state.jackpot.life * 95) + state.combo * 70;
-        state.levelClock = Math.min(state.levelClock + 6.5, DIFF[state.difficulty].timer + 18);
-        state.pulseCharge = clamp(state.pulseCharge + 52, 0, 100);
-        state.surge = Math.max(state.surge, 8.4 + state.level * .2);
-        feedCombo(2.8, 1);
-        awardScore(payout, 'VAULT JACKPOT', state.jackpot.x, state.jackpot.y - 28, '#ffd86f');
-        addParticles(state.jackpot.x, state.jackpot.y, '#ffd86f', 42, 6.8, 1.35);
-        addWave(state.jackpot.x, state.jackpot.y, '#ffd86f', 28, 120);
-        addPopup('+TIME', state.jackpot.x, state.jackpot.y + 24, '#63f2ff');
-        sfx('best');
-        state.jackpot = null;
-        return;
-      }
-      if(state.jackpot.life <= 0){
-        addPopup('JACKPOT SEALED', state.jackpot.x, state.jackpot.y - 20, '#ff7272');
-        addParticles(state.jackpot.x, state.jackpot.y, 'rgba(255,114,114,.85)', 16, 4.6, .9);
-        state.jackpot = null;
-      }
-    }
-
-    function applySpeedPads(){
-      const cell = nearestCell(state.player.x, state.player.y);
-      const onPad = state.speedPads.find(pad => pad.cx === cell.cx && pad.cy === cell.cy);
-      state.player.padBoost = onPad ? .85 : Math.max(0, (state.player.padBoost || 0) - .04);
-      if(onPad && Math.random() < .18){
-        addRibbon(state.player.x + rand(-12,12), state.player.y + rand(-12,12), state.theme.speed, 18);
-      }
-    }
-
     function tryExit(){
-      if(state.exitUnlocked && Math.hypot(state.player.x-state.exit.x,state.player.y-state.exit.y) < TILE*.42){
-        nextLevel();
-      }
+      if(state.exitUnlocked && Math.hypot(state.player.x-state.exit.x, state.player.y-state.exit.y) < TILE*.42) nextLevel();
     }
 
     function triggerBurst(){
       if(!state.running || state.paused || state.over) return;
-      if(state.pulseCharge < 100) {
-        addPopup('CHARGE NEEDED', state.player.x, state.player.y - 24, '#ffd86f');
+      if(state.burst < 100){
+        addPopup('CHARGE NEEDED', state.player.x, state.player.y - 24, '#ffd977');
         return;
       }
-      state.pulseCharge = 0;
+      state.burst = 0;
+      state.player.burstGlow = 1.2;
       state.enemies.forEach(enemy => {
-        if(Math.hypot(enemy.x - state.player.x, enemy.y - state.player.y) < TILE * 3.2) enemy.stunned = 2.6;
+        if(Math.hypot(enemy.x - state.player.x, enemy.y - state.player.y) < TILE * 3.2) enemy.stunned = 2.2;
       });
-      state.player.dashGlow = 1.2;
-      addParticles(state.player.x, state.player.y, '#63f2ff', 44, 6.2, 1.3);
-      addWave(state.player.x, state.player.y, '#63f2ff', 24, 126);
-      state.cameraShake = .18;
-      feedCombo(1.1);
-      awardScore(90 * state.combo, 'PULSE BURST', state.player.x, state.player.y - 20, '#63f2ff');
+      addParticles(state.player.x, state.player.y, state.theme.exit, 44, 6.2, 1.2);
+      addRing(state.player.x, state.player.y, state.theme.exit, 24, 126);
+      state.shake = .18;
+      awardScore(80, 'BURST', state.player.x, state.player.y - 20, state.theme.exit);
       sfx('burst');
       syncHud();
     }
@@ -864,164 +606,116 @@
     function updatePlayer(dt){
       const p = state.player;
       p.hitCooldown = Math.max(0, p.hitCooldown - dt);
-      p.dashGlow = Math.max(0, p.dashGlow - dt);
-      const speedMul = 1 + (state.pulseCharge >= 100 ? .11 : 0) + p.dashGlow * .06 + (p.padBoost || 0) * (state.theme.speedBoost - 1) + (state.surge > 0 ? .08 : 0);
-      const dx = p.nextDir.x * p.speed * speedMul;
-      const dy = p.nextDir.y * p.speed * speedMul;
-      if((p.nextDir.x || p.nextDir.y) && canMoveTo(p.x+dx,p.y+dy,p.radius)) p.dir = {...p.nextDir};
-      const nx = p.x + p.dir.x * p.speed * speedMul;
-      const ny = p.y + p.dir.y * p.speed * speedMul;
-      if(canMoveTo(nx,ny,p.radius)){
+      p.burstGlow = Math.max(0, p.burstGlow - dt);
+      const boost = 1 + p.burstGlow*.08;
+      const dx = p.nextDir.x * p.speed * boost;
+      const dy = p.nextDir.y * p.speed * boost;
+      if((p.nextDir.x || p.nextDir.y) && canMoveTo(p.x+dx, p.y+dy, p.radius)) p.dir = {...p.nextDir};
+      const nx = p.x + p.dir.x * p.speed * boost;
+      const ny = p.y + p.dir.y * p.speed * boost;
+      if(canMoveTo(nx, ny, p.radius)){
         p.x = nx;
         p.y = ny;
-        addRibbon(p.x,p.y,p.dashGlow > 0 ? 'rgba(255,216,111,.18)' : 'rgba(99,242,255,.22)', p.dashGlow > 0 ? 18 : 14);
+        addRibbon(p.x, p.y, p.burstGlow > 0 ? 'rgba(255,217,119,.2)' : 'rgba(113,240,255,.2)', p.burstGlow > 0 ? 18 : 14);
       }
       p.trail.push({x:p.x,y:p.y});
-      if(p.trail.length>20) p.trail.shift();
+      if(p.trail.length > 18) p.trail.shift();
     }
 
     function chooseEnemyStep(enemy, ec, pc, opts){
       if(!opts.length) return {x:0,y:0};
-      if(enemy.type === 'hunter'){
-        const aligned = (ec.cx === pc.cx || ec.cy === pc.cy);
-        if(aligned && enemy.telegraph <= 0 && enemy.charge <= 0 && Math.random() < .05){
-          enemy.telegraph = .55;
-          enemy.dir = ec.cx === pc.cx ? {x:0,y:Math.sign(pc.cy-ec.cy)} : {x:Math.sign(pc.cx-ec.cx),y:0};
-        }
-        if(enemy.telegraph > 0) return {x:0,y:0};
-        if(enemy.charge > 0) return enemy.dir;
-      }
-      opts.sort((a,b)=>{
+      const sortToward = [...opts].sort((a,b)=>{
         const as = Math.abs((ec.cx+a.x)-pc.cx) + Math.abs((ec.cy+a.y)-pc.cy);
         const bs = Math.abs((ec.cx+b.x)-pc.cx) + Math.abs((ec.cy+b.y)-pc.cy);
         return as - bs;
       });
-      if(enemy.type==='phantom' && opts[opts.length-1] && Math.random()<.2) return opts[opts.length-1];
-      if(enemy.type==='sweeper' && opts[1] && Math.random()<.2) return opts[1];
-      return opts[0];
+      if(enemy.type === 'hunter') return sortToward[0];
+      if(enemy.type === 'orbiter'){
+        const lateral = opts.find(o => !(o.x === Math.sign(pc.cx-ec.cx) && o.y === Math.sign(pc.cy-ec.cy)));
+        return lateral || sortToward[0];
+      }
+      if(Math.random() < .22) return opts[randi(0, opts.length - 1)];
+      return sortToward[0];
     }
 
     function updateEnemies(dt){
       const pc = nearestCell(state.player.x, state.player.y);
       state.enemies.forEach(enemy => {
-        enemy.wobble += dt * (enemy.type==='phantom'?6:4.2);
+        enemy.wobble += dt * 4.4;
         enemy.stunned = Math.max(0, enemy.stunned - dt);
-        enemy.telegraph = Math.max(0, enemy.telegraph - dt);
-        if(enemy.telegraph <= 0 && enemy.dir && enemy.type==='hunter' && enemy.charge<=0 && (enemy.dir.x || enemy.dir.y)) enemy.charge = .52;
-        enemy.charge = Math.max(0, enemy.charge - dt);
-
         const ec = nearestCell(enemy.x, enemy.y);
         const opts = pathOptions(ec.cx, ec.cy);
-        let choice = chooseEnemyStep(enemy, ec, pc, opts);
-        const rush = enemy.type==='hunter' && enemy.charge > 0 ? 2.1 : 1;
-        const alarmBoost = state.exitUnlocked ? 1.05 : 1;
-        const jackpotBoost = state.jackpot ? 1.08 : 1;
-        const speed = enemy.speed * (enemy.stunned ? .35 : 1) * rush * alarmBoost * jackpotBoost * dt * TILE;
+        const choice = chooseEnemyStep(enemy, ec, pc, opts);
+        const speed = enemy.speed * (enemy.stunned ? .22 : 1) * dt * TILE;
         const nx = enemy.x + choice.x * speed;
         const ny = enemy.y + choice.y * speed;
-        if(canMoveTo(nx,ny,enemy.radius)){
+        if(canMoveTo(nx, ny, enemy.radius)){
           enemy.x = nx;
           enemy.y = ny;
-          if(choice.x || choice.y) enemy.dir = choice;
+          enemy.dir = choice;
         }
         enemy.trail.push({x:enemy.x,y:enemy.y});
-        if(enemy.trail.length>12) enemy.trail.shift();
+        if(enemy.trail.length > 12) enemy.trail.shift();
 
         const d = dist(enemy, state.player);
-        if(d < enemy.radius + state.player.radius + TILE * .18 && d > enemy.radius + state.player.radius && state.nearMissCooldown <= 0 && !enemy.stunned){
-          state.nearMissCooldown = .45;
-          state.combo = clamp(state.combo + 1, 1, 12);
-          feedCombo(1.05 * state.theme.comboBoost);
-          awardScore(40 * state.combo, 'NEAR MISS', state.player.x, state.player.y - 22, '#ffb1f5');
-          state.pulseCharge = clamp(state.pulseCharge + 10, 0, 100);
-          sfx('miss');
-        }
-
         if(d < enemy.radius + state.player.radius && state.player.hitCooldown <= 0 && !enemy.stunned){
-          state.player.hitCooldown = 1.2;
+          state.player.hitCooldown = 1.1;
           state.lives -= 1;
-          breakFlow(Math.max(1, Math.ceil(state.combo / 3)));
+          state.streak = Math.max(1, Math.floor(state.streak * .5));
+          state.streakTimer = 0;
           state.flash = .65;
-          state.cameraShake = .24;
-          addParticles(state.player.x,state.player.y,'#ff7272',34,6,1.2);
-          addWave(state.player.x,state.player.y,'#ff7272',20,84);
-          addPopup('HIT', state.player.x, state.player.y - 18, '#ff7272');
+          state.shake = .24;
+          addParticles(state.player.x, state.player.y, '#ff7b84', 34, 6, 1.2);
+          addRing(state.player.x, state.player.y, '#ff7b84', 20, 84);
+          addPopup('HIT', state.player.x, state.player.y - 18, '#ff7b84', true);
           sfx('hit');
           vibrate([18,34,18]);
           if(state.lives <= 0) gameOver('System Crashed');
           syncHud();
         }
       });
-      state.nearMissCooldown = Math.max(0, state.nearMissCooldown - dt);
     }
 
-    function updateParticles(dt){
+    function updateEffects(dt){
       state.particles = state.particles.filter(p => { p.x+=p.vx; p.y+=p.vy; p.vx*=.985; p.vy*=.985; p.life-=dt; return p.life>0; });
+      state.rings = state.rings.filter(r => { r.life -= dt*.9; r.r += dt*(r.max*.8); return r.life>0; });
       state.ribbons = state.ribbons.filter(r => { r.life -= dt*1.8; return r.life > 0; });
-      state.popups = state.popups.filter(p => { p.life -= dt; p.y -= dt * 30; return p.life > 0; });
-      state.waves = state.waves.filter(w => { w.life -= dt * .9; w.r += dt * (w.max * .8); return w.life > 0; });
+      state.popups = state.popups.filter(p => { p.life -= dt; p.y -= dt*30; return p.life > 0; });
     }
 
     function updateFlow(dt){
-      if(state.combo > 1 || state.comboTimer > 0){
-        state.comboTimer = Math.max(0, state.comboTimer - dt * (state.exitUnlocked ? 1.2 : 1));
-        if(state.comboTimer === 0 && state.combo > 1){
-          state.combo -= 1;
-          state.comboTimer = state.combo > 1 ? state.comboWindow * .42 : 0;
-          addPopup('FLOW -1', state.player.x, state.player.y - 30, '#ffb1f5');
-        }
-      }
-      state.surge = Math.max(0, state.surge - dt);
-      state.scorePulse = Math.max(0, state.scorePulse - dt * 1.4);
-      state.doorTick += dt;
-      state.doorJam = Math.max(0, state.doorJam - dt);
-    }
-
-    function updateClock(dt){
-      state.levelClock = Math.max(0, state.levelClock - dt);
-      if(state.levelClock < 10 && Math.random() < dt * 5){
-        addRibbon(state.player.x + rand(-14,14), state.player.y + rand(-14,14), 'rgba(255,114,114,.2)', 16);
-      }
-      if(state.levelClock === 0 && !state.over){
-        state.lives -= 1;
-        state.levelClock = 12;
-        state.flash = .5;
-        state.cameraShake = .18;
-        addPopup('LOCKDOWN', state.player.x, state.player.y - 22, '#ff7272');
-        sfx('hit');
-        if(state.lives <= 0) gameOver('Vault Locked Down');
+      state.burst = clamp(state.burst + dt * 2.6, 0, 100);
+      state.flash = Math.max(0, state.flash - dt);
+      state.shake = Math.max(0, state.shake - dt);
+      state.clearGlow = Math.max(0, state.clearGlow - dt);
+      state.newBestGlow = Math.max(0, state.newBestGlow - dt);
+      state.exit.pulse += dt * 3.2;
+      if(state.streak > 1 || state.streakTimer > 0){
+        state.streakTimer = Math.max(0, state.streakTimer - dt);
+        if(state.streakTimer === 0 && state.streak > 1) state.streak -= 1;
       }
     }
 
     function update(dt){
       if(!state.running || state.paused || state.over) return;
-      state.flash = Math.max(0, state.flash - dt);
-      state.cameraShake = Math.max(0, state.cameraShake - dt);
-      state.newBestGlow = Math.max(0, state.newBestGlow - dt);
-      state.exit.pulse += dt * 3.4;
       updateFlow(dt);
-      updateClock(dt);
       updatePlayer(dt);
-      applySpeedPads();
       updateEnemies(dt);
-      updateParticles(dt);
-      collectKeys();
-      collectCores();
-      collectCaches(dt);
-      collectSurges(dt);
-      collectJackpot(dt);
+      updateEffects(dt);
+      collectShards();
       tryExit();
       syncHud();
     }
 
     function drawBg(){
       ctx.clearRect(0,0,canvas.width,canvas.height);
-      const bg = ctx.createRadialGradient(canvas.width*.5,canvas.height*.34,40,canvas.width*.5,canvas.height*.5,canvas.width*.74);
+      const bg = ctx.createRadialGradient(canvas.width*.5, canvas.height*.34, 40, canvas.width*.5, canvas.height*.5, canvas.width*.78);
       bg.addColorStop(0,'rgba(18,41,78,1)');
       bg.addColorStop(.55,'rgba(7,18,38,1)');
       bg.addColorStop(1,'rgba(2,6,17,1)');
       ctx.fillStyle = bg;
       ctx.fillRect(0,0,canvas.width,canvas.height);
+
       state.ambient.forEach(a => {
         const g = ctx.createRadialGradient(a.x,a.y,0,a.x,a.y,a.r);
         g.addColorStop(0,`hsla(${a.h},100%,60%,${a.a})`);
@@ -1032,24 +726,18 @@
         if(a.x < -a.r) a.x = canvas.width + a.r;
         if(a.x > canvas.width + a.r) a.x = -a.r;
       });
+
       state.stars.forEach(s => {
         s.y += s.s;
-        if(s.y > canvas.height) { s.y = -5; s.x = rand(0,canvas.width); }
+        if(s.y > canvas.height){ s.y = -5; s.x = rand(0, canvas.width); }
         ctx.fillStyle = `rgba(255,255,255,${s.a})`;
-        ctx.fillRect(s.x,s.y,1.5,1.5);
+        ctx.fillRect(s.x, s.y, 1.5, 1.5);
       });
-      state.sparks.forEach(s => {
-        s.x += s.vx; s.y += s.vy;
-        if(s.y > canvas.height + 4){ s.y = -4; s.x = rand(0,canvas.width); }
-        if(s.x < -4) s.x = canvas.width + 4;
-        if(s.x > canvas.width + 4) s.x = -4;
-        ctx.fillStyle = 'rgba(255,255,255,.06)';
-        ctx.fillRect(s.x,s.y,s.r,s.r*2.4);
-      });
-      for(let i=0;i<62;i++){
-        const y=i/62*canvas.height;
-        ctx.fillStyle=i%2===0?'rgba(255,255,255,.012)':state.theme.floor;
-        ctx.fillRect(0,y,canvas.width,1.1);
+
+      for(let i=0;i<68;i++){
+        const y = i/68*canvas.height;
+        ctx.fillStyle = i%2===0 ? 'rgba(255,255,255,.012)' : state.theme.floor;
+        ctx.fillRect(0, y, canvas.width, 1.1);
       }
     }
 
@@ -1063,229 +751,40 @@
           g.addColorStop(1,state.theme.wallC);
           ctx.fillStyle = g;
           rr(px+3,py+3,TILE-6,TILE-6,8,true);
-          ctx.strokeStyle='rgba(99,242,255,.13)';
-          ctx.lineWidth=1.5;
+          ctx.strokeStyle = 'rgba(113,240,255,.14)';
+          ctx.lineWidth = 1.5;
           rr(px+3,py+3,TILE-6,TILE-6,8,false);
-          ctx.strokeStyle='rgba(255,255,255,.05)';
+          ctx.strokeStyle = 'rgba(255,255,255,.05)';
           ctx.beginPath();
           ctx.moveTo(px+8,py+10);
           ctx.lineTo(px+TILE-10,py+10);
           ctx.stroke();
         } else {
-          ctx.fillStyle='rgba(255,255,255,.022)';
+          ctx.fillStyle = 'rgba(255,255,255,.02)';
           ctx.fillRect(px,py,TILE,TILE);
-          ctx.strokeStyle='rgba(99,242,255,.04)';
+          ctx.strokeStyle = 'rgba(113,240,255,.045)';
           ctx.strokeRect(px+.5,py+.5,TILE-1,TILE-1);
-          if((x+y)%2===0){
-            ctx.strokeStyle='rgba(255,255,255,.025)';
-            ctx.beginPath();
-            ctx.moveTo(px+10,py+TILE/2);
-            ctx.lineTo(px+TILE-10,py+TILE/2);
-            ctx.stroke();
-          }
         }
       }
-    }
-
-    function drawDoors(){
-      state.securityDoors.forEach(door => {
-        const px = door.cx * TILE, py = door.cy * TILE;
-        const closed = isDoorClosed(door.cx, door.cy);
-        const pulse = Math.sin(state.doorTick * 4 + door.phase) * .5 + .5;
-        ctx.save();
-        ctx.translate(px + TILE/2, py + TILE/2);
-        ctx.shadowBlur = closed ? 30 : 14;
-        ctx.shadowColor = `hsla(${door.hue},100%,60%,.9)`;
-        ctx.strokeStyle = closed ? `hsla(${door.hue},100%,65%,${.82 - pulse*.16})` : 'rgba(99,242,255,.26)';
-        ctx.lineWidth = closed ? 6 : 3;
-        for(let i=-1;i<=1;i++){
-          ctx.beginPath();
-          ctx.moveTo(-TILE*.23, i * TILE*.12);
-          ctx.lineTo(TILE*.23, i * TILE*.12);
-          ctx.stroke();
-        }
-        ctx.globalAlpha = closed ? .22 : .1;
-        ctx.fillStyle = closed ? `hsla(${door.hue},100%,60%,.35)` : 'rgba(99,242,255,.12)';
-        ctx.fillRect(-TILE*.22,-TILE*.22,TILE*.44,TILE*.44);
-        ctx.restore();
-      });
-    }
-
-    function drawKeys(){
-      state.keyOrbs.forEach(k => {
-        k.rot += .035;
-        k.pulse += .06;
-        ctx.save();
-        ctx.translate(k.x,k.y);
-        ctx.rotate(k.rot);
-        ctx.shadowBlur=34;
-        ctx.shadowColor=state.theme.key;
-        const grad = ctx.createLinearGradient(-10,-10,12,12);
-        grad.addColorStop(0,'#fffdf4');
-        grad.addColorStop(1,state.theme.key);
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        for(let i=0;i<8;i++){
-          const a=Math.PI/4*i;
-          const r=i%2===0?TILE*(.18 + Math.sin(k.pulse)*.01):TILE*.08;
-          const x=Math.cos(a)*r, y=Math.sin(a)*r;
-          i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
-        }
-        ctx.closePath();
-        ctx.fill();
-        ctx.restore();
-      });
-    }
-
-    function drawCores(){
-      state.vaultCores.forEach(core => {
-        core.rot += .025;
-        core.pulse += .05;
-        ctx.save();
-        ctx.translate(core.x, core.y);
-        ctx.rotate(core.rot);
-        ctx.shadowBlur = 36;
-        ctx.shadowColor = state.theme.core;
-        for(let i=0;i<3;i++){
-          ctx.globalAlpha = .86 - i*.22;
-          ctx.strokeStyle = state.theme.core;
-          ctx.lineWidth = 4 - i;
-          ctx.beginPath();
-          ctx.arc(0,0,TILE*(.14 + i*.09 + Math.sin(core.pulse+i)*.01),0,Math.PI*2);
-          ctx.stroke();
-        }
-        ctx.globalAlpha = 1;
-        ctx.fillStyle = state.theme.core;
-        ctx.beginPath();
-        ctx.moveTo(0,-TILE*.18);
-        ctx.lineTo(TILE*.18,0);
-        ctx.lineTo(0,TILE*.18);
-        ctx.lineTo(-TILE*.18,0);
-        ctx.closePath();
-        ctx.fill();
-        ctx.restore();
-      });
-    }
-
-    function drawCaches(){
-      state.bonusCaches.forEach(cache => {
-        const life = clamp(cache.life / state.theme.cacheLife, 0, 1);
-        cache.rot += .038;
-        ctx.save();
-        ctx.translate(cache.x, cache.y);
-        ctx.rotate(cache.rot);
-        ctx.shadowBlur = 30 + life * 12;
-        ctx.shadowColor = state.theme.cache;
-        ctx.globalAlpha = .38 + life * .62;
-        ctx.strokeStyle = state.theme.cache;
-        ctx.lineWidth = 4;
-        ctx.beginPath();
-        for(let i=0;i<6;i++){
-          const a = Math.PI / 3 * i;
-          const r = i % 2 === 0 ? TILE * (.22 + Math.sin(cache.pulse) * .012) : TILE * .11;
-          const x = Math.cos(a) * r, y = Math.sin(a) * r;
-          i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
-        }
-        ctx.closePath();
-        ctx.stroke();
-        ctx.fillStyle = 'rgba(255,255,255,.18)';
-        ctx.fill();
-        ctx.restore();
-      });
-    }
-
-    function drawSpeedPads(){
-      state.speedPads.forEach(pad => {
-        pad.pulse += .05;
-        const px = pad.cx * TILE, py = pad.cy * TILE;
-        ctx.save();
-        ctx.translate(px + TILE/2, py + TILE/2);
-        ctx.strokeStyle = state.theme.speed;
-        ctx.shadowBlur = 18;
-        ctx.shadowColor = state.theme.speed;
-        ctx.lineWidth = 4;
-        ctx.globalAlpha = .45 + Math.sin(pad.pulse) * .12;
-        for(let i=-1;i<=1;i++){
-          ctx.beginPath();
-          ctx.moveTo(-TILE*.22, i*TILE*.1 - TILE*.08);
-          ctx.lineTo(0, i*TILE*.1);
-          ctx.lineTo(TILE*.22, i*TILE*.1 - TILE*.08);
-          ctx.stroke();
-        }
-        ctx.restore();
-      });
-    }
-
-    function drawSurges(){
-      state.surgeNodes.forEach(surge => {
-        const life = clamp(surge.life / (9.8 + state.level * .18), 0, 1);
-        ctx.save();
-        ctx.translate(surge.x, surge.y);
-        ctx.rotate(surge.rot);
-        ctx.shadowBlur = 34;
-        ctx.shadowColor = '#ffd86f';
-        ctx.globalAlpha = .35 + life * .65;
-        ctx.strokeStyle = '#ffd86f';
-        ctx.lineWidth = 4;
-        for(let i=0;i<3;i++){
-          ctx.beginPath();
-          ctx.moveTo(0, -TILE*(.22 + i*.06));
-          ctx.lineTo(TILE*(.12 + i*.05), 0);
-          ctx.lineTo(0, TILE*(.22 + i*.06));
-          ctx.lineTo(-TILE*(.12 + i*.05), 0);
-          ctx.closePath();
-          ctx.stroke();
-        }
-        ctx.restore();
-      });
-    }
-
-    function drawJackpot(){
-      if(!state.jackpot) return;
-      const jp = state.jackpot;
-      ctx.save();
-      ctx.translate(jp.x, jp.y);
-      ctx.rotate(jp.rot);
-      ctx.shadowBlur = 46;
-      ctx.shadowColor = '#ffd86f';
-      ctx.strokeStyle = '#ffd86f';
-      ctx.lineWidth = 5;
-      for(let i=0;i<4;i++){
-        ctx.globalAlpha = .9 - i * .18;
-        ctx.beginPath();
-        ctx.arc(0, 0, TILE*(.12 + i*.08 + Math.sin(jp.pulse + i)*.02), 0, Math.PI*2);
-        ctx.stroke();
-      }
-      ctx.globalAlpha = 1;
-      ctx.fillStyle = '#fff4b2';
-      ctx.beginPath();
-      ctx.moveTo(0, -TILE*.2);
-      ctx.lineTo(TILE*.18, 0);
-      ctx.lineTo(0, TILE*.2);
-      ctx.lineTo(-TILE*.18, 0);
-      ctx.closePath();
-      ctx.fill();
-      ctx.restore();
     }
 
     function drawExit(){
       const e = state.exit;
-      const active = state.exitUnlocked;
       ctx.save();
-      ctx.translate(e.x,e.y);
-      ctx.shadowBlur = active ? 40 : 18;
-      ctx.shadowColor = active ? '#63f2ff' : 'rgba(255,255,255,.15)';
+      ctx.translate(e.x, e.y);
+      ctx.shadowBlur = state.exitUnlocked ? 44 : 16;
+      ctx.shadowColor = state.exitUnlocked ? state.theme.exit : 'rgba(255,255,255,.16)';
       for(let i=0;i<4;i++){
-        ctx.globalAlpha = active ? (.94 - i*.18) : (.22 - i*.04);
-        ctx.strokeStyle = active ? '#63f2ff' : 'rgba(255,255,255,.35)';
+        ctx.globalAlpha = state.exitUnlocked ? (.92 - i*.18) : (.18 - i*.03);
+        ctx.strokeStyle = state.exitUnlocked ? state.theme.exit : 'rgba(255,255,255,.3)';
         ctx.lineWidth = 4;
         ctx.beginPath();
         ctx.arc(0,0,TILE*(.16+i*.08+Math.sin(e.pulse+i)*.015),0,Math.PI*2);
         ctx.stroke();
       }
-      if(active){
+      if(state.exitUnlocked){
         ctx.globalAlpha = .9;
-        ctx.fillStyle = 'rgba(99,242,255,.18)';
+        ctx.fillStyle = 'rgba(113,240,255,.18)';
         ctx.beginPath();
         ctx.arc(0,0,TILE*.16,0,Math.PI*2);
         ctx.fill();
@@ -1293,46 +792,63 @@
       ctx.restore();
     }
 
-    function drawRibbons(){
-      state.ribbons.forEach(r => {
-        ctx.fillStyle = r.color.replace(/\.\d+\)/, `${(r.life*.28).toFixed(3)})`);
+    function drawShards(){
+      state.shards.forEach(shard => {
+        shard.rot += .03;
+        shard.pulse += .05;
+        ctx.save();
+        ctx.translate(shard.x, shard.y);
+        ctx.rotate(shard.rot);
+        ctx.shadowBlur = 34;
+        ctx.shadowColor = state.theme.shard;
+        const grad = ctx.createLinearGradient(-10,-10,12,12);
+        grad.addColorStop(0,'#fffdf4');
+        grad.addColorStop(1,state.theme.shard);
+        ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.arc(r.x,r.y,r.size*r.life*.36,0,Math.PI*2);
+        for(let i=0;i<8;i++){
+          const a = Math.PI/4*i;
+          const r = i%2===0 ? TILE*(.17 + Math.sin(shard.pulse)*.012) : TILE*.08;
+          const x = Math.cos(a)*r, y = Math.sin(a)*r;
+          i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+        }
+        ctx.closePath();
         ctx.fill();
+        ctx.restore();
       });
     }
 
     function drawPlayer(){
       const p = state.player;
-      if(state.combo > 1){
+      p.trail.forEach((t,idx) => {
+        ctx.fillStyle = `rgba(113,240,255,${idx/p.trail.length*.22})`;
+        ctx.beginPath();
+        ctx.arc(t.x, t.y, p.radius*(idx/p.trail.length)*.92, 0, Math.PI*2);
+        ctx.fill();
+      });
+      if(state.streak > 1){
         ctx.save();
         ctx.translate(p.x,p.y);
-        ctx.strokeStyle = `rgba(255,216,111,${.28 + (state.comboTimer/state.comboWindow)*.32})`;
+        ctx.strokeStyle = `rgba(255,217,119,${.26 + (state.streakTimer/3.2)*.28})`;
         ctx.lineWidth = 5;
         ctx.beginPath();
-        ctx.arc(0,0,p.radius*1.7,-Math.PI/2,-Math.PI/2 + Math.PI*2*(state.comboTimer/state.comboWindow));
+        ctx.arc(0,0,p.radius*1.7,-Math.PI/2,-Math.PI/2 + Math.PI*2*(state.streakTimer/3.2));
         ctx.stroke();
         ctx.restore();
       }
-      p.trail.forEach((t,idx)=>{
-        ctx.fillStyle=`rgba(99,242,255,${idx/p.trail.length*.24})`;
-        ctx.beginPath();
-        ctx.arc(t.x,t.y,p.radius*(idx/p.trail.length)*.95,0,Math.PI*2);
-        ctx.fill();
-      });
       ctx.save();
       ctx.translate(p.x,p.y);
-      ctx.shadowBlur=56;
-      ctx.shadowColor=p.dashGlow > 0 ? '#ffd86f' : '#63f2ff';
+      ctx.shadowBlur = 56;
+      ctx.shadowColor = p.burstGlow > 0 ? '#ffd977' : state.theme.exit;
       const g = ctx.createRadialGradient(0,0,2,0,0,p.radius*1.2);
-      g.addColorStop(0,'#ffffff');
-      g.addColorStop(.45,p.dashGlow > 0 ? '#fff1b3' : '#a1fbff');
-      g.addColorStop(1,p.dashGlow > 0 ? '#ffad52' : '#40c6ff');
-      ctx.fillStyle=g;
+      g.addColorStop(0, state.theme.playerA);
+      g.addColorStop(.45, p.burstGlow > 0 ? '#fff1b3' : state.theme.playerB);
+      g.addColorStop(1, p.burstGlow > 0 ? '#ffb65f' : '#3abfff');
+      ctx.fillStyle = g;
       ctx.beginPath();
       ctx.arc(0,0,p.radius,0,Math.PI*2);
       ctx.fill();
-      ctx.strokeStyle='rgba(255,255,255,.8)';
+      ctx.strokeStyle='rgba(255,255,255,.78)';
       ctx.lineWidth=3;
       ctx.beginPath();
       ctx.arc(0,0,p.radius*1.22,0,Math.PI*2);
@@ -1346,58 +862,73 @@
 
     function drawEnemies(){
       state.enemies.forEach(enemy => {
-        enemy.trail.forEach((t,idx)=>{
-          ctx.fillStyle=`hsla(${enemy.hue},100%,65%,${idx/enemy.trail.length*.18})`;
+        enemy.trail.forEach((t,idx) => {
+          ctx.fillStyle = `hsla(${enemy.hue},100%,65%,${idx/enemy.trail.length*.18})`;
           ctx.beginPath();
           ctx.arc(t.x,t.y,enemy.radius*(idx/enemy.trail.length),0,Math.PI*2);
           ctx.fill();
         });
-        const hover = Math.sin(enemy.wobble) * (enemy.type==='phantom'?4:2.5);
+        const hover = Math.sin(enemy.wobble) * 3;
         ctx.save();
-        ctx.translate(enemy.x, enemy.y+hover);
-        ctx.shadowBlur=28;
-        ctx.shadowColor=`hsla(${enemy.hue},100%,60%,.9)`;
-        ctx.fillStyle=enemy.stunned>0?'#ffffff':`hsl(${enemy.hue} 100% 64%)`;
-        ctx.globalAlpha = enemy.stunned>0 ? .82 : 1;
-        if(enemy.type==='sweeper'){
-          ctx.beginPath(); ctx.moveTo(0,-enemy.radius*1.34); ctx.lineTo(enemy.radius*1.1,enemy.radius*.92); ctx.lineTo(-enemy.radius*1.1,enemy.radius*.92); ctx.closePath(); ctx.fill();
-        } else if(enemy.type==='phantom'){
-          ctx.beginPath(); for(let i=0;i<6;i++){ const a=Math.PI/3*i; const r=i%2===0?enemy.radius*1.15:enemy.radius*.55; const x=Math.cos(a)*r, y=Math.sin(a)*r; i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);} ctx.closePath(); ctx.fill();
-        } else if(enemy.type==='hunter'){
-          ctx.beginPath(); ctx.roundRect(-enemy.radius*.95,-enemy.radius*.92,enemy.radius*1.9,enemy.radius*1.84,8); ctx.fill();
-          if(enemy.telegraph > 0 || enemy.charge > 0){
-            ctx.strokeStyle='rgba(255,255,255,.75)';
-            ctx.lineWidth=3;
-            ctx.beginPath();
-            ctx.moveTo(0,0);
-            ctx.lineTo(enemy.dir.x * TILE * 1.6, enemy.dir.y * TILE * 1.6);
-            ctx.stroke();
+        ctx.translate(enemy.x, enemy.y + hover);
+        ctx.shadowBlur = 28;
+        ctx.shadowColor = `hsla(${enemy.hue},100%,60%,.9)`;
+        ctx.fillStyle = enemy.stunned > 0 ? '#ffffff' : `hsl(${enemy.hue} 100% 64%)`;
+        ctx.globalAlpha = enemy.stunned > 0 ? .82 : 1;
+        if(enemy.type === 'hunter'){
+          ctx.beginPath();
+          ctx.roundRect(-enemy.radius*.95,-enemy.radius*.92,enemy.radius*1.9,enemy.radius*1.84,8);
+          ctx.fill();
+        } else if(enemy.type === 'orbiter'){
+          ctx.beginPath();
+          for(let i=0;i<6;i++){
+            const a=Math.PI/3*i;
+            const r=i%2===0?enemy.radius*1.15:enemy.radius*.55;
+            const x=Math.cos(a)*r, y=Math.sin(a)*r;
+            i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
           }
+          ctx.closePath();
+          ctx.fill();
         } else {
-          ctx.beginPath(); ctx.moveTo(0,-enemy.radius*1.2); ctx.lineTo(enemy.radius*1.05,enemy.radius*.86); ctx.lineTo(0,enemy.radius*.42); ctx.lineTo(-enemy.radius*1.05,enemy.radius*.86); ctx.closePath(); ctx.fill();
+          ctx.beginPath();
+          ctx.moveTo(0,-enemy.radius*1.2);
+          ctx.lineTo(enemy.radius*1.05,enemy.radius*.86);
+          ctx.lineTo(0,enemy.radius*.42);
+          ctx.lineTo(-enemy.radius*1.05,enemy.radius*.86);
+          ctx.closePath();
+          ctx.fill();
         }
         ctx.restore();
       });
     }
 
-    function drawParticles(){
-      state.particles.forEach(p => {
-        const a=p.life/p.maxLife;
+    function drawEffects(){
+      state.ribbons.forEach(r => {
         ctx.save();
-        ctx.globalAlpha=a;
-        ctx.fillStyle=p.color;
+        ctx.globalAlpha = r.life * .26;
+        ctx.fillStyle = r.color;
+        ctx.beginPath();
+        ctx.arc(r.x,r.y,r.size*r.life*.36,0,Math.PI*2);
+        ctx.fill();
+        ctx.restore();
+      });
+      state.particles.forEach(p => {
+        const a = p.life/p.maxLife;
+        ctx.save();
+        ctx.globalAlpha = a;
+        ctx.fillStyle = p.color;
         ctx.beginPath();
         ctx.arc(p.x,p.y,p.size*a,0,Math.PI*2);
         ctx.fill();
         ctx.restore();
       });
-      state.waves.forEach(w => {
+      state.rings.forEach(r => {
         ctx.save();
-        ctx.globalAlpha = w.life * .46;
-        ctx.strokeStyle = w.color;
-        ctx.lineWidth = 5 * w.life;
+        ctx.globalAlpha = r.life*.46;
+        ctx.strokeStyle = r.color;
+        ctx.lineWidth = 5*r.life;
         ctx.beginPath();
-        ctx.arc(w.x,w.y,w.r,0,Math.PI*2);
+        ctx.arc(r.x,r.y,r.r,0,Math.PI*2);
         ctx.stroke();
         ctx.restore();
       });
@@ -1405,7 +936,7 @@
         ctx.save();
         ctx.globalAlpha = p.life;
         ctx.textAlign = 'center';
-        ctx.font = p.score ? '900 24px Inter, system-ui, sans-serif' : '800 20px Inter, system-ui, sans-serif';
+        ctx.font = p.big ? '900 24px Inter, system-ui, sans-serif' : '800 20px Inter, system-ui, sans-serif';
         ctx.fillStyle = p.color;
         ctx.shadowBlur = 14;
         ctx.shadowColor = p.color;
@@ -1414,113 +945,89 @@
       });
     }
 
-    function drawBurstMeter(){
-      const x = canvas.width * .5 - 170, y = canvas.height - 42, w = 340, h = 14;
+    function drawMeters(){
+      const x = canvas.width*.5 - 170, y = canvas.height - 42, w = 340, h = 14;
       ctx.fillStyle = 'rgba(255,255,255,.08)';
-      rr(x, y, w, h, 8, true);
-      const grad = ctx.createLinearGradient(x, y, x+w, y);
-      grad.addColorStop(0, '#63f2ff');
-      grad.addColorStop(.6, '#45e0c4');
-      grad.addColorStop(1, '#ffd86f');
+      rr(x,y,w,h,8,true);
+      const grad = ctx.createLinearGradient(x,y,x+w,y);
+      grad.addColorStop(0,'#71f0ff');
+      grad.addColorStop(.6,'#59eac7');
+      grad.addColorStop(1,'#ffd977');
       ctx.fillStyle = grad;
-      rr(x, y, w * (state.pulseCharge/100), h, 8, true);
-      const fx = x, fy = y - 26, fh = 8;
-      ctx.fillStyle = 'rgba(255,255,255,.06)';
-      rr(fx, fy, w, fh, 8, true);
-      ctx.fillStyle = 'rgba(255,177,245,.78)';
-      rr(fx, fy, w * (state.comboTimer / state.comboWindow), fh, 8, true);
+      rr(x,y,w*(state.burst/100),h,8,true);
       ctx.fillStyle = 'rgba(255,255,255,.78)';
       ctx.font = '800 18px Inter, system-ui, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(state.pulseCharge >= 100 ? 'PULSE BURST READY' : 'PULSE CHARGE', canvas.width/2, y - 40);
-      ctx.font = '700 14px Inter, system-ui, sans-serif';
-      ctx.fillStyle = 'rgba(255,177,245,.86)';
-      ctx.fillText(state.combo > 1 ? `FLOW ${Math.round((state.comboTimer / state.comboWindow) * 100)}%` : 'FLOW DORMANT', canvas.width/2, y - 12);
+      ctx.fillText(state.burst >= 100 ? 'PULSE BURST READY' : 'PULSE CHARGE', canvas.width/2, y - 18);
     }
 
     function drawTopBanner(){
       ctx.save();
-      ctx.globalAlpha = .94;
-      const w = 620, h = 130, x = canvas.width/2 - w/2, y = 18;
+      const w = 600, h = 118, x = canvas.width/2 - w/2, y = 18;
       const g = ctx.createLinearGradient(x,y,x+w,y+h);
-      g.addColorStop(0,'rgba(7,18,38,.78)');
-      g.addColorStop(1,'rgba(7,18,38,.42)');
+      g.addColorStop(0,'rgba(7,18,38,.8)');
+      g.addColorStop(1,'rgba(7,18,38,.44)');
       ctx.fillStyle = g;
       rr(x,y,w,h,24,true);
-      ctx.strokeStyle = 'rgba(99,242,255,.18)';
+      ctx.strokeStyle = 'rgba(113,240,255,.18)';
       rr(x,y,w,h,24,false);
       ctx.fillStyle = 'rgba(255,255,255,.96)';
       ctx.textAlign = 'center';
       ctx.font = '900 34px Inter, system-ui, sans-serif';
       ctx.fillText(state.theme.name, canvas.width/2, y + 34);
-      ctx.font = `900 ${40 + Math.round(state.scorePulse * 10)}px Inter, system-ui, sans-serif`;
-      ctx.fillStyle = state.score >= state.best && state.score > 0 ? '#ffd86f' : 'rgba(255,255,255,.96)';
+      ctx.font = '900 40px Inter, system-ui, sans-serif';
+      ctx.fillStyle = state.score >= state.best && state.score > 0 ? '#ffd977' : 'rgba(255,255,255,.96)';
       ctx.fillText(state.score.toLocaleString(), canvas.width/2, y + 76);
       ctx.font = '700 16px Inter, system-ui, sans-serif';
       ctx.fillStyle = 'rgba(255,255,255,.72)';
-      ctx.fillText(`Level ${state.level} • ${getRankName(state.score)} • ${state.keysCollected}/${state.keysTotal} keys • ${state.coresCollected}/${state.coresTotal} cores • ${state.bonusCaches.length} live caches`, canvas.width/2, y + 98);
-      ctx.font = '700 14px Inter, system-ui, sans-serif';
-      ctx.fillStyle = state.score >= state.best && state.score > 0 ? '#ffd86f' : 'rgba(99,242,255,.78)';
-      const modeLabel = state.jackpot ? `JACKPOT ${Math.ceil(state.jackpot.life)}s` : state.surge > 0 ? `SURGE ×${scoreMultiplier().toFixed(1)}` : `BEST ${state.best.toLocaleString()}`;
-      ctx.fillText(`${modeLabel} • STASH ${state.cachesCollected}/${state.cachesTotal}`, canvas.width/2, y + 118);
+      ctx.fillText(`Level ${state.level} • ${state.shardCount}/${state.shardTotal} shards • ${state.lives} lives • ${state.enemies.length} drones`, canvas.width/2, y + 100);
       ctx.restore();
     }
 
     function drawVignette(){
-      const g=ctx.createRadialGradient(canvas.width*.5,canvas.height*.5,canvas.width*.22,canvas.width*.5,canvas.height*.5,canvas.width*.78);
+      const g = ctx.createRadialGradient(canvas.width*.5,canvas.height*.5,canvas.width*.22,canvas.width*.5,canvas.height*.5,canvas.width*.78);
       g.addColorStop(0,'rgba(0,0,0,0)');
       g.addColorStop(1,'rgba(0,0,0,.62)');
-      ctx.fillStyle=g;
+      ctx.fillStyle = g;
       ctx.fillRect(0,0,canvas.width,canvas.height);
       drawTopBanner();
-      drawBurstMeter();
+      drawMeters();
       ctx.fillStyle = 'rgba(255,255,255,.72)';
       ctx.font = '700 14px Inter, system-ui, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(state.jackpot ? 'Jackpot is live — greed the detour or cash the exit.' : state.surge > 0 ? `Surge active — every score pop is amplified ×${scoreMultiplier().toFixed(1)}.` : (state.districtLabel || ''), canvas.width/2, canvas.height - 74);
-      if(state.surge > 0){
-        ctx.fillStyle = `rgba(255,216,111,${Math.min(.08, state.surge * .006)})`;
-        ctx.fillRect(0,0,canvas.width,canvas.height);
-      }
-      if(state.exitUnlocked && state.jackpot){
-        ctx.fillStyle = `rgba(255,114,114,${.03 + Math.sin(state.exit.pulse*2)*.02})`;
+      ctx.fillText(state.exitUnlocked ? 'Exit is open — get out.' : 'Collect every shard to power the gate.', canvas.width/2, canvas.height - 74);
+      if(state.clearGlow > 0){
+        ctx.fillStyle = `rgba(113,240,255,${state.clearGlow*.05})`;
         ctx.fillRect(0,0,canvas.width,canvas.height);
       }
       if(state.newBestGlow > 0){
-        ctx.fillStyle = `rgba(255,216,111,${state.newBestGlow*.05})`;
+        ctx.fillStyle = `rgba(255,217,119,${state.newBestGlow*.05})`;
         ctx.fillRect(0,0,canvas.width,canvas.height);
       }
-      if(state.flash>0){
-        ctx.fillStyle=`rgba(255,80,80,${state.flash*.22})`;
+      if(state.flash > 0){
+        ctx.fillStyle = `rgba(255,80,80,${state.flash*.22})`;
         ctx.fillRect(0,0,canvas.width,canvas.height);
       }
     }
 
     function render(){
       drawBg();
-      const shake = state.cameraShake * 8;
+      const shake = state.shake * 8;
       ctx.save();
       ctx.translate(rand(-shake,shake), rand(-shake,shake));
       drawMaze();
-      drawDoors();
       drawExit();
-      drawRibbons();
-      drawSpeedPads();
-      drawSurges();
-      drawKeys();
-      drawCores();
-      drawCaches();
-      drawJackpot();
+      drawEffects();
+      drawShards();
       drawEnemies();
       drawPlayer();
-      drawParticles();
       ctx.restore();
       drawVignette();
     }
 
     function frame(ts){
       if(!state.lastTs) state.lastTs = ts;
-      const dt = Math.min((ts - state.lastTs)/1000,.033);
+      const dt = Math.min((ts - state.lastTs) / 1000, .033);
       state.lastTs = ts;
       update(dt);
       render();
@@ -1534,19 +1041,23 @@
     document.addEventListener('keydown', e => {
       const dir = keyMap[e.code];
       if(dir){ e.preventDefault(); setDir(dir); }
-      if(e.code==='Space') { e.preventDefault(); triggerBurst(); }
+      if(e.code==='Space'){ e.preventDefault(); triggerBurst(); }
       if(e.code==='Enter' && (!state.running || state.over)) startGame();
     });
 
     document.querySelectorAll('[data-dir]').forEach(btn => btn.addEventListener('click',()=> setDir(dirLookup[btn.dataset.dir])));
 
     let swipe = null;
-    const applyTouchDir = (dx, dy) => {
+    const applyTouchDir = (dx,dy) => {
       if(Math.abs(dx)<18 && Math.abs(dy)<18) return false;
-      if(Math.abs(dx)>Math.abs(dy)) setDir(dx>0?dirLookup.right:dirLookup.left); else setDir(dy>0?dirLookup.down:dirLookup.up);
+      if(Math.abs(dx)>Math.abs(dy)) setDir(dx>0?dirLookup.right:dirLookup.left);
+      else setDir(dy>0?dirLookup.down:dirLookup.up);
       return true;
     };
-    canvas.addEventListener('touchstart', e => { const t=e.touches[0]; swipe={x:t.clientX,y:t.clientY,lastX:t.clientX,lastY:t.clientY,moved:false}; }, {passive:true});
+    canvas.addEventListener('touchstart', e => {
+      const t=e.touches[0];
+      swipe={x:t.clientX,y:t.clientY,lastX:t.clientX,lastY:t.clientY,moved:false};
+    }, {passive:true});
     canvas.addEventListener('touchmove', e => {
       if(!swipe) return;
       const t=e.touches[0];
@@ -1568,12 +1079,11 @@
 
     startBtn.addEventListener('click', startGame);
     overlayStart.addEventListener('click', startGame);
-    pauseBtn.addEventListener('click',()=>{ if(state.over) return; state.paused=!state.paused; syncHud(); });
-    audioBtn.addEventListener('click',()=>{ state.audioOn=!state.audioOn; audioBtn.textContent=state.audioOn?'Audio On':'Audio Off'; if(state.audioOn){ initAudio(); if(masterGain) masterGain.gain.value=.16; } else if(masterGain) masterGain.gain.value=.0001; });
+    pauseBtn.addEventListener('click', ()=>{ if(state.over) return; state.paused=!state.paused; syncHud(); });
+    audioBtn.addEventListener('click', ()=>{ state.audioOn=!state.audioOn; audioBtn.textContent=state.audioOn?'Audio On':'Audio Off'; if(state.audioOn){ initAudio(); if(masterGain) masterGain.gain.value=.16; } else if(masterGain) masterGain.gain.value=.0001; });
     burstBtn.addEventListener('click', triggerBurst);
-    touchBurstBtn.addEventListener('click',()=>{ if(!state.running||state.over) startGame(); else triggerBurst(); });
+    touchBurstBtn.addEventListener('click', ()=>{ if(!state.running||state.over) startGame(); else triggerBurst(); });
     fullscreenBtn.addEventListener('click', async()=>{ const root=document.documentElement; if(!document.fullscreenElement&&root.requestFullscreen) await root.requestFullscreen(); else if(document.exitFullscreen) await document.exitFullscreen(); });
-    difficultySelect.addEventListener('change',e=>{ state.difficulty=e.target.value; resetRun(); });
 
     renderLeaderboard();
     bestEl.textContent = state.best.toLocaleString();

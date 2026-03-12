@@ -30,20 +30,20 @@
       linear-gradient(180deg,var(--bg2),var(--bg1) 42%,var(--bg0));
       color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}
     body{padding:12px;display:flex;justify-content:center}
-    .app{width:min(1320px,100%);display:grid;grid-template-columns:320px minmax(0,1fr);gap:16px;align-items:start}
+    .app{width:min(1280px,100%);display:grid;grid-template-columns:300px minmax(0,1fr);gap:16px;align-items:start}
     .panel{position:relative;overflow:hidden;border-radius:28px;background:
       linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03)),
       linear-gradient(180deg, rgba(8,17,34,.96), rgba(4,9,20,.98));
       border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(20px)}
     .panel::before{content:"";position:absolute;inset:-16% auto auto -8%;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle, rgba(113,240,255,.14), transparent 70%);pointer-events:none}
-    .sidebar{padding:20px;display:grid;gap:14px}
+    .sidebar{padding:18px;display:grid;gap:12px}
     .brand{display:grid;gap:10px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.08)}
     .eyebrow{text-transform:uppercase;letter-spacing:.22em;color:var(--cyan);font-size:12px;font-weight:800}
     h1{margin:0;font-size:clamp(2.1rem,4vw,3.2rem);line-height:.92;letter-spacing:-.05em;text-shadow:0 0 28px rgba(113,240,255,.22)}
     .tagline{color:var(--muted);line-height:1.55;font-size:.98rem}
     .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
     .card,.box{border-radius:20px;background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
-    .card{padding:14px;min-height:102px}
+    .card{padding:13px;min-height:96px}
     .card::after{content:"";position:absolute;right:-28px;bottom:-38px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle, rgba(113,240,255,.16), transparent 70%)}
     .label{color:var(--muted);font-size:.76rem;text-transform:uppercase;letter-spacing:.14em}
     .value{margin-top:8px;font-size:1.78rem;font-weight:900;letter-spacing:-.03em}
@@ -61,7 +61,7 @@
     .leader-rank{font-weight:900;color:var(--gold)}
     .leader-meta strong{display:block;color:var(--ink);font-size:1rem}
     .leader-meta small{color:var(--muted)}
-    .game-shell{padding:16px;display:grid;gap:12px}
+    .game-shell{padding:14px;display:grid;gap:10px}
     .hud{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
     .hud-group{display:flex;flex-wrap:wrap;gap:10px}
     .pill{padding:10px 14px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);color:var(--muted);font-size:.9rem}
@@ -79,7 +79,7 @@
     .touch button{min-height:72px;font-size:1.2rem;border-radius:22px}
     .foot{color:rgba(255,255,255,.56);font-size:.82rem;line-height:1.45}
     @media (max-width:1024px){.app{grid-template-columns:1fr}.sidebar{order:2}.game-shell{order:1}}
-    @media (max-width:720px){body{padding:10px}.app{gap:12px}.sidebar,.game-shell{padding:14px;border-radius:24px}.brand{gap:8px}.tagline{font-size:.92rem;line-height:1.45}.touch{display:grid}.canvas-wrap{min-height:320px;border-radius:24px}.stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.card{min-height:88px;padding:12px}.value{font-size:1.34rem}.sub,.foot{font-size:.76rem}.hud{gap:8px}.hud-group{gap:8px}.pill{font-size:.82rem;padding:8px 11px}.row button{flex:1 1 0}}
+    @media (max-width:720px){body{padding:10px}.app{gap:12px}.sidebar,.game-shell{padding:14px;border-radius:24px}.brand{gap:8px}.tagline{font-size:.92rem;line-height:1.45}.touch{display:grid}.canvas-wrap{min-height:320px;border-radius:24px}.stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{min-height:82px;padding:11px}.value{font-size:1.26rem}.sub,.foot{font-size:.74rem}.hud{gap:8px}.hud-group{gap:8px}.pill{font-size:.8rem;padding:8px 10px}.row button{flex:1 1 0}.ctrl-box,.objective-box{display:none}}
     @media (max-width:560px){body{padding:8px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.overlay-card{padding:22px 18px;border-radius:22px}.overlay h2{font-size:2.2rem}.touch{grid-template-columns:repeat(3,72px);gap:8px}.touch button{min-height:64px;border-radius:20px}}
   </style>
 </head>
@@ -87,9 +87,9 @@
   <div class="app">
     <aside class="panel sidebar">
       <div class="brand">
-        <div class="eyebrow">Mobile-first arcade maze</div>
+        <div class="eyebrow">One-thumb neon arcade</div>
         <h1>Quantum Vault</h1>
-        <div class="tagline">Grab every shard in the district, light up the exit, and get out alive. One clear goal, fast restarts, prettier motion, and thumb-friendly controls.</div>
+        <div class="tagline">Collect every shard, open the portal, and escape. The whole game now leans harder into a fast, readable phone-first arcade run.</div>
       </div>
 
       <div class="stats">
@@ -101,8 +101,8 @@
         <div class="card"><div class="label">Burst</div><div id="burstState" class="value">0%</div><div class="sub">Emergency stun</div></div>
       </div>
 
-      <div class="box">
-        <div class="section">Run Controls</div>
+      <div class="box ctrl-box">
+        <div class="section">Quick Controls</div>
         <div class="row">
           <button id="startBtn" class="primary">Start Run</button>
           <button id="pauseBtn">Pause</button>
@@ -114,22 +114,21 @@
         </div>
       </div>
 
-      <div class="box">
-        <div class="section">How it works</div>
+      <div class="box objective-box">
+        <div class="section">Objective</div>
         <ul>
-          <li>Collect every glowing shard in the maze</li>
-          <li>The exit portal opens when the maze is clear</li>
-          <li>Pulse Burst stuns nearby drones when the meter is full</li>
-          <li>Fast clears and spare lives turn into simple bonus points</li>
+          <li>Collect every shard</li>
+          <li>When the maze is clear, the exit portal opens</li>
+          <li>Escape fast for a larger clear bonus</li>
         </ul>
       </div>
 
-      <div class="box">
-        <div class="section">Local Leaderboard</div>
+      <div class="box leaderboard-box">
+        <div class="section">Top Runs</div>
         <div id="leaderboard" class="leaderboard"></div>
       </div>
 
-      <div class="foot">Controls: swipe / drag or D-pad on mobile • WASD / Arrow keys on desktop • tap Burst or press Space when charged.</div>
+      <div class="foot">Swipe or use the D-pad on mobile • WASD / arrows on desktop • Burst is your only panic button.</div>
     </aside>
 
     <main class="panel game-shell">
@@ -137,14 +136,14 @@
         <div class="hud-group">
           <div class="pill accent"><strong id="state">Standby</strong></div>
           <div class="pill">Best <strong id="best">0</strong></div>
-          <div class="pill">Rank <strong id="rank">Rookie</strong></div>
+          <div class="pill">Level <strong id="hudLevel">1</strong></div>
           <div class="pill">Drones <strong id="enemies">0</strong></div>
-          <div class="pill">District <strong id="theme">Prism Lock</strong></div>
+          <div class="pill">Zone <strong id="theme">Prism Lock</strong></div>
         </div>
         <div class="hud-group">
-          <div class="pill">Goal <strong id="goal">Collect shards</strong></div>
-          <div class="pill">Speed <strong id="speedBonus">+0</strong></div>
-          <div class="pill">Clear <strong id="clearPct">0%</strong></div>
+          <div class="pill accent">Goal <strong id="goal">Collect every shard</strong></div>
+          <div class="pill">Clear Bonus <strong id="speedBonus">+0</strong></div>
+          <div class="pill">Maze Clear <strong id="clearPct">0%</strong></div>
         </div>
       </div>
 
@@ -153,7 +152,7 @@
         <div id="overlay" class="overlay">
           <div id="overlayCard" class="overlay-card">
             <h2>Quantum Vault</h2>
-            <p>Clean the maze. Unlock the gate. Escape. It’s built to read instantly on a phone and still feel juicy on a bigger screen.</p>
+            <p>Collect every shard, wake the portal, and get out. Fewer rules, chunkier feedback, and a cleaner arcade rhythm on phones.</p>
             <div class="actions"><button id="overlayStart" class="primary">Enter Vault</button></div>
           </div>
         </div>
@@ -173,8 +172,8 @@
     const ctx = canvas.getContext('2d');
     const GRID = 21;
     const TILE = canvas.width / GRID;
-    const BEST_KEY = 'quantum-vault-best-simpler';
-    const BOARD_KEY = 'quantum-vault-board-simpler';
+    const BEST_KEY = 'quantum-vault-best-arcade-v2';
+    const BOARD_KEY = 'quantum-vault-board-arcade-v2';
 
     const scoreEl = document.getElementById('score');
     const bestHeroEl = document.getElementById('bestHero');
@@ -184,7 +183,7 @@
     const burstStateEl = document.getElementById('burstState');
     const stateEl = document.getElementById('state');
     const bestEl = document.getElementById('best');
-    const rankEl = document.getElementById('rank');
+    const hudLevelEl = document.getElementById('hudLevel');
     const enemiesEl = document.getElementById('enemies');
     const themeEl = document.getElementById('theme');
     const districtNameEl = document.getElementById('districtName');
@@ -221,14 +220,7 @@
       { name:'Solar Breach', hue:28, wallA:'rgba(255,190,92,.24)', wallB:'rgba(125,66,26,.58)', wallC:'rgba(255,123,132,.22)', floor:'rgba(255,190,92,.032)', shard:'#ffe08e', exit:'#ff9f78', playerA:'#ffffff', playerB:'#ffe1b4', enemy:'#ff6e8d', sky:'rgba(255,190,92,.1)' }
     ];
 
-    const RANKS = [
-      { score:0, name:'Rookie' },
-      { score:1500, name:'Runner' },
-      { score:4200, name:'Ghost' },
-      { score:9000, name:'Ace' },
-      { score:16000, name:'Legend' }
-    ];
-
+    
     const state = {
       running:false,
       paused:false,
@@ -259,6 +251,7 @@
       flash:0,
       shake:0,
       audioOn:true,
+      hudTick:0,
       audioStarted:false,
       theme:THEMES[0],
       clearGlow:0,
@@ -276,7 +269,6 @@
     const dist = (a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
     const vibrate = ms => navigator.vibrate && navigator.vibrate(ms);
     const cellCenter = (cx,cy)=>({x:cx*TILE+TILE/2,y:cy*TILE+TILE/2,cx,cy});
-    const getRankName = score => { let current = RANKS[0].name; for(const rank of RANKS) if(score >= rank.score) current = rank.name; return current; };
 
     function initAudio(){
       if(audioCtx) return;
@@ -406,7 +398,7 @@
         addPopup('NEW BEST', canvas.width/2, 110, '#ffd977', true);
         sfx('best');
       }
-      const label = `${getRankName(state.score)} • ${state.theme.name}`;
+      const label = `${state.theme.name} • ${new Date().toLocaleDateString([], { month:'short', day:'numeric' })}`;
       state.leaderboard.push({score:state.score, level:`L${state.level}`, label});
       state.leaderboard.sort((a,b)=>b.score-a.score);
       state.leaderboard = state.leaderboard.slice(0,5);
@@ -435,11 +427,11 @@
       burstStateEl.textContent = `${Math.round(state.burst)}%`;
       stateEl.textContent = state.over ? 'Run Lost' : state.paused ? 'Paused' : state.running ? (state.exitUnlocked ? 'Exit Open' : 'Collecting') : 'Standby';
       bestEl.textContent = state.best.toLocaleString();
-      rankEl.textContent = getRankName(state.score);
+      hudLevelEl.textContent = state.level;
       enemiesEl.textContent = state.enemies.length;
       themeEl.textContent = state.theme.name;
       districtNameEl.textContent = state.theme.name;
-      goalEl.textContent = state.exitUnlocked ? 'Reach the exit' : 'Collect shards';
+      goalEl.textContent = state.exitUnlocked ? 'Reach the portal' : 'Collect every shard';
       speedBonusEl.textContent = `+${state.speedBonus}`;
       clearPctEl.textContent = `${clearPct}%`;
     }
@@ -470,8 +462,8 @@
       state.exitUnlocked = false;
       state.exit = {...cellCenter(GRID-2, GRID-2), pulse:0};
       state.shardCount = 0;
-      state.levelTimer = Math.max(11, 28 - level * .75);
-      state.speedBonus = Math.round(state.levelTimer) * 25;
+      state.levelTimer = Math.max(10, 24 - level * .65);
+      state.speedBonus = Math.round(state.levelTimer) * 30;
       state.burst = clamp(state.burst + 16, 0, 100);
 
       const totalShards = 7 + Math.min(7, level - 1);
@@ -482,7 +474,7 @@
         state.shards.push({...c,rot:rand(0,Math.PI*2),pulse:rand(0,Math.PI*2)});
       }
 
-      const enemyCount = Math.min(4, 2 + Math.floor((level - 1) / 3));
+      const enemyCount = Math.min(4, 1 + Math.floor(level / 2));
       for(let i=0;i<enemyCount;i++) spawnEnemy(i);
       buildAmbient();
       syncHud();
@@ -491,14 +483,8 @@
     function spawnEnemy(i){
       let c = randomOpenCell();
       while(Math.abs(c.cx-1)<4&&Math.abs(c.cy-1)<4) c = randomOpenCell();
-      const types = ['drift','hunter','orbiter'];
-      const type = types[i % types.length];
-      const conf = {
-        drift:{speed:0.96 + state.level*.04,r:TILE*.2,h:state.theme.hue + 120},
-        hunter:{speed:1.05 + state.level*.05,r:TILE*.22,h:state.theme.hue + 150},
-        orbiter:{speed:0.9 + state.level*.045,r:TILE*.18,h:state.theme.hue + 90}
-      }[type];
-      state.enemies.push({x:c.x,y:c.y,type,hue:conf.h,speed:conf.speed,radius:conf.r,trail:[],wobble:rand(0,Math.PI*2),stunned:0,dir:{x:0,y:0},turnBias:Math.random()<.5?-1:1});
+      const hueOffset = [120, 138, 156, 174][i % 4];
+      state.enemies.push({x:c.x,y:c.y,type:'sentry',hue:state.theme.hue + hueOffset,speed:0.88 + state.level*.05 + i*.025,radius:TILE*.205,trail:[],wobble:rand(0,Math.PI*2),stunned:0,dir:{x:0,y:0},target:{x:c.x,y:c.y}});
     }
 
     function resetRun(){
@@ -514,7 +500,7 @@
       state.newBestGlow = 0;
       setupLevel(1);
       overlay.classList.remove('hidden');
-      overlayCard.innerHTML = `<h2>Quantum Vault</h2><p>Collect every shard, unlock the exit, and dash out before the drones box you in. Fast, readable, and better on a phone.</p><div class="actions"><button id="restartAction" class="primary">Enter Vault</button></div>`;
+      overlayCard.innerHTML = `<h2>Quantum Vault</h2><p>Collect every shard, wake the portal, and escape. Clean objective, quick retries, and softer mobile controls.</p><div class="actions"><button id="restartAction" class="primary">Enter Vault</button></div>`;
       document.getElementById('restartAction').addEventListener('click', startGame);
       syncHud();
     }
@@ -544,8 +530,7 @@
         if(Math.hypot(shard.x - state.player.x, shard.y - state.player.y) < TILE*.35){
           state.shardCount += 1;
           state.burst = clamp(state.burst + 24, 0, 100);
-          const clearBonus = Math.round((state.shardCount / state.shardTotal) * 90);
-          awardScore(110 + clearBonus, `SHARD +${110 + clearBonus}`, shard.x, shard.y - 18, state.theme.shard);
+          awardScore(100, 'SHARD +100', shard.x, shard.y - 18, state.theme.shard);
           addParticles(shard.x, shard.y, state.theme.shard, 26, 5, 1.1);
           addRing(shard.x, shard.y, state.theme.shard, 18, 72);
           sfx('shard');
@@ -557,10 +542,11 @@
     }
 
     function nextLevel(){
-      const speedBonus = state.speedBonus;
-      const levelBonus = 520 + state.level * 180;
-      const lifeBonus = state.lives * 220;
-      awardScore(levelBonus + lifeBonus + speedBonus, `CLEAR +${levelBonus + lifeBonus + speedBonus}`, state.exit.x, state.exit.y - 48, '#baff8b');
+      const speedBonus = Math.round(state.speedBonus);
+      const levelBonus = 360 + state.level * 140;
+      const lifeBonus = state.lives * 180;
+      const totalBonus = levelBonus + lifeBonus + speedBonus;
+      awardScore(totalBonus, `CLEAR +${totalBonus}`, state.exit.x, state.exit.y - 48, '#baff8b');
       state.level += 1;
       setupLevel(state.level);
       state.running = true;
@@ -575,8 +561,8 @@
       state.running = false;
       const result = maybeRecordBest();
       overlay.classList.remove('hidden');
-      const medal = result.wasNewBest ? '🏆 New local best' : result.place === 2 ? '🥈 Second-best local run' : result.place === 3 ? '🥉 Third-best local run' : '✨ Solid run';
-      overlayCard.innerHTML = `<h2>${reason}</h2><p><strong>${medal}</strong></p><p>You reached <strong>level ${state.level}</strong> with <strong>${state.score.toLocaleString()}</strong> points as a <strong>${getRankName(state.score)}</strong>. Local board place: <strong>#${result.place}</strong>.</p><p style="margin-top:10px;color:rgba(255,255,255,.72)">Best local score: <strong>${state.best.toLocaleString()}</strong> • Shards cleared this level: <strong>${state.shardCount}/${state.shardTotal}</strong></p><div class="actions"><button id="restartBtn" class="primary">Run Again</button></div>`;
+      const medal = result.wasNewBest ? '🏆 New local best' : result.place === 2 ? '🥈 #2 on your device' : result.place === 3 ? '🥉 #3 on your device' : '✨ Back in instantly';
+      overlayCard.innerHTML = `<h2>${reason}</h2><p><strong>${medal}</strong></p><p>You reached <strong>level ${state.level}</strong> with <strong>${state.score.toLocaleString()}</strong> points. Local board place: <strong>#${result.place}</strong>.</p><p style="margin-top:10px;color:rgba(255,255,255,.72)">Best local score: <strong>${state.best.toLocaleString()}</strong> • Shards cleared this level: <strong>${state.shardCount}/${state.shardTotal}</strong></p><div class="actions"><button id="restartBtn" class="primary">Run Again</button></div>`;
       document.getElementById('restartBtn').addEventListener('click', startGame);
       syncHud();
     }
@@ -609,6 +595,7 @@
       p.hitCooldown = Math.max(0, p.hitCooldown - dt);
       p.burstGlow = Math.max(0, p.burstGlow - dt);
       const boost = 1 + p.burstGlow*.08;
+      if((!state.running || state.over) && (p.nextDir.x || p.nextDir.y)) startGame();
       const dx = p.nextDir.x * p.speed * boost;
       const dy = p.nextDir.y * p.speed * boost;
       const cx = Math.round((p.x - TILE/2) / TILE) * TILE + TILE/2;
@@ -640,18 +627,17 @@
 
     function chooseEnemyStep(enemy, ec, pc, opts){
       if(!opts.length) return {x:0,y:0};
-      const sortToward = [...opts].sort((a,b)=>{
+      const toward = [...opts].sort((a,b)=>{
         const as = Math.abs((ec.cx+a.x)-pc.cx) + Math.abs((ec.cy+a.y)-pc.cy);
         const bs = Math.abs((ec.cx+b.x)-pc.cx) + Math.abs((ec.cy+b.y)-pc.cy);
         return as - bs;
       });
-      if(enemy.type === 'hunter') return sortToward[0];
-      if(enemy.type === 'orbiter'){
-        const lateral = opts.find(o => !(o.x === Math.sign(pc.cx-ec.cx) && o.y === Math.sign(pc.cy-ec.cy)));
-        return lateral || sortToward[0];
+      if(enemy.dir.x || enemy.dir.y){
+        const keep = toward.find(o => o.x === enemy.dir.x && o.y === enemy.dir.y);
+        if(keep && Math.random() < .72) return keep;
       }
-      if(Math.random() < .22) return opts[randi(0, opts.length - 1)];
-      return sortToward[0];
+      if(Math.random() < .16) return toward[Math.min(1, toward.length - 1)] || toward[0];
+      return toward[0];
     }
 
     function updateEnemies(dt){
@@ -662,14 +648,11 @@
         const ec = nearestCell(enemy.x, enemy.y);
         const opts = pathOptions(ec.cx, ec.cy);
         const choice = chooseEnemyStep(enemy, ec, pc, opts);
-        const speed = enemy.speed * (enemy.stunned ? .22 : 1) * dt * TILE;
-        const nx = enemy.x + choice.x * speed;
-        const ny = enemy.y + choice.y * speed;
-        if(canMoveTo(nx, ny, enemy.radius)){
-          enemy.x = nx;
-          enemy.y = ny;
-          enemy.dir = choice;
-        }
+        enemy.target = cellCenter(ec.cx + choice.x, ec.cy + choice.y);
+        const speed = enemy.speed * (enemy.stunned ? .18 : 1) * dt * TILE;
+        enemy.x += clamp(enemy.target.x - enemy.x, -speed, speed);
+        enemy.y += clamp(enemy.target.y - enemy.y, -speed, speed);
+        enemy.dir = choice;
         enemy.trail.push({x:enemy.x,y:enemy.y});
         if(enemy.trail.length > 12) enemy.trail.shift();
 
@@ -699,7 +682,7 @@
     }
 
     function updateFlow(dt){
-      state.burst = clamp(state.burst + dt * 2.6, 0, 100);
+      state.burst = clamp(state.burst + dt * 3.1, 0, 100);
       state.flash = Math.max(0, state.flash - dt);
       state.shake = Math.max(0, state.shake - dt);
       state.clearGlow = Math.max(0, state.clearGlow - dt);
@@ -707,7 +690,7 @@
       state.exit.pulse += dt * 3.2;
       if(!state.exitUnlocked){
         state.levelTimer = Math.max(0, state.levelTimer - dt);
-        state.speedBonus = state.levelTimer * 25;
+        state.speedBonus = state.levelTimer * 30;
       }
       else {
         state.speedBonus = Math.max(0, state.speedBonus);
@@ -772,6 +755,14 @@
         ctx.fillStyle = i%2===0 ? 'rgba(255,255,255,.012)' : state.theme.floor;
         ctx.fillRect(0, y, canvas.width, 1.1);
       }
+
+      const glowY = canvas.height * (.18 + ((performance.now() * 0.00008) % .64));
+      const sweep = ctx.createLinearGradient(0, glowY - 120, 0, glowY + 120);
+      sweep.addColorStop(0, 'rgba(255,255,255,0)');
+      sweep.addColorStop(.5, `hsla(${state.theme.hue},100%,70%,.07)`);
+      sweep.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = sweep;
+      ctx.fillRect(0, glowY - 120, canvas.width, 240);
     }
 
     function drawMaze(){
@@ -908,29 +899,17 @@
         ctx.shadowColor = `hsla(${enemy.hue},100%,60%,.9)`;
         ctx.fillStyle = enemy.stunned > 0 ? '#ffffff' : `hsl(${enemy.hue} 100% 64%)`;
         ctx.globalAlpha = enemy.stunned > 0 ? .82 : 1;
-        if(enemy.type === 'hunter'){
-          ctx.beginPath();
-          ctx.roundRect(-enemy.radius*.95,-enemy.radius*.92,enemy.radius*1.9,enemy.radius*1.84,8);
-          ctx.fill();
-        } else if(enemy.type === 'orbiter'){
-          ctx.beginPath();
-          for(let i=0;i<6;i++){
-            const a=Math.PI/3*i;
-            const r=i%2===0?enemy.radius*1.15:enemy.radius*.55;
-            const x=Math.cos(a)*r, y=Math.sin(a)*r;
-            i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
-          }
-          ctx.closePath();
-          ctx.fill();
-        } else {
-          ctx.beginPath();
-          ctx.moveTo(0,-enemy.radius*1.2);
-          ctx.lineTo(enemy.radius*1.05,enemy.radius*.86);
-          ctx.lineTo(0,enemy.radius*.42);
-          ctx.lineTo(-enemy.radius*1.05,enemy.radius*.86);
-          ctx.closePath();
-          ctx.fill();
-        }
+        ctx.beginPath();
+        ctx.roundRect(-enemy.radius*.95,-enemy.radius*.95,enemy.radius*1.9,enemy.radius*1.9,10);
+        ctx.fill();
+        ctx.fillStyle = 'rgba(4,10,22,.55)';
+        ctx.beginPath();
+        ctx.arc(0, 0, enemy.radius*.44, 0, Math.PI*2);
+        ctx.fill();
+        ctx.fillStyle = 'rgba(255,255,255,.92)';
+        ctx.beginPath();
+        ctx.arc(enemy.radius*.18, -enemy.radius*.12, enemy.radius*.12, 0, Math.PI*2);
+        ctx.fill();
         ctx.restore();
       });
     }
@@ -1013,7 +992,7 @@
       ctx.fillText(state.score.toLocaleString(), canvas.width/2, y + 76);
       ctx.font = '700 16px Inter, system-ui, sans-serif';
       ctx.fillStyle = 'rgba(255,255,255,.72)';
-      ctx.fillText(`Level ${state.level} • ${state.shardCount}/${state.shardTotal} shards • ${state.lives} lives • speed +${Math.max(0, Math.round(state.speedBonus))}`, canvas.width/2, y + 100);
+      ctx.fillText(`Level ${state.level} • ${state.shardCount}/${state.shardTotal} shards • ${state.lives} lives • clear bonus +${Math.max(0, Math.round(state.speedBonus))}`, canvas.width/2, y + 100);
       ctx.restore();
     }
 
@@ -1025,6 +1004,7 @@
       ctx.fillRect(0,0,canvas.width,canvas.height);
       drawTopBanner();
       drawMeters();
+      drawGridSweep();
       ctx.fillStyle = 'rgba(255,255,255,.72)';
       ctx.font = '700 14px Inter, system-ui, sans-serif';
       ctx.textAlign = 'center';
@@ -1041,6 +1021,17 @@
         ctx.fillStyle = `rgba(255,80,80,${state.flash*.22})`;
         ctx.fillRect(0,0,canvas.width,canvas.height);
       }
+    }
+
+    function drawGridSweep(){
+      ctx.save();
+      ctx.globalAlpha = .16;
+      ctx.strokeStyle = `hsla(${state.theme.hue},100%,70%,.16)`;
+      ctx.lineWidth = 1;
+      const drift = (performance.now() * 0.03) % TILE;
+      for(let x=drift; x<canvas.width; x+=TILE){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke(); }
+      for(let y=(drift*0.7)%TILE; y<canvas.height; y+=TILE){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke(); }
+      ctx.restore();
     }
 
     function render(){

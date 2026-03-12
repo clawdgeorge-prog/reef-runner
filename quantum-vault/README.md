@@ -1,34 +1,36 @@
 # Quantum Vault
 
-Quantum Vault is a simpler, more mobile-first neon arcade maze game.
+Quantum Vault is a mobile-first neon maze arcade game built around one clean objective loop.
 
 ## Core loop
 - Collect every shard in the maze
-- The exit opens when the maze is clear
-- Escape to advance to the next district
-- Use Pulse Burst as a simple defensive panic button when charged
+- The portal opens when the maze is clear
+- Escape to move to the next district
+- Use Pulse Burst as your one simple panic button
 
-## What changed in this pass
-- Simplified the run into **one obvious objective**: clear all shards, then reach the exit
-- Tuned the game harder toward phones:
-  - cleaner mobile layout
-  - chunkier cards and controls
-  - more forgiving lane-following turns so swipe input feels less fussy
-- Simplified scoring into a clearer arcade model:
-  - shard pickups are always worth straightforward points
-  - each district has a visible **speed bonus** that drains over time
-  - surviving with more lives adds a simple end-of-level bonus
-  - local top scores still track your best runs
-- Kept Pulse Burst as the one easy-to-read special move instead of layering in more systems
-- Reduced drone scaling a bit so early runs stay readable and fair on a phone
-- Improved presentation with richer drifting light beams, smoother motion, stronger glow, and a cleaner composition on small screens
-- Kept the game instantly replayable after each loss
+## This polish pass
+- Simplified the run even further:
+  - removed mixed enemy roles in favor of one easier-to-read sentry threat
+  - kept the focus on **collect everything, then escape**
+  - trimmed UI wording and reduced mobile clutter
+- Made the game more phone-friendly:
+  - denser, clearer mobile HUD cards
+  - hidden nonessential instruction panel on small screens
+  - forgiving lane-follow turning remains in place
+- Improved the arcade score feel:
+  - shards are a flat **100 points** each
+  - level clears cash out as a clean bonus from speed + level + remaining lives
+  - refreshed local leaderboard storage for the simpler arcade format
+- Upgraded presentation and smoothness:
+  - richer animated light sweeps and scan-grid motion
+  - cleaner sentry silhouettes with softer movement
+  - stronger portal and background glow for a prettier read at a glance
 
 ## Controls
 - **Desktop:** WASD / Arrow keys to move, Space for Pulse Burst
-- **Mobile:** swipe / drag or use the D-pad, tap Burst to stun nearby drones when charged
+- **Mobile:** swipe / drag or use the D-pad, tap Burst to stun nearby sentries when charged
 
 ## Notes
 - Fully self-contained; no external assets required
 - Scores and leaderboard are stored in local browser storage
-- Best results come from clearing efficiently, staying alive, and keeping the speed bonus alive
+- Best runs come from efficient shard collection, avoiding hits, and banking the clear bonus quickly

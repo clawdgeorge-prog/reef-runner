@@ -528,6 +528,65 @@
     if(kind==='flow'){ tone(660,'triangle',.08,0,.024 * motionGain); tone(990,'sine',.12,.03,.018 * motionGain); }
     if(kind==='flowBreak'){ tone(210,'square',.12,0,.024 * motionGain); tone(168,'triangle',.16,.04,.02 * motionGain); }
     if(kind==='dodge'){ tone(840,'triangle',.09,0,.022 * motionGain); tone(1260,'sine',.11,.03,.016 * motionGain); tone(1680,'triangle',.12,.06,.012 * motionGain); }
+    // District trait stingers - unique audio per theme
+    if(kind==='traitAstra'){ tone(330,'triangle',.22,0,.052 * motionGain); tone(440,'sine',.18,.04,.038 * motionGain); tone(660,'triangle',.28,.08,.028 * motionGain); tone(880,'sine',.32,.14,.018 * motionGain); }
+    if(kind==='traitVelour'){ tone(294,'sine',.18,0,.048 * motionGain); tone(440,'triangle',.24,.06,.036 * motionGain); tone(523,'sine',.32,.12,.026 * motionGain); tone(784,'triangle',.38,.18,.014 * motionGain); noiseBurst(.08,.012 * motionGain); }
+    if(kind==='traitSol'){ tone(247,'sawtooth',.16,0,.054 * motionGain); tone(370,'triangle',.2,.05,.042 * motionGain); tone(494,'sine',.28,.1,.032 * motionGain); tone(740,'triangle',.36,.16,.02 * motionGain); tone(988,'square',.22,.2,.01 * motionGain); }
+    if(kind==='traitNyx'){ tone(174,'sine',.24,0,.05 * motionGain); tone(261,'triangle',.2,.06,.04 * motionGain); tone(349,'sine',.32,.12,.028 * motionGain); tone(466,'triangle',.4,.2,.018 * motionGain); tone(582,'square',.18,.28,.008 * motionGain); }
+  }
+  // District trait activation - unique visual stingers
+  function playTraitStinger(themeName, cx, cy){
+    const cxT = cx * TILE + TILE/2, cyT = cy * TILE + TILE/2;
+    const motion = state.settings.reducedMotion ? 0.55 : 1;
+    if(themeName === 'Astra'){
+      // Flux Reserve: expanding energy rings
+      for(let i=0;i<3;i++){
+        state.pulses.push({x:cxT,y:cyT,radius:12,life:.55+i*.12,maxLife:.7, growth:380 + i*120, hueShift:190});
+      }
+      addParticles(cxT, cyT, 'rgba(99,242,255,.92)', 32 * motion, 6.2, 1.4);
+      addParticles(cxT, cyT, 'rgba(85,167,255,.88)', 24 * motion, 4.8, 1.1);
+      state.cameraShake = Math.max(state.cameraShake, .28);
+    } else if(themeName === 'Velour'){
+      // Mirage Grid: swirling illusion pillars
+      for(let i=0;i<4;i++){
+        const angle = (Math.PI*2/4)*i + rand(-.2,.2);
+        const dist = rand(60, 140) * motion;
+        addParticles(cxT + Math.cos(angle)*dist, cyT + Math.sin(angle)*dist, 'rgba(194,128,255,.85)', 14 * motion, 2.8, 1.2);
+      }
+      addParticles(cxT, cyT, 'rgba(255,148,216,.9)', 28 * motion, 5.5, 1.35);
+      state.cameraShake = Math.max(state.cameraShake, .18);
+    } else if(themeName === 'Sol'){
+      // Overcharge Lattice: explosive solar burst
+      for(let i=0;i<6;i++){
+        const angle = (Math.PI*2/6)*i;
+        const dist = rand(80, 160) * motion;
+        const px = cxT + Math.cos(angle)*dist, py = cyT + Math.sin(angle)*dist;
+        addParticles(px, py, 'rgba(255,199,101,.88)', 12 * motion, 3.2, 1.0);
+      }
+      addParticles(cxT, cyT, 'rgba(255,246,214,.95)', 42 * motion, 7.2, 1.5);
+      state.cameraShake = Math.max(state.cameraShake, .35);
+      addCallout(cxT, cyT - 30, 'OVERCHARGE', '#fff7d2', '#ffd76a', 1.2, 1.2);
+    } else if(themeName === 'Nyx'){
+      // Blink Mesh: eerie void tears
+      for(let i=0;i<5;i++){
+        const angle = rand(0, Math.PI*2);
+        const dist = rand(50, 120) * motion;
+        state.particles.push({
+          x: cxT + Math.cos(angle)*dist,
+          y: cyT + Math.sin(angle)*dist,
+          vx: rand(-60,60) * motion,
+          vy: rand(-60,60) * motion,
+          size: rand(3, 7),
+          life: rand(0.6, 1.1),
+          maxLife: 1.1,
+          color: `hsla(${rand(340, 360)}, 100%, ${rand(65, 80)}%, .9)`
+        });
+      }
+      addParticles(cxT, cyT, 'rgba(255,114,114,.88)', 26 * motion, 4.5, 1.25);
+      addParticles(cxT, cyT, 'rgba(255,143,143,.82)', 18 * motion, 3.2, 0.95);
+      state.cameraShake = Math.max(state.cameraShake, .22);
+      addCallout(cxT, cyT - 28, 'BLINK ACTIVE', '#ffe4dc', '#ff8f63', 1.15, 1.15);
+    }
   }
   function addParticles(x,y,color,count,spread=3.2,life=1){
     const scaledCount = Math.max(4, Math.round(count * (state.settings.reducedMotion ? 0.45 : 1)));
@@ -626,6 +685,11 @@
       districtBanner.classList.add('visible');
       addParticles(state.player?.x ?? canvas.width * .5, state.player?.y ?? canvas.height * .5, state.currentTheme.gateA, 26, 6.4, 1.2);
       playSfx('gate');
+      // Play district-specific trait stinger
+      const themeName = state.currentTheme.name;
+      const playerCell = nearestCell(state.player?.x ?? canvas.width/2, state.player?.y ?? canvas.height/2);
+      playTraitStinger(themeName, playerCell.cx, playerCell.cy);
+      playSfx('trait' + themeName);
     } else {
       districtBanner.classList.remove('visible');
     }
@@ -1207,7 +1271,7 @@
     ctx.restore();
   }
   function drawRibbons(){ state.ribbons.forEach(r=>{ ctx.fillStyle=r.color.replace('.22', String(r.life*.28)); ctx.beginPath(); ctx.arc(r.x,r.y,r.size*r.life*.36,0,Math.PI*2); ctx.fill(); }); }
-  function drawPulses(){ state.pulses.forEach(p=>{ const alpha=p.life/p.maxLife; ctx.save(); ctx.strokeStyle=`rgba(99,242,255,${alpha})`; ctx.lineWidth=10; ctx.shadowBlur=40; ctx.shadowColor='#63f2ff'; ctx.beginPath(); ctx.arc(p.x,p.y,p.radius,0,Math.PI*2); ctx.stroke(); ctx.restore(); }); }
+  function drawPulses(){ state.pulses.forEach(p=>{ const alpha=p.life/p.maxLife; const hue = p.hueShift !== undefined ? p.hueShift : 190; const color = `hsla(${hue}, 100%, 68%, ${alpha})`; const glow = `hsla(${hue}, 100%, 58%, ${alpha})`; ctx.save(); ctx.strokeStyle=color; ctx.lineWidth=10; ctx.shadowBlur=40; ctx.shadowColor=glow; ctx.beginPath(); ctx.arc(p.x,p.y,p.radius,0,Math.PI*2); ctx.stroke(); ctx.restore(); }); }
   function drawDecoys(){
     state.decoys.forEach(decoy => {
       const lifeAlpha = decoy.life / decoy.maxLife;

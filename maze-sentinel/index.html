@@ -159,7 +159,7 @@
         <ul>
           <li>Great graphics first: bloom-style glows, depth, particles, ambience, readable color hierarchy</li>
           <li>Simplified game loop for stronger polish and cleaner feel</li>
-          <li>Mobile-friendly controls with tap-to-start and swipe movement</li>
+          <li>Mobile-friendly controls with tap-to-start, live drag steering, and forgiving lane turns</li>
           <li>Not Pac-Man themed — more sleek sci-fi pursuit than cartoon maze munching</li>
         </ul>
       </div>
@@ -177,7 +177,7 @@
           <li>Hunter drones now telegraph lock-ons before a high-speed surge</li>
         </ul>
       </div>
-      <div class="footnote">Controls: WASD / Arrow keys • Space = Pulse • Shift / X = Decoy • Drag on mobile to steer with continuous turn assist • Tap the arena to start or pulse.</div>
+      <div class="footnote">Controls: WASD / Arrow keys • Space = Pulse • Shift / X = Decoy • Drag anywhere on mobile to steer continuously with turn assist • Tap the arena to start or pulse.</div>
     </aside>
     <main class="panel game-shell">
       <div class="hud">
@@ -195,6 +195,7 @@
           <div class="pill">Trait <strong id="districtTrait">Flux Reserve</strong></div>
           <div class="pill">Nav <strong id="navLabel">Shard</strong></div>
           <div class="pill">Wave <strong id="waveType">Scout</strong></div>
+          <div class="pill">Intel <strong id="intelLabel">Pursuit</strong></div>
           <div class="pill">Danger <strong id="dangerLabel">Clear</strong></div>
         </div>
       </div>
@@ -243,6 +244,7 @@
   const navLabelEl = document.getElementById('navLabel');
   const stateLabelEl = document.getElementById('stateLabel');
   const waveTypeEl = document.getElementById('waveType');
+  const intelLabelEl = document.getElementById('intelLabel');
   const dangerLabelEl = document.getElementById('dangerLabel');
   const startBtn = document.getElementById('startBtn');
   const pauseBtn = document.getElementById('pauseBtn');
@@ -301,7 +303,7 @@
     player:null, drones:[], particles:[], ribbons:[], pulses:[], decoys:[], links:[], shard:null, gate:null, exitPortal:null, ambience:[], sparks:[],
     routePath:[], routeType:'shard', routePulse:0,
     lastTs:0, spawnTimer:0, flash:0, cameraShake:0, shardGlow:0, pulseCounter:0, decoyCharges:1, waveType:'Scout', audioEnabled:true, audioStarted:false,
-    themeIndex:0, currentTheme:districts[0], districtBannerTimer:0, dangerLevel:0, dangerLabel:'Clear', hunterPressure:false, threatVectors:[],
+    themeIndex:0, currentTheme:districts[0], districtBannerTimer:0, dangerLevel:0, dangerLabel:'Clear', hunterPressure:false, threatVectors:[], intelLabel:'Pursuit',
     exitTimer:0, exitTimerMax:0, exitAlarmTimer:0, exitRelocations:0,
     settings:{ reducedMotion: localStorage.getItem(MOTION_KEY) === '1', highContrast: localStorage.getItem(CONTRAST_KEY) === '1' }
   };
@@ -353,6 +355,7 @@
   function randomOpenCell(){ let c; do c=cellCenter(randi(1,GRID-2),randi(1,GRID-2)); while(isWall(c.cx,c.cy)); return c; }
   function canMoveTo(x,y,r){ const pts=[{x:x-r,y:y-r},{x:x+r,y:y-r},{x:x-r,y:y+r},{x:x+r,y:y+r}]; return pts.every(p=>!isWall(Math.floor(p.x/TILE),Math.floor(p.y/TILE))); }
   function nearestCell(x,y){ return {cx:Math.floor(x/TILE), cy:Math.floor(y/TILE)}; }
+  function cellDistance(a,b){ return Math.abs(a.cx-b.cx)+Math.abs(a.cy-b.cy); }
   function pathOptions(cx,cy){ return [{x:1,y:0},{x:-1,y:0},{x:0,y:1},{x:0,y:-1}].filter(d=>!isWall(cx+d.x, cy+d.y)); }
   function initAudio(){
     if(audioCtx) return;
@@ -525,16 +528,16 @@
     }[type];
     state.waveType = type[0].toUpperCase() + type.slice(1);
     state.drones.push({
-      x:c.x, y:c.y, radius:config.radius, speed:config.speed, hue:config.hue, stunned:0, trail:[], wobble:rand(0,Math.PI*2), type,
+      x:c.x, y:c.y, radius:config.radius, speed:config.speed, hue:config.hue, stunned:0, trail:[], wobble:rand(0,Math.PI*2), type, intent:'Pursuit',
       surgeCooldown: rand(1.8, 3.4), surgeTelegraph:0, surgeBurst:0, surgeTarget:{x:c.x,y:c.y}
     });
   }
   function resetGame(){
-    state.running=false; state.paused=false; state.over=false; state.score=0; state.level=1; state.health=3; state.charge=0; state.shards=0; state.levelShards=0; state.objectiveTarget=4; state.drones=[]; state.particles=[]; state.ribbons=[]; state.pulses=[]; state.decoys=[]; state.links=[]; state.routePath=[]; state.routeType='shard'; state.routePulse=0; state.spawnTimer=0; state.flash=0; state.cameraShake=0; state.shardGlow=0; state.pulseCounter=0; state.decoyCharges=1; state.waveType='Scout'; state.districtBannerTimer=0; state.exitPortal=null; state.dangerLevel=0; state.dangerLabel='Clear'; state.hunterPressure=false; state.threatVectors=[]; state.exitTimer=0; state.exitTimerMax=0; state.exitAlarmTimer=0; state.exitRelocations=0;
+    state.running=false; state.paused=false; state.over=false; state.score=0; state.level=1; state.health=3; state.charge=0; state.shards=0; state.levelShards=0; state.objectiveTarget=4; state.drones=[]; state.particles=[]; state.ribbons=[]; state.pulses=[]; state.decoys=[]; state.links=[]; state.routePath=[]; state.routeType='shard'; state.routePulse=0; state.spawnTimer=0; state.flash=0; state.cameraShake=0; state.shardGlow=0; state.pulseCounter=0; state.decoyCharges=1; state.waveType='Scout'; state.districtBannerTimer=0; state.exitPortal=null; state.dangerLevel=0; state.dangerLabel='Clear'; state.hunterPressure=false; state.threatVectors=[]; state.intelLabel='Pursuit'; state.exitTimer=0; state.exitTimerMax=0; state.exitAlarmTimer=0; state.exitRelocations=0;
     state.player=initPlayer(); setDistrictTheme(0, false); spawnShard(); spawnGate(); for(let i=0;i<3;i++) spawnDrone(); updateRouteAssist(); syncHud();
     overlay.classList.remove('hidden');
   }
-  function syncHud(){ scoreEl.textContent=state.score; levelEl.textContent=state.level; healthEl.textContent=state.health; chargeEl.textContent=`${Math.round(state.charge)}%`; bestScoreEl.textContent=state.best; shardCountEl.textContent=state.shards; objectiveCountEl.textContent = state.exitPortal ? `Escape ${Math.max(0, state.exitTimer).toFixed(1)}s` : `${state.levelShards} / ${state.objectiveTarget}`; objectiveCountEl.parentElement.title = state.exitPortal ? 'Exit breach window before the portal relocates.' : 'Collect enough shards to breach the district exit.'; pulseCellsEl.textContent=state.pulseCounter; decoyCountEl.textContent=state.decoyCharges; droneCountEl.textContent=state.drones.length; districtNameEl.textContent=state.currentTheme.name; districtTraitEl.textContent=state.currentTheme.trait; districtTraitEl.parentElement.title = state.currentTheme.traitDesc; navLabelEl.textContent = state.routeType === 'exit' ? 'Exit' : 'Shard'; navLabelEl.parentElement.title = state.routeType === 'exit' ? 'Breadcrumb line is guiding you to the open portal before it shifts.' : 'Breadcrumb line is guiding you to the next shard.'; waveTypeEl.textContent=state.waveType; dangerLabelEl.textContent = state.dangerLabel; dangerLabelEl.style.color = state.hunterPressure ? '#ffd1f0' : state.dangerLevel > .68 ? '#ff8a8a' : state.dangerLevel > .38 ? '#ffd76a' : '#bfffee'; dangerLabelEl.parentElement.title = state.hunterPressure ? 'Hunter surge telegraph is active.' : state.dangerLevel > .68 ? 'Multiple drones are in striking range.' : state.dangerLevel > .38 ? 'Nearby drone pressure rising.' : 'Nearby routes are relatively safe.'; stateLabelEl.textContent=state.over?'Run Lost':state.paused?'Paused':state.running?(state.exitPortal?'Exit Open':'Active'):'Standby'; }
+  function syncHud(){ scoreEl.textContent=state.score; levelEl.textContent=state.level; healthEl.textContent=state.health; chargeEl.textContent=`${Math.round(state.charge)}%`; bestScoreEl.textContent=state.best; shardCountEl.textContent=state.shards; objectiveCountEl.textContent = state.exitPortal ? `Escape ${Math.max(0, state.exitTimer).toFixed(1)}s` : `${state.levelShards} / ${state.objectiveTarget}`; objectiveCountEl.parentElement.title = state.exitPortal ? 'Exit breach window before the portal relocates.' : 'Collect enough shards to breach the district exit.'; pulseCellsEl.textContent=state.pulseCounter; decoyCountEl.textContent=state.decoyCharges; droneCountEl.textContent=state.drones.length; districtNameEl.textContent=state.currentTheme.name; districtTraitEl.textContent=state.currentTheme.trait; districtTraitEl.parentElement.title = state.currentTheme.traitDesc; navLabelEl.textContent = state.routeType === 'exit' ? 'Exit' : 'Shard'; navLabelEl.parentElement.title = state.routeType === 'exit' ? 'Breadcrumb line is guiding you to the open portal before it shifts.' : 'Breadcrumb line is guiding you to the next shard.'; waveTypeEl.textContent=state.waveType; intelLabelEl.textContent = state.intelLabel; intelLabelEl.style.color = state.intelLabel === 'Lock' ? '#ffd1f0' : state.intelLabel === 'Intercept' ? '#8feeff' : state.intelLabel === 'Anchor' ? '#ffe08d' : state.intelLabel === 'Decoy' ? '#ff9fdb' : '#d5f7ff'; intelLabelEl.parentElement.title = state.intelLabel === 'Lock' ? 'Nearest hunter is lining up a surge lane.' : state.intelLabel === 'Intercept' ? 'Scouts are cutting toward your current route.' : state.intelLabel === 'Anchor' ? 'Glimmers are guarding the live objective.' : state.intelLabel === 'Decoy' ? 'Your decoy is actively bending the drone pack.' : 'Drone pack is mostly in direct pursuit.'; dangerLabelEl.textContent = state.dangerLabel; dangerLabelEl.style.color = state.hunterPressure ? '#ffd1f0' : state.dangerLevel > .68 ? '#ff8a8a' : state.dangerLevel > .38 ? '#ffd76a' : '#bfffee'; dangerLabelEl.parentElement.title = state.hunterPressure ? 'Hunter surge telegraph is active.' : state.dangerLevel > .68 ? 'Multiple drones are in striking range.' : state.dangerLevel > .38 ? 'Nearby drone pressure rising.' : 'Nearby routes are relatively safe.'; stateLabelEl.textContent=state.over?'Run Lost':state.paused?'Paused':state.running?(state.exitPortal?'Exit Open':'Active'):'Standby'; }
   function tryChangeDir(dir){ state.player.nextDir=dir; }
   function updatePlayer(dt){
     const p=state.player;
@@ -621,9 +624,36 @@
     vibrate(12);
     syncHud();
   }
+  function objectiveCell(){
+    const objective = routeObjective();
+    if(!objective) return null;
+    return { cx: objective.cx ?? Math.floor(objective.x / TILE), cy: objective.cy ?? Math.floor(objective.y / TILE) };
+  }
+  function routeInterceptCell(){
+    if(!state.routePath.length) return null;
+    const index = Math.min(state.routePath.length - 1, state.exitPortal ? 4 : 3);
+    return nearestCell(state.routePath[index].x, state.routePath[index].y);
+  }
+  function pickDroneIntent(drone, playerCell, objectiveCell, interceptCell, activeDecoy){
+    if(activeDecoy){
+      return { label: 'Decoy', cell: {cx:activeDecoy.cx, cy:activeDecoy.cy}, playerWeight: drone.type === 'hunter' ? 0.28 : 0.38, targetWeight: drone.type === 'hunter' ? 0.72 : drone.type === 'scout' ? 0.62 : 0.42, supportWeight: 0 };
+    }
+    if(drone.type === 'hunter'){
+      return { label: drone.surgeTelegraph > 0 || drone.surgeBurst > 0 ? 'Lock' : 'Pursuit', cell: playerCell, playerWeight: 1, targetWeight: 0, supportWeight: 0 };
+    }
+    if(drone.type === 'scout' && interceptCell && cellDistance(interceptCell, playerCell) >= 2){
+      return { label: 'Intercept', cell: interceptCell, playerWeight: 0.34, targetWeight: 0.66, supportWeight: 0.12 };
+    }
+    if(drone.type === 'glimmer' && objectiveCell){
+      return { label: 'Anchor', cell: objectiveCell, playerWeight: 0.22, targetWeight: 0.78, supportWeight: 0.12 };
+    }
+    return { label: 'Pursuit', cell: playerCell, playerWeight: 0.82, targetWeight: 0.18, supportWeight: 0 };
+  }
   function updateDrones(dt){
     const playerCell=nearestCell(state.player.x,state.player.y);
     const activeDecoy = state.decoys.length ? state.decoys[state.decoys.length - 1] : null;
+    const liveObjective = objectiveCell();
+    const interceptCell = routeInterceptCell();
     state.drones.forEach(drone=>{
       drone.wobble += dt*(drone.type==='glimmer'?6:4);
       drone.stunned=Math.max(0,drone.stunned-dt);
@@ -653,22 +683,26 @@
         }
       }
       const dc=nearestCell(drone.x,drone.y); const opts=pathOptions(dc.cx,dc.cy); let choice={x:0,y:0};
+      const intent = pickDroneIntent(drone, playerCell, liveObjective, interceptCell, activeDecoy);
+      drone.intent = intent.label;
       if(opts.length){
-        const decoyWeight = activeDecoy ? (drone.type==='hunter' ? 0.72 : drone.type==='scout' ? 0.58 : 0.3) : 0;
         opts.sort((a,b)=>{
           const nextA = { cx: dc.cx + a.x, cy: dc.cy + a.y };
           const nextB = { cx: dc.cx + b.x, cy: dc.cy + b.y };
-          const aPlayer = Math.abs(nextA.cx-playerCell.cx)+Math.abs(nextA.cy-playerCell.cy);
-          const bPlayer = Math.abs(nextB.cx-playerCell.cx)+Math.abs(nextB.cy-playerCell.cy);
-          const aDecoy = activeDecoy ? Math.abs(nextA.cx-activeDecoy.cx)+Math.abs(nextA.cy-activeDecoy.cy) : aPlayer;
-          const bDecoy = activeDecoy ? Math.abs(nextB.cx-activeDecoy.cx)+Math.abs(nextB.cy-activeDecoy.cy) : bPlayer;
-          const aScore = aPlayer * (1-decoyWeight) + aDecoy * decoyWeight;
-          const bScore = bPlayer * (1-decoyWeight) + bDecoy * decoyWeight;
+          const aPlayer = cellDistance(nextA, playerCell);
+          const bPlayer = cellDistance(nextB, playerCell);
+          const aTarget = intent.cell ? cellDistance(nextA, intent.cell) : aPlayer;
+          const bTarget = intent.cell ? cellDistance(nextB, intent.cell) : bPlayer;
+          const aObjective = liveObjective ? cellDistance(nextA, liveObjective) : aPlayer;
+          const bObjective = liveObjective ? cellDistance(nextB, liveObjective) : bPlayer;
+          const aScore = aPlayer * (intent.playerWeight ?? 0.5) + aTarget * (intent.targetWeight ?? 0.5) + aObjective * (liveObjective ? (intent.supportWeight ?? 0) : 0);
+          const bScore = bPlayer * (intent.playerWeight ?? 0.5) + bTarget * (intent.targetWeight ?? 0.5) + bObjective * (liveObjective ? (intent.supportWeight ?? 0) : 0);
           return drone.stunned>0 ? bScore-aScore : aScore-bScore;
         });
         if(drone.type==='glimmer' && Math.random()<.22) choice = opts[opts.length-1];
         else if(drone.type==='hunter' && drone.surgeBurst>0) choice = opts[0];
         else if(drone.type==='hunter' && opts[1] && Math.random()<.15) choice = opts[1];
+        else if(drone.type==='scout' && drone.intent==='Intercept' && opts[1] && Math.random()<.18) choice = opts[1];
         else choice=opts[0];
       }
       const speedScale = drone.stunned>0 ? .28 : drone.type==='hunter' && drone.surgeBurst>0 ? 2.35 : drone.type==='hunter' && drone.surgeTelegraph>0 ? .32 : 1;
@@ -703,6 +737,7 @@
       state.dangerLabel = 'Clear';
       state.hunterPressure = false;
       state.threatVectors = [];
+      state.intelLabel = 'Pursuit';
       dangerLabelEl.textContent = state.dangerLabel;
       dangerLabelEl.style.color = '#bfffee';
       dangerLabelEl.parentElement.title = 'Nearby routes are relatively safe.';
@@ -721,6 +756,8 @@
     state.dangerLevel = clamp(threats.slice(0, 3).reduce((sum, t, idx) => sum + t.pressure * (idx === 0 ? 0.54 : idx === 1 ? 0.28 : 0.18), 0), 0, 1);
     state.dangerLabel = state.hunterPressure ? 'Lock' : state.dangerLevel > .78 ? 'Critical' : state.dangerLevel > .54 ? 'Hot' : state.dangerLevel > .3 ? 'Close' : 'Clear';
     state.threatVectors = threats.slice(0, 3);
+    const topIntent = state.threatVectors[0]?.drone?.intent;
+    state.intelLabel = state.hunterPressure ? 'Lock' : topIntent === 'Anchor' ? 'Anchor' : topIntent === 'Intercept' ? 'Intercept' : topIntent === 'Decoy' ? 'Decoy' : 'Pursuit';
     dangerLabelEl.textContent = state.dangerLabel;
     dangerLabelEl.style.color = state.hunterPressure ? '#ffd1f0' : state.dangerLevel > .68 ? '#ff8a8a' : state.dangerLevel > .38 ? '#ffd76a' : '#bfffee';
     dangerLabelEl.parentElement.title = state.hunterPressure ? 'Hunter surge telegraph is active.' : state.dangerLevel > .68 ? 'Multiple drones are in striking range.' : state.dangerLevel > .38 ? 'Nearby drone pressure rising.' : 'Nearby routes are relatively safe.';
@@ -1083,7 +1120,50 @@
   document.querySelectorAll('[data-dir]').forEach(btn=>btn.addEventListener('click',()=>{ const map={up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}}; tryChangeDir(map[btn.dataset.dir]); }));
   document.getElementById('touchPulse').addEventListener('click', triggerPulse);
   document.getElementById('touchDecoy').addEventListener('click', deployDecoy);
-  let touchStart=null; canvas.addEventListener('touchstart',e=>{ const t=e.touches[0]; touchStart={x:t.clientX,y:t.clientY}; },{passive:true}); canvas.addEventListener('touchend',e=>{ if(!touchStart) return; const t=e.changedTouches[0]; const dx=t.clientX-touchStart.x, dy=t.clientY-touchStart.y; if(Math.abs(dx)<12&&Math.abs(dy)<12){ if(!state.running||state.over) startGame(); else triggerPulse(); touchStart=null; return; } if(Math.abs(dx)>Math.abs(dy)) tryChangeDir(dx>0?{x:1,y:0}:{x:-1,y:0}); else tryChangeDir(dy>0?{x:0,y:1}:{x:0,y:-1}); touchStart=null; },{passive:true});
+  let touchStart=null;
+  let activePointerId=null;
+  function steerFromPointerDelta(dx, dy){
+    if(Math.abs(dx) < 10 && Math.abs(dy) < 10) return false;
+    if(Math.abs(dx) > Math.abs(dy)) tryChangeDir(dx > 0 ? {x:1,y:0} : {x:-1,y:0});
+    else tryChangeDir(dy > 0 ? {x:0,y:1} : {x:0,y:-1});
+    return true;
+  }
+  canvas.addEventListener('pointerdown', e => {
+    if(e.pointerType === 'mouse') return;
+    touchStart = {x:e.clientX, y:e.clientY};
+    activePointerId = e.pointerId;
+    canvas.setPointerCapture?.(e.pointerId);
+  });
+  canvas.addEventListener('pointermove', e => {
+    if(e.pointerType === 'mouse' || activePointerId !== e.pointerId || !touchStart) return;
+    const dx = e.clientX - touchStart.x;
+    const dy = e.clientY - touchStart.y;
+    if(steerFromPointerDelta(dx, dy)){
+      const axisBias = Math.abs(dx) > Math.abs(dy) ? {x:e.clientX, y:touchStart.y} : {x:touchStart.x, y:e.clientY};
+      touchStart = axisBias;
+    }
+  }, {passive:true});
+  function releasePointer(e){
+    if(e.pointerType === 'mouse' || activePointerId !== e.pointerId || !touchStart) return;
+    const dx = e.clientX - touchStart.x;
+    const dy = e.clientY - touchStart.y;
+    if(Math.abs(dx) < 12 && Math.abs(dy) < 12){
+      if(!state.running || state.over) startGame();
+      else triggerPulse();
+    } else {
+      steerFromPointerDelta(dx, dy);
+    }
+    touchStart = null;
+    activePointerId = null;
+    if(canvas.hasPointerCapture?.(e.pointerId)) canvas.releasePointerCapture(e.pointerId);
+  }
+  canvas.addEventListener('pointerup', releasePointer, {passive:true});
+  canvas.addEventListener('pointercancel', e => {
+    if(activePointerId === e.pointerId){
+      touchStart = null;
+      activePointerId = null;
+    }
+  }, {passive:true});
   startBtn.addEventListener('click', startGame); overlayStart.addEventListener('click', startGame); pauseBtn.addEventListener('click', togglePause); boostBtn.addEventListener('click', triggerPulse); decoyBtn.addEventListener('click', deployDecoy);
   difficultySelect.addEventListener('change',e=>{ state.difficulty=e.target.value; if(!state.running||state.over) resetGame(); syncHud(); });
   audioBtn.addEventListener('click', ()=>{ state.audioEnabled=!state.audioEnabled; audioBtn.textContent = state.audioEnabled ? 'Audio On' : 'Audio Off'; if(state.audioEnabled) initAudio(); if(masterGain) masterGain.gain.value = state.audioEnabled ? .14 : 0.0001; });

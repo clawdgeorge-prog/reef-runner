@@ -21,8 +21,10 @@ Neon browser arcade prototype focused on maze-chase + route-control gameplay.
 - Exit breach climax: once the portal opens you get a short visible escape window before it shifts somewhere else, making the end of each level feel more like a deliberate sprint than a cleanup lap
 - Compact in-run HUD now shows breach progress alongside score / drones / district state
 - Route-assist breadcrumb line now guides you toward the live objective (next shard or open exit), improving readability on touch screens without adding clutter
-- New mobile handling pass adds continuous drag steering on the arena plus forgiving lane-follow turn assist so quick thumb corrections land more reliably in tight corridors
+- Mobile handling now truly supports live continuous drag steering on the arena, plus forgiving lane-follow turn assist so quick thumb corrections land more reliably in tight corridors instead of waiting for swipe release
 - New danger-sense readability pass adds a live danger meter, edge-of-screen threat arrows, and a player danger halo so nearby pressure and hunter surge setups are easier to read on mobile
+- Drone roles are now objective-aware instead of only speed-based: scouts cut ahead on your breadcrumb route, glimmers lean toward anchoring the shard / exit, and hunters keep direct lock pressure
+- A live Intel HUD pill now calls out whether the nearest pressure is Pursuit, Intercept, Anchor, Decoy, or an active Hunter Lock so route decisions read faster mid-run
 - Accessibility pass adds one-tap reduced-motion and high-contrast toggles, persisted locally for repeat runs across mobile and desktop
 - District theme rotation is now mechanical as well as visual:
   - **Astra / Flux Reserve** — pulse costs less charge
@@ -33,6 +35,6 @@ Neon browser arcade prototype focused on maze-chase + route-control gameplay.
 ## Next polish ideas
 - richer soundtrack / SFX system
 - title screen, progression, unlocks
-- smarter drone synergies and telegraphed threat moments
+- richer per-drone telegraph FX for intercept / anchor states
 - stronger portal presentation / completion cinematics
 - district-specific VFX/audio stingers when traits rotate in

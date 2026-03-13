@@ -760,7 +760,7 @@
   function advanceDistrict(){
     setDistrictTheme(state.themeIndex + 1, true);
   }
-  function initPlayer(){ const c = cellCenter(1,1); return {x:c.x,y:c.y,radius:TILE*.31,baseSpeed:3.35,speed:3.35,dir:{x:0,y:0},nextDir:{x:0,y:0},hitCooldown:0,trail:[]}; }
+  function initPlayer(){ const c = cellCenter(1,1); return {x:c.x,y:c.y,radius:TILE*.31,baseSpeed:3.35,speed:3.35,dir:{x:0,y:0},nextDir:{x:0,y:0},hitCooldown:0,trail:[],wallBumpCooldown:0}; }
   function spawnShard(){ let c; do c=randomOpenCell(); while(Math.abs(c.cx-1)<3&&Math.abs(c.cy-1)<3); state.shard={...c,rot:rand(0,Math.PI*2)}; }
   function spawnGate(){ let a=randomOpenCell(), b=randomOpenCell(); while(Math.abs(a.cx-b.cx)+Math.abs(a.cy-b.cy)<8) b=randomOpenCell(); state.gate={a,b,cooldown:0,pulse:0}; }
   function spawnExitPortal(){
@@ -954,21 +954,51 @@
       if(p.nextDir.x && Math.abs(p.y - center.y) <= assistTolerance){
         p.y = center.y;
         const turnX = p.x + p.nextDir.x * p.speed;
-        if(canMoveTo(turnX, p.y, p.radius)) p.dir = {...p.nextDir};
+        if(canMoveTo(turnX, p.y, p.radius)) {
+          p.dir = {...p.nextDir};
+        } else if(p.wallBumpCooldown <= 0 && state.running && !state.paused && !state.over) {
+          // Turn blocked by wall - bump effect
+          addParticles(p.x - p.nextDir.x * TILE * 0.3, p.y, state.currentTheme.gateA, 5, 2.0, .4);
+          p.wallBumpCooldown = 0.16;
+          state.cameraShake = Math.max(state.cameraShake, .05);
+          tone(138, 'sine', .05, 0, .015 * (state.settings.reducedMotion ? 0.5 : 1));
+          vibrate(6);
+        }
       } else if(p.nextDir.y && Math.abs(p.x - center.x) <= assistTolerance){
         p.x = center.x;
         const turnY = p.y + p.nextDir.y * p.speed;
-        if(canMoveTo(p.x, turnY, p.radius)) p.dir = {...p.nextDir};
+        if(canMoveTo(p.x, turnY, p.radius)) {
+          p.dir = {...p.nextDir};
+        } else if(p.wallBumpCooldown <= 0 && state.running && !state.paused && !state.over) {
+          // Turn blocked by wall - bump effect
+          addParticles(p.x, p.y - p.nextDir.y * TILE * 0.3, state.currentTheme.gateA, 5, 2.0, .4);
+          p.wallBumpCooldown = 0.16;
+          state.cameraShake = Math.max(state.cameraShake, .05);
+          tone(138, 'sine', .05, 0, .015 * (state.settings.reducedMotion ? 0.5 : 1));
+          vibrate(6);
+        }
       }
     }
 
     const desiredX=p.x+p.nextDir.x*p.speed, desiredY=p.y+p.nextDir.y*p.speed;
     if((p.nextDir.x||p.nextDir.y)&&canMoveTo(desiredX,desiredY,p.radius)) p.dir={...p.nextDir};
     const nx=p.x+p.dir.x*p.speed, ny=p.y+p.dir.y*p.speed;
+    p.wallBumpCooldown = Math.max(0, p.wallBumpCooldown - dt);
     if(canMoveTo(nx,ny,p.radius)){
       p.x=nx; p.y=ny;
       const trailAlpha = 0.22 + state.overdrive * 0.08;
       addRibbon(p.x,p.y, state.overdrive > 0.2 ? `rgba(255,215,106,${Math.min(0.34, trailAlpha)})` : `rgba(99,242,255,${trailAlpha})`);
+    } else if((p.dir.x || p.dir.y) && p.wallBumpCooldown <= 0 && state.running && !state.paused && !state.over){
+      // Wall collision feedback: sparks + micro-shake + subtle sound
+      const bumpDir = p.dir.x ? {x:p.dir.x * TILE * 0.3, y:0} : {x:0, y:p.dir.y * TILE * 0.3};
+      addParticles(p.x - bumpDir.x, p.y - bumpDir.y, state.currentTheme.gateA, 6, 2.2, .45);
+      addParticles(p.x - bumpDir.x, p.y - bumpDir.y, 'rgba(255,255,255,.7)', 4, 1.8, .32);
+      p.wallBumpCooldown = 0.18;
+      state.cameraShake = Math.max(state.cameraShake, .06);
+      const motionGain = state.settings.reducedMotion ? 0.5 : 1;
+      tone(142, 'sine', .06, 0, .018 * motionGain);
+      tone(89, 'sine', .08, .02, .012 * motionGain);
+      vibrate(8);
     }
     p.trail.push({x:p.x,y:p.y}); if(p.trail.length>18) p.trail.shift();
     if(state.gate&&state.gate.cooldown<=0){ for(const [from,to,col] of [[state.gate.a,state.gate.b,'#63f2ff'],[state.gate.b,state.gate.a,'#ff63d4']]){ if(Math.hypot(p.x-from.x,p.y-from.y)<TILE*.34){ p.x=to.x; p.y=to.y; state.gate.cooldown=currentGateCooldown(); state.cameraShake=.12; addParticles(to.x,to.y,col,24,4.5,1.2); playSfx('gate'); vibrate(16); break; } } }

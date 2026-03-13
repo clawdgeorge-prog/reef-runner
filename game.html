@@ -502,6 +502,10 @@
             <span class="stat-label">HIGH</span>
             <span class="stat-value" id="highScore">0</span>
         </div>
+        <div class="stat" id="enemyStat" style="display:none;">
+            <span class="stat-label">🐙</span>
+            <span class="stat-value" id="enemyCount">0</span>
+        </div>
     </div>
     
     <div class="game-container">
@@ -529,11 +533,13 @@
         <div class="powerup-item"><span class="powerup-icon" style="background:#ffff00;box-shadow:0 0 5px #ffff00"></span> 2x Points</div>
         <div class="powerup-item"><span class="powerup-icon" style="background:#00ff88;box-shadow:0 0 5px #00ff88"></span> Slow</div>
         <div class="powerup-item"><span class="powerup-icon" style="background:#ff8800;box-shadow:0 0 5px #ff8800"></span> Shield</div>
+        <div class="powerup-item"><span class="powerup-icon" style="background:#ff3366;box-shadow:0 0 5px #ff3366"></span> Wall Break</div>
+        <div class="powerup-item"><span class="powerup-icon" style="background:#ff0000;box-shadow:0 0 5px #ff0000"></span> Nuke</div>
         <div class="powerup-item"><span class="powerup-icon" style="background:#7b61ff;box-shadow:0 0 5px #7b61ff"></span> Portal Gates</div>
     </div>
     
     <div class="instructions">
-        Arrow Keys or WASD to move | P to Pause | Space to Start | Fullscreen works great on phone | Portal gates begin appearing after 40 points
+        Arrow Keys or WASD to move | P to Pause | Space to Start | Fullscreen works great on phone | Jellyfish appear at 20 pts | Portals at 40 pts
     </div>
 
     <!-- Mobile Touch Controls -->
@@ -636,10 +642,15 @@
         let snake = [];
         let direction = { x: 1, y: 0 };
         let nextDirection = { x: 1, y: 0 };
+        // Axis locking for Pac-Man style movement
+        let currentAxis = 'horizontal'; // 'horizontal' or 'vertical'
+        let lockedAxis = null; // Once player starts moving, lock to that axis until they reach a cell center
         let food = { x: 0, y: 0 };
+        let enemies = []; // Jellyfish enemies
         let powerups = [];
         let portals = [];
         let score = 0;
+        let level = 1; // Track level based on score
         const HIGH_SCORE_KEY = 'snakeHighScoresByDifficulty';
         let selectedDifficulty = 'easy';
         let highScores = loadHighScores();
@@ -655,6 +666,8 @@
         let shieldActive = false;
         let speedActive = false;
         let slowActive = false;
+        let wallBreakActive = false; // Can break through walls
+        let nukeActive = false; // Clears all enemies
         
         // DOM elements
         const scoreEl = document.getElementById('score');
@@ -709,17 +722,151 @@
             { type: 'ghost', color: '#ff00ff', duration: 6000, symbol: '👻' },
             { type: 'double', color: '#ffff00', duration: 8000, symbol: '2×' },
             { type: 'slow', color: '#00ff88', duration: 5000, symbol: '🐢' },
-            { type: 'shield', color: '#ff8800', duration: 8000, symbol: '🛡' }
+            { type: 'shield', color: '#ff8800', duration: 8000, symbol: '🛡' },
+            { type: 'wallbreak', color: '#ff3366', duration: 6000, symbol: '💥' },
+            { type: 'nuke', color: '#ff0000', duration: 1, symbol: '💣' }
         ];
         const PORTAL_COLORS = ['#7b61ff', '#00d4ff'];
         const PORTAL_MIN_SCORE = 40;
         const PORTAL_DURATION = 12000;
+        
+        // Enemy (jellyfish) settings
+        const ENEMY_BASE_SPEED = 800; // ms per move (lower = faster)
+        const ENEMY_SPAWN_SCORE = 20; // First enemy appears at score 20
+        const ENEMY_SPAWN_INTERVAL = 30; // New enemy every 30 points
+        const MAX_ENEMIES = 8;
+        const ENEMY_COLORS = ['#ff6b9d', '#ff4757', '#ff6348', '#ff7f50'];
+        
+        // Get current enemy speed based on level
+        function getEnemySpeed() {
+            const speedReduction = Math.min(0.6, (level - 1) * 0.08);
+            return ENEMY_BASE_SPEED * (1 - speedReduction);
+        }
+        
+        // Get number of enemies based on score
+        function getEnemyCount() {
+            if (score < ENEMY_SPAWN_SCORE) return 0;
+            const extraEnemies = Math.floor((score - ENEMY_SPAWN_SCORE) / ENEMY_SPAWN_INTERVAL);
+            return Math.min(MAX_ENEMIES, 1 + extraEnemies);
+        }
+        
+        function spawnEnemy() {
+            if (enemies.length >= getEnemyCount()) return;
+            
+            // Spawn from edges, away from snake head
+            const head = snake[0];
+            let x, y;
+            let attempts = 0;
+            
+            while (attempts < 30) {
+                const edge = Math.floor(Math.random() * 4); // 0=top, 1=right, 2=bottom, 3=left
+                switch(edge) {
+                    case 0: x = Math.floor(Math.random() * TILE_COUNT); y = 0; break;
+                    case 1: x = TILE_COUNT - 1; y = Math.floor(Math.random() * TILE_COUNT); break;
+                    case 2: x = Math.floor(Math.random() * TILE_COUNT); y = TILE_COUNT - 1; break;
+                    case 3: x = 0; y = Math.floor(Math.random() * TILE_COUNT); break;
+                }
+                
+                // Make sure it's far enough from head
+                const dist = Math.abs(x - head.x) + Math.abs(y - head.y);
+                if (dist > 8 && !isCellOccupied(x, y)) break;
+                attempts++;
+            }
+            
+            if (attempts >= 30) return;
+            
+            const color = ENEMY_COLORS[Math.floor(Math.random() * ENEMY_COLORS.length)];
+            enemies.push({
+                x, y,
+                color,
+                spawnTime: Date.now(),
+                moveTimer: 0,
+                targetX: x,
+                targetY: y
+            });
+        }
+        
+        function updateEnemies() {
+            const now = Date.now();
+            const targetCount = getEnemyCount();
+            
+            // Spawn more enemies as needed
+            while (enemies.length < targetCount) {
+                spawnEnemy();
+            }
+            
+            // Move enemies toward player
+            enemies.forEach(enemy => {
+                enemy.moveTimer += 16; // Approximate frame time
+                
+                if (enemy.moveTimer >= getEnemySpeed()) {
+                    enemy.moveTimer = 0;
+                    
+                    const head = snake[0];
+                    const dx = head.x - enemy.x;
+                    const dy = head.y - enemy.y;
+                    
+                    // Aggressive: try to close distance on both axes, but pick the larger gap
+                    let moveX = 0, moveY = 0;
+                    
+                    if (Math.abs(dx) > Math.abs(dy)) {
+                        // Move horizontally toward player
+                        moveX = dx > 0 ? 1 : -1;
+                    } else if (Math.abs(dy) > Math.abs(dx)) {
+                        // Move vertically toward player
+                        moveY = dy > 0 ? 1 : -1;
+                    } else {
+                        // Equal distance - randomly pick axis
+                        if (dx !== 0) {
+                            moveX = dx > 0 ? 1 : -1;
+                        } else {
+                            moveY = dy > 0 ? 1 : -1;
+                        }
+                    }
+                    
+                    // Add some randomness (15% chance to move randomly instead)
+                    if (Math.random() < 0.15) {
+                        const randDir = Math.floor(Math.random() * 4);
+                        moveX = moveY = 0;
+                        switch(randDir) {
+                            case 0: moveY = -1; break;
+                            case 1: moveX = 1; break;
+                            case 2: moveY = 1; break;
+                            case 3: moveX = -1; break;
+                        }
+                    }
+                    
+                    const newX = enemy.x + moveX;
+                    const newY = enemy.y + moveY;
+                    
+                    // Check bounds and collision with other enemies
+                    if (newX >= 0 && newX < TILE_COUNT && newY >= 0 && newY < TILE_COUNT) {
+                        const blocked = enemies.some(e => e !== enemy && e.x === newX && e.y === newY);
+                        if (!blocked) {
+                            enemy.x = newX;
+                            enemy.y = newY;
+                        }
+                    }
+                }
+            });
+        }
+        
+        function checkEnemyCollision() {
+            const head = snake[0];
+            for (const enemy of enemies) {
+                if (head.x === enemy.x && head.y === enemy.y) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         function isCellOccupied(x, y) {
             return snake.some(seg => seg.x === x && seg.y === y) ||
                 (food.x === x && food.y === y) ||
                 powerups.some(p => p.x === x && p.y === y) ||
-                portals.some(p => p.x === x && p.y === y);
+                portals.some(p => p.x === x && p.y === y) ||
+                enemies.some(e => e.x === x && e.y === y);
         }
 
         function findOpenCell() {
@@ -775,6 +922,8 @@
             shieldActive = false;
             speedActive = false;
             slowActive = false;
+            wallBreakActive = false;
+            nukeActive = false;
         }
 
         function initGame() {
@@ -785,10 +934,14 @@
             ];
             direction = { x: 1, y: 0 };
             nextDirection = { x: 1, y: 0 };
+            currentAxis = 'horizontal';
+            lockedAxis = null;
             spawnFood();
+            enemies = [];
             powerups = [];
             portals = [];
             score = 0;
+            level = 1;
             lives = 3;
             clearTemporaryEffects();
             isPaused = false;
@@ -840,10 +993,20 @@
             
             const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
             
-            // Wall collision
+            // Wall collision - wrap around if wallBreakActive, otherwise die
             if (head.x < 0 || head.x >= TILE_COUNT || head.y < 0 || head.y >= TILE_COUNT) {
-                handleDeath();
-                return;
+                if (wallBreakActive) {
+                    // Wrap around to opposite side
+                    if (head.x < 0) head.x = TILE_COUNT - 1;
+                    else if (head.x >= TILE_COUNT) head.x = 0;
+                    if (head.y < 0) head.y = TILE_COUNT - 1;
+                    else if (head.y >= TILE_COUNT) head.y = 0;
+                    playSound('teleport');
+                    vibrate([15, 20, 15]);
+                } else {
+                    handleDeath();
+                    return;
+                }
             }
 
             const portalExit = getPortalExit(head);
@@ -888,8 +1051,20 @@
                 
                 spawnPowerup();
                 maybeSpawnPortals();
+                
+                // Update level based on score
+                level = Math.max(1, Math.floor(score / 50) + 1);
             } else {
                 snake.pop();
+            }
+            
+            // Update enemies (jellyfish)
+            updateEnemies();
+            
+            // Check enemy collision (unless ghost mode)
+            if (!ghostMode && checkEnemyCollision()) {
+                handleDeath();
+                return;
             }
             
             // Clean up expired powerups and portals
@@ -914,6 +1089,9 @@
             if (slowActive && now - slowActive.startTime > slowActive.duration) {
                 slowActive = false;
                 speedChanged = true;
+            }
+            if (wallBreakActive && now - wallBreakActive.startTime > wallBreakActive.duration) {
+                wallBreakActive = false;
             }
             if (speedChanged) restartGameLoop();
             
@@ -943,6 +1121,15 @@
                     break;
                 case 'shield':
                     shieldActive = { startTime: now, duration: powerup.duration };
+                    break;
+                case 'wallbreak':
+                    wallBreakActive = { startTime: now, duration: powerup.duration };
+                    break;
+                case 'nuke':
+                    // Clear all enemies immediately
+                    enemies = [];
+                    playSound('gameover'); // Reuse explosion sound
+                    vibrate([50, 30, 50]);
                     break;
             }
 
@@ -1000,6 +1187,17 @@
             let hearts = '';
             for (let i = 0; i < lives; i++) hearts += '❤️';
             livesEl.textContent = hearts;
+            
+            // Show/hide enemy counter
+            const enemyCount = enemies.length;
+            const enemyStat = document.getElementById('enemyStat');
+            const enemyCountEl = document.getElementById('enemyCount');
+            if (enemyCount > 0) {
+                enemyStat.style.display = 'flex';
+                enemyCountEl.textContent = enemyCount;
+            } else {
+                enemyStat.style.display = 'none';
+            }
         }
         
         function draw() {
@@ -1041,6 +1239,58 @@
                 ctx.fillRect(portal.x * GRID_SIZE + 4, portal.y * GRID_SIZE + 4, GRID_SIZE - 8, GRID_SIZE - 8);
             });
             ctx.globalAlpha = 1;
+
+            // Draw enemies (jellyfish)
+            enemies.forEach(enemy => {
+                const wobble = Math.sin(now / 150 + enemy.x + enemy.y) * 2;
+                const pulse = 0.8 + Math.sin(now / 100) * 0.15;
+                
+                // Glow
+                ctx.shadowBlur = 18;
+                ctx.shadowColor = enemy.color;
+                
+                // Jellyfish body (dome shape)
+                ctx.fillStyle = enemy.color;
+                ctx.beginPath();
+                const cx = enemy.x * GRID_SIZE + GRID_SIZE / 2;
+                const cy = enemy.y * GRID_SIZE + GRID_SIZE / 2;
+                const radius = (GRID_SIZE / 2 - 2) * pulse;
+                
+                // Draw dome
+                ctx.arc(cx, cy - 2 + wobble, radius, Math.PI, 0);
+                ctx.lineTo(cx + radius, cy + radius * 0.7);
+                
+                // Draw tentacles
+                for (let i = 0; i < 4; i++) {
+                    const tentX = cx - radius * 0.6 + i * radius * 0.4;
+                    const tentWobble = Math.sin(now / 200 + i * 1.5) * 3;
+                    ctx.moveTo(tentX, cy + wobble);
+                    ctx.lineTo(tentX + tentWobble, cy + GRID_SIZE / 2 - 2);
+                }
+                ctx.stroke();
+                
+                ctx.fill();
+                
+                // Eyes
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = '#fff';
+                const eyeOffset = 4;
+                const eyeSize = 3;
+                ctx.beginPath();
+                ctx.arc(cx - eyeOffset, cy - 2 + wobble, eyeSize, 0, Math.PI * 2);
+                ctx.arc(cx + eyeOffset, cy - 2 + wobble, eyeSize, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Pupils (look toward player)
+                const head = snake[0];
+                const lookX = Math.sign(head.x - enemy.x) * 1;
+                const lookY = Math.sign(head.y - enemy.y) * 1;
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(cx - eyeOffset + lookX, cy - 2 + wobble + lookY, 1.5, 0, Math.PI * 2);
+                ctx.arc(cx + eyeOffset + lookX, cy - 2 + wobble + lookY, 1.5, 0, Math.PI * 2);
+                ctx.fill();
+            });
 
             // Draw powerups
             powerups.forEach(p => {
@@ -1136,7 +1386,8 @@
                 { active: ghostMode, color: '#ff00ff', label: 'GHOST' },
                 { active: shieldActive, color: '#ff8800', label: 'SHIELD' },
                 { active: speedActive, color: '#00ffff', label: 'SPEED' },
-                { active: slowActive, color: '#00ff88', label: 'SLOW' }
+                { active: slowActive, color: '#00ff88', label: 'SLOW' },
+                { active: wallBreakActive, color: '#ff3366', label: 'WALL' }
             ];
             
             effects.forEach(e => {
@@ -1206,10 +1457,18 @@
         document.addEventListener('keydown', (e) => {
             initAudio();
             
+            // Axis-locked movement (Pac-Man style)
+            // Only allow direction changes perpendicular to current direction
+            // This prevents diagonal movement and makes controls more responsive
+            const isHorizontal = direction.x !== 0;
+            const isVertical = direction.y !== 0;
+            
             switch(e.key) {
                 case 'ArrowUp':
                 case 'w':
                 case 'W':
+                    // Can only go up if not already moving up (no 180)
+                    // Allow from any state - switch axis immediately
                     if (direction.y !== 1) nextDirection = { x: 0, y: -1 };
                     e.preventDefault();
                     break;

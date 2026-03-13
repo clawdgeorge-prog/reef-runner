@@ -41,6 +41,7 @@ Neon browser arcade prototype focused on maze-chase + route-control gameplay.
 - Polished **title screen** with animated pulsing logo, best score / districts cleared stats, keyboard controls reference, and accessibility toggles for reduced motion and high contrast (all persisted locally)
 - Game over screen now displays score, districts cleared, and best score with option to return to title
 - Audio layering pass adds distinct sound effects for drone spawns, overdrive activation, and upgrade purchases — giving better aural feedback for key gameplay moments
+- Wall collision feedback: bumping into walls now triggers themed particle sparks, a subtle dual-tone audio bump, micro screen shake, and haptic vibration on supported devices — adding tactile responsiveness to movement
 
 ## Next polish ideas
 - stronger portal presentation / completion cinematics

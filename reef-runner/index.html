@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>Reef Runner</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2305111f'/%3E%3Cpath d='M6 18c4-5 8-8 14-9 3 0 6 1 9 4-2 1-3 3-4 5 1 2 2 4 4 5-3 2-6 3-9 3-6-1-10-4-14-8l3-2-3-2Z' fill='%237df6ff'/%3E%3Ccircle cx='22' cy='16' r='2' fill='%23fff2a8'/%3E%3C/svg%3E" />
+  <style>
+    :root{
+      --bg:#05111f;
+      --bg2:#09233a;
+      --bg3:#0d3454;
+      --cyan:#7df6ff;
+      --teal:#7affe0;
+      --foam:#effbff;
+      --gold:#fff2a8;
+      --coral:#ff8ea8;
+      --violet:#8ea7ff;
+      --glass:rgba(7,18,32,.72);
+      --line:rgba(125,246,255,.16);
+      --muted:#9bb9ca;
+      --shadow:0 26px 80px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+    html,body{margin:0;min-height:100%;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:
+      radial-gradient(circle at 18% 8%, rgba(125,246,255,.18), transparent 24%),
+      radial-gradient(circle at 86% 12%, rgba(142,167,255,.12), transparent 24%),
+      radial-gradient(circle at 50% 120%, rgba(122,255,224,.1), transparent 36%),
+      linear-gradient(180deg, #0b2740 0%, #07192d 38%, #04101c 100%);
+      color:var(--foam)}
+    body{padding:10px;display:flex;justify-content:center}
+    .app{width:min(1160px,100%);display:grid;grid-template-columns:290px minmax(0,1fr);gap:14px;align-items:start}
+    .panel{position:relative;overflow:hidden;border-radius:28px;background:
+      linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03)),
+      linear-gradient(180deg, rgba(7,18,32,.94), rgba(3,10,20,.98));
+      border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(18px)}
+    .panel::before{content:"";position:absolute;inset:auto auto -120px -80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle, rgba(125,246,255,.16), transparent 70%);pointer-events:none}
+    .sidebar{padding:18px;display:grid;gap:12px}
+    .eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);font-weight:800}
+    h1{margin:4px 0 0;font-size:clamp(2rem,4vw,3rem);line-height:.9;letter-spacing:-.05em}
+    .tagline{color:var(--muted);line-height:1.5;font-size:.98rem}
+    .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .card,.box{border-radius:20px;background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.08);position:relative;overflow:hidden}
+    .card{padding:12px;min-height:92px}
+    .card::after{content:"";position:absolute;right:-24px;bottom:-28px;width:110px;height:110px;border-radius:50%;background:radial-gradient(circle, rgba(125,246,255,.16), transparent 70%)}
+    .label{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+    .value{margin-top:7px;font-size:1.7rem;font-weight:900;letter-spacing:-.03em}
+    .sub{margin-top:6px;font-size:.8rem;color:rgba(255,255,255,.54)}
+    .box{padding:14px}
+    .section{margin:0 0 10px;font-size:.86rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan)}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    button{border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.045));color:var(--foam);border-radius:16px;padding:12px 14px;min-height:48px;font-weight:800;cursor:pointer;transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease}
+    button:hover{transform:translateY(-1px);border-color:rgba(125,246,255,.44);box-shadow:0 0 20px rgba(125,246,255,.12)}
+    .primary{background:linear-gradient(135deg, rgba(125,246,255,.24), rgba(122,255,224,.18));box-shadow:0 0 24px rgba(125,246,255,.14)}
+    ul{margin:0;padding-left:18px;color:var(--muted);line-height:1.6}
+    .leaderboard{display:grid;gap:8px}
+    .leader-item{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.06);color:var(--muted)}
+    .leader-item strong{display:block;color:var(--foam)}
+    .leader-rank{font-weight:900;color:var(--gold)}
+    .game-shell{padding:14px;display:grid;gap:10px}
+    .hud{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+    .hud-group{display:flex;gap:8px;flex-wrap:wrap}
+    .pill{padding:10px 14px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:var(--muted);font-size:.9rem}
+    .pill strong{color:var(--foam)}
+    .pill.accent{background:rgba(125,246,255,.1);border-color:rgba(125,246,255,.24)}
+    .canvas-wrap{position:relative;overflow:hidden;border-radius:30px;aspect-ratio:1;min-height:380px;background:radial-gradient(circle at 50% 25%, rgba(18,69,107,.95), rgba(3,12,24,.98) 72%);border:1px solid rgba(125,246,255,.16);box-shadow:inset 0 0 80px rgba(125,246,255,.08), inset 0 0 160px rgba(122,255,224,.05), 0 26px 60px rgba(0,0,0,.42)}
+    canvas{display:block;width:100%;height:100%;touch-action:none}
+    .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:18px;background:linear-gradient(180deg, rgba(2,7,16,.18), rgba(2,7,16,.82));transition:opacity .2s ease}
+    .overlay.hidden{opacity:0;pointer-events:none}
+    .overlay-card{max-width:640px;padding:28px 30px;border-radius:26px;border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg, rgba(7,18,38,.82), rgba(7,18,38,.5));box-shadow:0 18px 50px rgba(0,0,0,.3);backdrop-filter:blur(12px);text-align:center}
+    .overlay h2{margin:0 0 10px;font-size:clamp(2rem,5vw,3.2rem);line-height:.94;letter-spacing:-.05em}
+    .overlay p{margin:0;color:var(--muted);line-height:1.6}
+    .actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:16px}
+    .touch{display:none;grid-template-columns:repeat(3,80px);gap:10px;justify-content:center}
+    .touch button{min-height:70px;font-size:1.15rem;border-radius:22px}
+    .foot{color:rgba(255,255,255,.56);font-size:.82rem;line-height:1.45}
+    @media (max-width:1000px){.app{grid-template-columns:1fr}.sidebar{order:2}.game-shell{order:1}}
+    @media (max-width:720px){body{padding:7px}.app{gap:8px}.sidebar,.game-shell{padding:12px;border-radius:24px}.stats{grid-template-columns:repeat(3,minmax(0,1fr))}.card{padding:11px;min-height:82px}.value{font-size:1.15rem}.sub{font-size:.72rem}.hud{display:none}.touch{display:grid;margin-top:-74px;position:relative;z-index:3}.canvas-wrap{min-height:min(80vh, calc(100vw - 18px));border-radius:26px}.foot{display:none}.ctrl-box,.goal-box{display:none}}
+    @media (max-width:520px){body{padding:6px}.stats{gap:8px}.touch{grid-template-columns:repeat(3,72px);gap:8px;margin-top:-68px}.touch button{min-height:62px;border-radius:18px}.overlay-card{padding:22px 18px}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="panel sidebar">
+      <div>
+        <div class="eyebrow">Mobile-first maze clear</div>
+        <h1>Reef Runner</h1>
+        <div class="tagline">Steer a tiny sub through glowing reef lanes, collect every pearl, open the ascent gate, and slip past the jelly sentries. Short runs, clean goals, pretty motion.</div>
+      </div>
+
+      <div class="stats">
+        <div class="card"><div class="label">Score</div><div id="score" class="value">0</div><div class="sub">Current run</div></div>
+        <div class="card"><div class="label">Best</div><div id="best" class="value">0</div><div class="sub">Local high score</div></div>
+        <div class="card"><div class="label">Depth</div><div id="level" class="value">1</div><div class="sub" id="themeName">Blue Lantern Reef</div></div>
+        <div class="card"><div class="label">Best Depth</div><div id="bestLevel" class="value">1</div><div class="sub">Deepest clear</div></div>
+        <div class="card"><div class="label">Pearls</div><div id="pearls" class="value">0 / 0</div><div class="sub">Clear the maze</div></div>
+        <div class="card"><div class="label">Hull</div><div id="lives" class="value">3</div><div class="sub">Hits left</div></div>
+      </div>
+
+      <div class="box ctrl-box">
+        <div class="section">Quick Controls</div>
+        <div class="row">
+          <button id="startBtn" class="primary">Start Run</button>
+          <button id="pauseBtn">Pause</button>
+          <button id="audioBtn">Audio On</button>
+        </div>
+        <div class="row" style="margin-top:10px;">
+          <button id="restartBtn">Restart</button>
+          <button id="fullscreenBtn">Fullscreen</button>
+        </div>
+      </div>
+
+      <div class="box goal-box">
+        <div class="section">One Clear Goal</div>
+        <ul>
+          <li>Collect every glowing pearl</li>
+          <li>The ascent gate opens when the reef is cleared</li>
+          <li>Avoid jelly sentries and keep your run alive</li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <div class="section">Top Runs</div>
+        <div id="leaderboard" class="leaderboard"></div>
+      </div>
+
+      <div class="foot">Drag anywhere on the playfield, swipe, or tap the D-pad on mobile • WASD / arrow keys on desktop • P pauses • R restarts.</div>
+    </aside>
+
+    <main class="panel game-shell">
+      <div class="hud">
+        <div class="hud-group">
+          <div class="pill accent"><strong id="status">Standby</strong></div>
+          <div class="pill">Gate <strong id="gateState">Dormant</strong></div>
+          <div class="pill">Sentries <strong id="sentryCount">1</strong></div>
+        </div>
+        <div class="hud-group">
+          <div class="pill">Goal <strong id="goal">Collect all pearls</strong></div>
+          <div class="pill">Speed Bonus <strong id="speedBonus">+0</strong></div>
+          <div class="pill">Time <strong id="timer">0.0s</strong></div>
+        </div>
+      </div>
+
+      <div class="canvas-wrap">
+        <canvas id="game" width="1200" height="1200"></canvas>
+        <div id="overlay" class="overlay">
+          <div class="overlay-card" id="overlayCard">
+            <h2>Reef Runner</h2>
+            <p>Collect every pearl, open the gate, and glide out. Built as a hard-reset toward a simpler, prettier, phone-first arcade game.</p>
+            <div class="actions"><button id="overlayStart" class="primary">Dive In</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="touch">
+        <div></div><button data-dir="up">▲</button><div></div>
+        <button data-dir="left">◀</button><button id="touchCenter">●</button><button data-dir="right">▶</button>
+        <div></div><button data-dir="down">▼</button><div></div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+  (() => {
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+    const GRID = 19;
+    const SIZE = canvas.width / GRID;
+    const PLAYER_RADIUS = SIZE * 0.27;
+    const ENEMY_RADIUS = SIZE * 0.27;
+    const PEARL_RADIUS = SIZE * 0.12;
+    const BEST_KEY = 'reef-runner-best-v1';
+    const BEST_LEVEL_KEY = 'reef-runner-best-level-v1';
+    const BOARD_KEY = 'reef-runner-board-v1';
+
+    const scoreEl = document.getElementById('score');
+    const bestEl = document.getElementById('best');
+    const levelEl = document.getElementById('level');
+    const bestLevelEl = document.getElementById('bestLevel');
+    const pearlsEl = document.getElementById('pearls');
+    const livesEl = document.getElementById('lives');
+    const themeNameEl = document.getElementById('themeName');
+    const statusEl = document.getElementById('status');
+    const gateStateEl = document.getElementById('gateState');
+    const sentryCountEl = document.getElementById('sentryCount');
+    const goalEl = document.getElementById('goal');
+    const speedBonusEl = document.getElementById('speedBonus');
+    const timerEl = document.getElementById('timer');
+    const leaderboardEl = document.getElementById('leaderboard');
+    const overlay = document.getElementById('overlay');
+    const overlayCard = document.getElementById('overlayCard');
+    const startBtn = document.getElementById('startBtn');
+    const overlayStart = document.getElementById('overlayStart');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const audioBtn = document.getElementById('audioBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    const touchCenter = document.getElementById('touchCenter');
+
+    const themes = [
+      { name:'Blue Lantern Reef', water:'rgba(125,246,255,.11)', wallA:'#103858', wallB:'#1b5b88', glow:'#7df6ff', pearl:'#fff2a8', gate:'#7affe0', enemy:'#ff8ea8', plant:'#61d8ff' },
+      { name:'Coral Veil', water:'rgba(255,142,168,.08)', wallA:'#462447', wallB:'#854c72', glow:'#ffb9d5', pearl:'#ffe6a8', gate:'#7df6ff', enemy:'#8ea7ff', plant:'#ff9fc4' },
+      { name:'Emerald Trench', water:'rgba(122,255,224,.09)', wallA:'#11394a', wallB:'#216d67', glow:'#7affe0', pearl:'#fff2a8', gate:'#7df6ff', enemy:'#ff9d7f', plant:'#7affe0' },
+      { name:'Violet Shelf', water:'rgba(142,167,255,.1)', wallA:'#212d63', wallB:'#465ea8', glow:'#a8b8ff', pearl:'#fff2a8', gate:'#7affe0', enemy:'#ff9ac7', plant:'#9ed6ff' }
+    ];
+
+    const layouts = [
+      [
+        '1111111111111111111',
+        '1000000000100000001',
+        '1011110110101111101',
+        '1010000100001000001',
+        '1010111111101011101',
+        '1010000000001000101',
+        '1011111011111011101',
+        '1000001000000010001',
+        '1111011011111010111',
+        '1000010010001010001',
+        '1011111010101011101',
+        '1000000010101000001',
+        '1011111110101111101',
+        '1010000010000000101',
+        '1010111011111110101',
+        '1000101000000010001',
+        '1011101110111011101',
+        '1000000000001000001',
+        '1111111111111111111'
+      ],
+      [
+        '1111111111111111111',
+        '1000000000000000001',
+        '1011111110111111101',
+        '1000000010001000001',
+        '1110111011101011101',
+        '1000100000101000101',
+        '1011101110101110101',
+        '1010001000000010001',
+        '1010111011111011101',
+        '1000000010000010001',
+        '1111101010111010111',
+        '1000101010001010001',
+        '1010101111101011101',
+        '1010000000001000001',
+        '1011111110111111101',
+        '1000001000100000001',
+        '1011101011101110101',
+        '1000000000000000001',
+        '1111111111111111111'
+      ],
+      [
+        '1111111111111111111',
+        '1000000000100000001',
+        '1011111110101111101',
+        '1010000010001000101',
+        '1010111011111010101',
+        '1010001000000010101',
+        '1011101011111010101',
+        '1000001000100010001',
+        '1111101110101110111',
+        '1000000010001000001',
+        '1011111011101011101',
+        '1010001000001000001',
+        '1010111011111111101',
+        '1010000010000000001',
+        '1011111010111111101',
+        '1000001000100010001',
+        '1011101111101011101',
+        '1000000000001000001',
+        '1111111111111111111'
+      ]
+    ];
+
+    const state = {
+      running:false,
+      paused:false,
+      over:false,
+      score:0,
+      level:1,
+      best:Number(localStorage.getItem(BEST_KEY) || 0),
+      bestLevel:Number(localStorage.getItem(BEST_LEVEL_KEY) || 1),
+      board:JSON.parse(localStorage.getItem(BOARD_KEY) || '[]'),
+      theme:themes[0],
+      maze:[],
+      pearls:[],
+      enemies:[],
+      plants:[],
+      bubbles:[],
+      particles:[],
+      ripples:[],
+      player:null,
+      gate:null,
+      lives:3,
+      pearlCount:0,
+      pearlTotal:0,
+      timer:0,
+      lastTs:0,
+      flash:0,
+      shake:0,
+      audioOn:true,
+      audioCtx:null,
+      musicTick:0,
+      gateOpen:false,
+      dragging:false,
+      dragId:null,
+      dragPoint:null,
+      queuedDir:{x:0,y:0},
+      moveDir:{x:0,y:0}
+    };
+
+    function rand(min, max){ return Math.random() * (max - min) + min; }
+    function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+    function lerp(a,b,t){ return a + (b-a)*t; }
+    function dist(a,b){ return Math.hypot(a.x - b.x, a.y - b.y); }
+    function tileCenter(x,y){ return { x:(x + 0.5) * SIZE, y:(y + 0.5) * SIZE }; }
+    function cellAt(px,py){ return { x:Math.floor(px / SIZE), y:Math.floor(py / SIZE) }; }
+    function isWall(tx,ty){ return state.maze[ty]?.[tx] === 1; }
+    function walkable(tx,ty){ return state.maze[ty]?.[tx] === 0; }
+    function sameCell(a,b){ return a.x === b.x && a.y === b.y; }
+
+    function updateHud(){
+      scoreEl.textContent = Math.floor(state.score);
+      bestEl.textContent = Math.floor(state.best);
+      levelEl.textContent = state.level;
+      bestLevelEl.textContent = state.bestLevel;
+      pearlsEl.textContent = `${state.pearlCount} / ${state.pearlTotal}`;
+      livesEl.textContent = state.lives;
+      themeNameEl.textContent = state.theme.name;
+      sentryCountEl.textContent = state.enemies.length;
+      timerEl.textContent = `${state.timer.toFixed(1)}s`;
+      goalEl.textContent = state.gateOpen ? 'Reach the open gate' : 'Collect all pearls';
+      gateStateEl.textContent = state.gateOpen ? 'Open' : 'Dormant';
+      const speedBonus = Math.max(0, Math.round(900 - state.timer * 32));
+      speedBonusEl.textContent = `+${speedBonus}`;
+      statusEl.textContent = state.over ? 'Run Over' : state.paused ? 'Paused' : state.running ? (state.gateOpen ? 'Gate Open' : 'Diving') : 'Standby';
+      renderBoard();
+    }
+
+    function renderBoard(){
+      const rows = state.board.length ? state.board : [{ score:0, level:1 }];
+      leaderboardEl.innerHTML = rows.slice(0,5).map((row, i) => `
+        <div class="leader-item">
+          <div class="leader-rank">${i+1}</div>
+          <div><strong>${row.score}</strong><small>Depth ${row.level}</small></div>
+          <div>${row.label || 'Local'}</div>
+        </div>`).join('');
+    }
+
+    function saveBest(){
+      if(state.score > state.best){
+        state.best = Math.floor(state.score);
+        localStorage.setItem(BEST_KEY, String(state.best));
+      }
+      if(state.level > state.bestLevel){
+        state.bestLevel = state.level;
+        localStorage.setItem(BEST_LEVEL_KEY, String(state.bestLevel));
+      }
+      const entry = { score:Math.floor(state.score), level:state.level, label:'Reef' };
+      state.board.push(entry);
+      state.board.sort((a,b) => b.score - a.score || b.level - a.level);
+      state.board = state.board.slice(0,5);
+      localStorage.setItem(BOARD_KEY, JSON.stringify(state.board));
+    }
+
+    function showOverlay(title, text, button='Dive In'){
+      overlay.classList.remove('hidden');
+      overlayCard.innerHTML = `<h2>${title}</h2><p>${text}</p><div class="actions"><button id="overlayAction" class="primary">${button}</button></div>`;
+      document.getElementById('overlayAction').addEventListener('click', () => {
+        startGame();
+      });
+    }
+
+    function hideOverlay(){ overlay.classList.add('hidden'); }
+
+    function buildMaze(){
+      state.theme = themes[(state.level - 1) % themes.length];
+      const layout = layouts[(state.level - 1) % layouts.length];
+      state.maze = layout.map(row => row.split('').map(Number));
+      state.pearls = [];
+      state.enemies = [];
+      state.plants = [];
+      state.bubbles = [];
+      state.particles = [];
+      state.ripples = [];
+      state.gateOpen = false;
+      state.timer = 0;
+      state.flash = 0;
+      state.shake = 0;
+
+      const openCells = [];
+      for(let y=0;y<GRID;y++){
+        for(let x=0;x<GRID;x++){
+          if(state.maze[y][x] === 0){
+            openCells.push({x,y});
+            if(Math.random() < 0.18) state.plants.push({ ...tileCenter(x,y), h:rand(14,30), sway:rand(0,Math.PI*2), hue:rand(0,1) });
+          }
+        }
+      }
+
+      const start = openCells[0];
+      const gateCell = openCells[openCells.length - 1];
+      state.player = {
+        ...tileCenter(start.x, start.y),
+        vx:0, vy:0,
+        angle:0,
+        invuln:0,
+        trail:[]
+      };
+      state.gate = { ...tileCenter(gateCell.x, gateCell.y), cell:gateCell, pulse:0 };
+
+      const pearlCells = openCells.filter(c => {
+        if(sameCell(c, start) || sameCell(c, gateCell)) return false;
+        return ((c.x * 3 + c.y * 5 + state.level) % 7 === 0) || ((c.x + c.y) % 9 === 0);
+      });
+      pearlCells.forEach(c => state.pearls.push({ ...tileCenter(c.x,c.y), taken:false, bob:rand(0, Math.PI*2) }));
+      state.pearlTotal = state.pearls.length;
+      state.pearlCount = 0;
+
+      const enemyCount = Math.min(3, 1 + Math.floor((state.level - 1) / 2));
+      for(let i=0;i<enemyCount;i++){
+        const pick = openCells[Math.floor((openCells.length * (0.28 + i * 0.21)) % openCells.length)];
+        const c = tileCenter(pick.x, pick.y);
+        const dirs = validDirs(pick.x, pick.y);
+        state.enemies.push({ x:c.x, y:c.y, cell:pick, dir:dirs[Math.floor(Math.random()*dirs.length)] || {x:1,y:0}, speed:76 + Math.min(36, state.level * 5), glow:rand(0, Math.PI*2), stun:0 });
+      }
+
+      for(let i=0;i<64;i++){
+        state.bubbles.push({ x:rand(0, canvas.width), y:rand(0, canvas.height), r:rand(1.5,5), drift:rand(.3,1.2), speed:rand(12,40) });
+      }
+      updateHud();
+    }
+
+    function validDirs(tx,ty){
+      const options = [];
+      if(walkable(tx+1,ty)) options.push({x:1,y:0});
+      if(walkable(tx-1,ty)) options.push({x:-1,y:0});
+      if(walkable(tx,ty+1)) options.push({x:0,y:1});
+      if(walkable(tx,ty-1)) options.push({x:0,y:-1});
+      return options;
+    }
+
+    function startGame(resetScore = true){
+      if(resetScore){
+        state.score = 0;
+        state.level = 1;
+        state.lives = 3;
+        state.over = false;
+      }
+      state.running = true;
+      state.paused = false;
+      state.lastTs = 0;
+      buildMaze();
+      hideOverlay();
+      ensureAudio();
+      updateHud();
+    }
+
+    function restartRun(){
+      state.score = 0;
+      state.level = 1;
+      state.lives = 3;
+      state.over = false;
+      state.running = true;
+      state.paused = false;
+      buildMaze();
+      hideOverlay();
+      updateHud();
+    }
+
+    function pauseToggle(){
+      if(!state.running || state.over) return;
+      state.paused = !state.paused;
+      updateHud();
+      if(state.paused){
+        showOverlay('Paused', 'Take a breath. Tap to resume.', 'Resume');
+        document.getElementById('overlayAction').addEventListener('click', () => {
+          state.paused = false;
+          hideOverlay();
+          updateHud();
+        }, { once:true });
+      } else {
+        hideOverlay();
+      }
+    }
+
+    function advanceLevel(){
+      const speedBonus = Math.max(0, Math.round(900 - state.timer * 32));
+      state.score += 500 + speedBonus + state.level * 120;
+      popText(state.gate.x, state.gate.y, `CLEAR +${500 + speedBonus}`, state.theme.gate);
+      sound('clear');
+      state.level += 1;
+      if(state.level > state.bestLevel) state.bestLevel = state.level;
+      buildMaze();
+      updateHud();
+    }
+
+    function gameOver(){
+      state.running = false;
+      state.over = true;
+      saveBest();
+      updateHud();
+      sound('down');
+      showOverlay('Hull Breach', `Score ${Math.floor(state.score)} • Depth ${state.level}<br/>Cleaner loop, but still room to sharpen enemy feel and level variety.`, 'Restart Run');
+    }
+
+    function ensureAudio(){
+      if(!state.audioOn) return;
+      if(!state.audioCtx){
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if(Ctx) state.audioCtx = new Ctx();
+      }
+      if(state.audioCtx && state.audioCtx.state === 'suspended') state.audioCtx.resume();
+    }
+
+    function sound(type){
+      if(!state.audioOn || !state.audioCtx) return;
+      const t = state.audioCtx.currentTime;
+      const osc = state.audioCtx.createOscillator();
+      const gain = state.audioCtx.createGain();
+      osc.connect(gain); gain.connect(state.audioCtx.destination);
+      osc.type = type === 'hit' ? 'square' : type === 'clear' ? 'triangle' : 'sine';
+      const map = {
+        pearl:[720, 980, .06],
+        gate:[420, 660, .18],
+        hit:[180, 110, .12],
+        clear:[360, 720, .28],
+        down:[180, 70, .4]
+      }[type] || [260, 340, .08];
+      osc.frequency.setValueAtTime(map[0], t);
+      osc.frequency.exponentialRampToValueAtTime(map[1], t + map[2]);
+      gain.gain.setValueAtTime(.001, t);
+      gain.gain.exponentialRampToValueAtTime(type === 'clear' ? .06 : .04, t + .01);
+      gain.gain.exponentialRampToValueAtTime(.001, t + map[2]);
+      osc.start(t); osc.stop(t + map[2] + .02);
+    }
+
+    function music(dt){
+      if(!state.audioOn || !state.audioCtx || !state.running || state.paused || state.over) return;
+      state.musicTick += dt;
+      if(state.musicTick > 1.5){
+        state.musicTick = 0;
+        const t = state.audioCtx.currentTime;
+        const o = state.audioCtx.createOscillator();
+        const g = state.audioCtx.createGain();
+        o.type = 'sine';
+        o.frequency.value = 170 + (state.level % 4) * 24;
+        g.gain.value = .0001;
+        o.connect(g); g.connect(state.audioCtx.destination);
+        g.gain.exponentialRampToValueAtTime(.02, t + .02);
+        g.gain.exponentialRampToValueAtTime(.0001, t + .7);
+        o.start(t); o.stop(t + .75);
+      }
+    }
+
+    function popText(x,y,text,color){
+      state.particles.push({ kind:'text', x, y, text, color, life:1.1, vy:-24 });
+    }
+
+    function spawnBurst(x,y,color,count=14){
+      for(let i=0;i<count;i++){
+        const ang = (Math.PI * 2 * i) / count + rand(-0.2,0.2);
+        const speed = rand(40, 160);
+        state.particles.push({ kind:'spark', x, y, vx:Math.cos(ang)*speed, vy:Math.sin(ang)*speed, life:rand(.5,1.1), color, size:rand(2,5) });
+      }
+      state.ripples.push({ x, y, r:10, life:.6, color });
+    }
+
+    function trySetDir(x,y){
+      state.queuedDir = { x, y };
+      const mag = Math.hypot(x,y) || 1;
+      state.moveDir = { x:x/mag, y:y/mag };
+    }
+
+    function steerFromPointer(clientX, clientY){
+      const rect = canvas.getBoundingClientRect();
+      const x = (clientX - rect.left) * (canvas.width / rect.width);
+      const y = (clientY - rect.top) * (canvas.height / rect.height);
+      state.dragPoint = { x, y };
+      const dx = x - state.player.x;
+      const dy = y - state.player.y;
+      if(Math.hypot(dx,dy) < 10) return;
+      trySetDir(dx, dy);
+    }
+
+    function lineHitsWall(x1,y1,x2,y2,steps=24){
+      for(let i=0;i<=steps;i++){
+        const t = i / steps;
+        const x = lerp(x1,x2,t);
+        const y = lerp(y1,y2,t);
+        const cell = cellAt(x,y);
+        if(isWall(cell.x, cell.y)) return true;
+      }
+      return false;
+    }
+
+    function updatePlayer(dt){
+      const p = state.player;
+      if(!p) return;
+      if(state.dragPoint && state.dragging){
+        const dx = state.dragPoint.x - p.x;
+        const dy = state.dragPoint.y - p.y;
+        if(Math.hypot(dx,dy) > 12) trySetDir(dx, dy);
+      }
+
+      const targetSpeed = 165;
+      p.vx = lerp(p.vx, state.moveDir.x * targetSpeed, dt * 7);
+      p.vy = lerp(p.vy, state.moveDir.y * targetSpeed, dt * 7);
+
+      let nx = p.x + p.vx * dt;
+      let ny = p.y + p.vy * dt;
+      const pad = PLAYER_RADIUS + 2;
+      if(blocked(nx, p.y, pad)) { p.vx *= -0.08; nx = p.x; }
+      if(blocked(p.x, ny, pad)) { p.vy *= -0.08; ny = p.y; }
+      p.x = nx; p.y = ny;
+
+      if(Math.hypot(p.vx,p.vy) > 10) p.angle = Math.atan2(p.vy,p.vx);
+      p.invuln = Math.max(0, p.invuln - dt);
+      p.trail.push({ x:p.x, y:p.y, life:.45 });
+      if(p.trail.length > 12) p.trail.shift();
+
+      for(const pearl of state.pearls){
+        if(pearl.taken) continue;
+        pearl.bob += dt * 2.5;
+        if(Math.hypot(p.x - pearl.x, p.y - pearl.y) < PLAYER_RADIUS + SIZE * 0.18){
+          pearl.taken = true;
+          state.pearlCount += 1;
+          state.score += 100;
+          spawnBurst(pearl.x, pearl.y, state.theme.pearl, 12);
+          popText(pearl.x, pearl.y, '+100', state.theme.pearl);
+          sound('pearl');
+          if(state.pearlCount >= state.pearlTotal){
+            state.gateOpen = true;
+            spawnBurst(state.gate.x, state.gate.y, state.theme.gate, 18);
+            popText(state.gate.x, state.gate.y, 'GATE OPEN', state.theme.gate);
+            sound('gate');
+          }
+        }
+      }
+
+      if(state.gateOpen && Math.hypot(p.x - state.gate.x, p.y - state.gate.y) < PLAYER_RADIUS + SIZE * 0.28){
+        advanceLevel();
+      }
+    }
+
+    function blocked(x,y,pad){
+      const checks = [
+        [x-pad, y-pad],[x+pad,y-pad],[x-pad,y+pad],[x+pad,y+pad],[x,y]
+      ];
+      return checks.some(([cx,cy]) => {
+        const cell = cellAt(cx,cy);
+        return isWall(cell.x,cell.y);
+      });
+    }
+
+    function updateEnemies(dt){
+      for(const e of state.enemies){
+        if(e.stun > 0){ e.stun -= dt; continue; }
+        const cell = cellAt(e.x, e.y);
+        const center = tileCenter(cell.x, cell.y);
+        const nearCenter = Math.hypot(e.x - center.x, e.y - center.y) < 5;
+        if(nearCenter){
+          const dirs = validDirs(cell.x, cell.y).filter(d => !(d.x === -e.dir.x && d.y === -e.dir.y));
+          const towardPlayer = dirs.sort((a,b) => {
+            const da = Math.hypot(state.player.x - (center.x + a.x * SIZE), state.player.y - (center.y + a.y * SIZE));
+            const db = Math.hypot(state.player.x - (center.x + b.x * SIZE), state.player.y - (center.y + b.y * SIZE));
+            return da - db;
+          });
+          const canSee = !lineHitsWall(e.x, e.y, state.player.x, state.player.y, 18) && dist(e, state.player) < SIZE * 5.6;
+          e.dir = canSee && towardPlayer.length ? towardPlayer[0] : (dirs[Math.floor(Math.random() * dirs.length)] || e.dir);
+        }
+        e.x += e.dir.x * e.speed * dt;
+        e.y += e.dir.y * e.speed * dt;
+        const nextCell = cellAt(e.x, e.y);
+        if(isWall(nextCell.x, nextCell.y)){
+          e.x -= e.dir.x * e.speed * dt;
+          e.y -= e.dir.y * e.speed * dt;
+          const dirs = validDirs(cell.x, cell.y);
+          e.dir = dirs[Math.floor(Math.random() * dirs.length)] || {x:-e.dir.x,y:-e.dir.y};
+        }
+        e.glow += dt * 4;
+        if(state.player.invuln <= 0 && Math.hypot(state.player.x - e.x, state.player.y - e.y) < PLAYER_RADIUS + ENEMY_RADIUS){
+          state.lives -= 1;
+          state.player.invuln = 2.1;
+          state.flash = 1;
+          state.shake = 12;
+          sound('hit');
+          spawnBurst(state.player.x, state.player.y, state.theme.enemy, 18);
+          if(state.lives <= 0){
+            gameOver();
+            return;
+          }
+          const spawn = tileCenter(1,1);
+          state.player.x = spawn.x;
+          state.player.y = spawn.y;
+          state.player.vx = 0;
+          state.player.vy = 0;
+        }
+      }
+    }
+
+    function updateParticles(dt){
+      for(const p of state.particles){
+        p.life -= dt;
+        if(p.kind === 'spark'){
+          p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= .98; p.vy *= .98;
+        } else if(p.kind === 'text'){
+          p.y += p.vy * dt;
+        }
+      }
+      state.particles = state.particles.filter(p => p.life > 0);
+      for(const r of state.ripples){ r.life -= dt; r.r += dt * 90; }
+      state.ripples = state.ripples.filter(r => r.life > 0);
+      for(const b of state.bubbles){
+        b.y -= b.speed * dt;
+        b.x += Math.sin((b.y + b.drift * 100) * 0.01) * b.drift;
+        if(b.y < -10){ b.y = canvas.height + 10; b.x = rand(0, canvas.width); }
+      }
+      state.flash = Math.max(0, state.flash - dt * 2.4);
+      state.shake = Math.max(0, state.shake - dt * 30);
+      state.gate.pulse += dt * (state.gateOpen ? 5 : 2.2);
+    }
+
+    function step(ts){
+      requestAnimationFrame(step);
+      if(!state.lastTs) state.lastTs = ts;
+      const dt = Math.min(0.033, (ts - state.lastTs) / 1000);
+      state.lastTs = ts;
+      if(state.running && !state.paused && !state.over){
+        state.timer += dt;
+        updatePlayer(dt);
+        updateEnemies(dt);
+        updateParticles(dt);
+        music(dt);
+        updateHud();
+      } else {
+        updateParticles(dt);
+      }
+      draw();
+    }
+
+    function drawBackground(){
+      const grad = ctx.createLinearGradient(0,0,0,canvas.height);
+      grad.addColorStop(0, '#10395e');
+      grad.addColorStop(.46, '#0a2440');
+      grad.addColorStop(1, '#04101c');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+
+      for(let i=0;i<8;i++){
+        ctx.fillStyle = `rgba(255,255,255,${0.016 + i * 0.003})`;
+        ctx.beginPath();
+        ctx.ellipse(canvas.width * (0.1 + i * 0.12), 120 + Math.sin(performance.now() * 0.00035 + i) * 18, 220, 38, -0.24, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.fillStyle = state.theme.water;
+      for(let y=0;y<GRID;y++){
+        for(let x=0;x<GRID;x++){
+          if(state.maze[y]?.[x] === 0){
+            ctx.fillRect(x * SIZE, y * SIZE, SIZE, SIZE);
+          }
+        }
+      }
+    }
+
+    function drawMaze(){
+      for(let y=0;y<GRID;y++){
+        for(let x=0;x<GRID;x++){
+          if(state.maze[y][x] === 1){
+            const px = x * SIZE;
+            const py = y * SIZE;
+            const wallGrad = ctx.createLinearGradient(px, py, px, py + SIZE);
+            wallGrad.addColorStop(0, state.theme.wallB);
+            wallGrad.addColorStop(1, state.theme.wallA);
+            ctx.fillStyle = wallGrad;
+            roundRect(px + 2, py + 2, SIZE - 4, SIZE - 4, 12);
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(255,255,255,.05)';
+            ctx.stroke();
+          }
+        }
+      }
+
+      for(const plant of state.plants){
+        ctx.strokeStyle = state.theme.plant;
+        ctx.lineWidth = 3;
+        ctx.globalAlpha = .18;
+        ctx.beginPath();
+        ctx.moveTo(plant.x, plant.y + 18);
+        ctx.quadraticCurveTo(plant.x + Math.sin(performance.now() * 0.001 + plant.sway) * 8, plant.y + 4, plant.x + Math.sin(performance.now() * 0.0012 + plant.sway) * 12, plant.y - plant.h);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    function drawGate(){
+      const g = state.gate;
+      const glow = 18 + Math.sin(g.pulse) * 4;
+      ctx.save();
+      ctx.translate(g.x, g.y);
+      ctx.strokeStyle = state.gateOpen ? state.theme.gate : 'rgba(255,255,255,.18)';
+      ctx.fillStyle = state.gateOpen ? 'rgba(122,255,224,.18)' : 'rgba(255,255,255,.04)';
+      ctx.shadowColor = state.gateOpen ? state.theme.gate : 'transparent';
+      ctx.shadowBlur = state.gateOpen ? 24 + glow : 0;
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.arc(0,0,SIZE * 0.28,0,Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(0,0,SIZE * 0.43 + Math.sin(g.pulse) * 2,0,Math.PI * 2);
+      ctx.globalAlpha = state.gateOpen ? .75 : .22;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawPearls(){
+      for(const pearl of state.pearls){
+        if(pearl.taken) continue;
+        const bob = Math.sin(pearl.bob) * 4;
+        ctx.save();
+        ctx.translate(pearl.x, pearl.y + bob);
+        ctx.shadowColor = state.theme.pearl;
+        ctx.shadowBlur = 20;
+        ctx.fillStyle = state.theme.pearl;
+        ctx.beginPath();
+        ctx.arc(0,0,PEARL_RADIUS,0,Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = 'rgba(255,255,255,.65)';
+        ctx.beginPath();
+        ctx.arc(-3,-3,PEARL_RADIUS * .34,0,Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    function drawEnemies(){
+      for(const e of state.enemies){
+        ctx.save();
+        ctx.translate(e.x, e.y);
+        ctx.shadowColor = state.theme.enemy;
+        ctx.shadowBlur = 24;
+        ctx.fillStyle = state.theme.enemy;
+        const pulse = Math.sin(e.glow) * 2;
+        ctx.beginPath();
+        ctx.arc(0, -6, ENEMY_RADIUS + pulse * .12, Math.PI, 0);
+        ctx.lineTo(ENEMY_RADIUS + 6, 3);
+        ctx.quadraticCurveTo(4, ENEMY_RADIUS + 10, 0, ENEMY_RADIUS + 2);
+        ctx.quadraticCurveTo(-4, ENEMY_RADIUS + 10, -ENEMY_RADIUS - 6, 3);
+        ctx.closePath();
+        ctx.fill();
+        for(let i=-1;i<=1;i++){
+          ctx.strokeStyle = 'rgba(255,255,255,.45)';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(i * 8, ENEMY_RADIUS * .65);
+          ctx.lineTo(i * 10 + Math.sin(e.glow + i) * 4, ENEMY_RADIUS + 12 + Math.cos(e.glow + i) * 5);
+          ctx.stroke();
+        }
+        ctx.fillStyle = '#fff';
+        ctx.beginPath(); ctx.arc(-6, -4, 3.5, 0, Math.PI * 2); ctx.arc(6, -4, 3.5, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#08101a';
+        ctx.beginPath(); ctx.arc(-5, -4, 1.2, 0, Math.PI * 2); ctx.arc(5, -4, 1.2, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    function drawPlayer(){
+      const p = state.player;
+      if(!p) return;
+      for(let i=0;i<p.trail.length;i++){
+        const t = p.trail[i];
+        const a = (i + 1) / p.trail.length;
+        ctx.fillStyle = `rgba(125,246,255,${a * 0.12})`;
+        ctx.beginPath();
+        ctx.arc(t.x, t.y, PLAYER_RADIUS * a, 0, Math.PI * 2);
+        ctx.fill();
+        t.life -= 0.02;
+      }
+      p.trail = p.trail.filter(t => t.life > 0);
+
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle);
+      if(p.invuln > 0 && Math.floor(p.invuln * 10) % 2 === 0) ctx.globalAlpha = .45;
+      ctx.shadowColor = state.theme.glow;
+      ctx.shadowBlur = 24;
+      ctx.fillStyle = state.theme.glow;
+      ctx.beginPath();
+      ctx.moveTo(PLAYER_RADIUS + 14, 0);
+      ctx.quadraticCurveTo(0, PLAYER_RADIUS + 10, -PLAYER_RADIUS - 14, 0);
+      ctx.quadraticCurveTo(0, -PLAYER_RADIUS - 10, PLAYER_RADIUS + 14, 0);
+      ctx.fill();
+      ctx.fillStyle = '#dffcff';
+      ctx.beginPath();
+      ctx.arc(2, 0, PLAYER_RADIUS * .72, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#0c2640';
+      ctx.beginPath();
+      ctx.arc(6, -2, PLAYER_RADIUS * .28, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawParticles(){
+      for(const b of state.bubbles){
+        ctx.fillStyle = 'rgba(255,255,255,.14)';
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      for(const r of state.ripples){
+        ctx.strokeStyle = r.color;
+        ctx.globalAlpha = r.life * .5;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(r.x, r.y, r.r, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+      for(const p of state.particles){
+        ctx.globalAlpha = Math.max(0, p.life);
+        if(p.kind === 'spark'){
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        } else if(p.kind === 'text'){
+          ctx.fillStyle = p.color;
+          ctx.font = 'bold 28px Inter, system-ui, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(p.text, p.x, p.y);
+        }
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function drawVignette(){
+      const vignette = ctx.createRadialGradient(canvas.width/2, canvas.height/2, canvas.width * .18, canvas.width/2, canvas.height/2, canvas.width * .75);
+      vignette.addColorStop(0, 'rgba(0,0,0,0)');
+      vignette.addColorStop(1, 'rgba(0,0,0,.34)');
+      ctx.fillStyle = vignette;
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      if(state.flash > 0){
+        ctx.fillStyle = `rgba(255,255,255,${state.flash * .18})`;
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+      }
+    }
+
+    function draw(){
+      ctx.save();
+      if(state.shake > 0){
+        ctx.translate(rand(-state.shake, state.shake), rand(-state.shake, state.shake));
+      }
+      drawBackground();
+      drawMaze();
+      drawGate();
+      drawPearls();
+      drawEnemies();
+      drawPlayer();
+      drawParticles();
+      drawVignette();
+      ctx.restore();
+    }
+
+    function roundRect(x, y, w, h, r){
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    function keyDir(key, down){
+      const map = { ArrowUp:[0,-1], KeyW:[0,-1], ArrowDown:[0,1], KeyS:[0,1], ArrowLeft:[-1,0], KeyA:[-1,0], ArrowRight:[1,0], KeyD:[1,0] };
+      if(!(key in map)) return false;
+      if(down){
+        const [x,y] = map[key];
+        trySetDir(x,y);
+      } else {
+        state.moveDir = {x:0,y:0};
+      }
+      return true;
+    }
+
+    window.addEventListener('keydown', e => {
+      if(keyDir(e.code, true)) e.preventDefault();
+      if(e.code === 'KeyP'){ e.preventDefault(); pauseToggle(); }
+      if(e.code === 'KeyR'){ e.preventDefault(); restartRun(); }
+    });
+    window.addEventListener('keyup', e => {
+      if(keyDir(e.code, false)) e.preventDefault();
+    });
+
+    canvas.addEventListener('pointerdown', e => {
+      ensureAudio();
+      state.dragging = true;
+      state.dragId = e.pointerId;
+      canvas.setPointerCapture(e.pointerId);
+      steerFromPointer(e.clientX, e.clientY);
+    });
+    canvas.addEventListener('pointermove', e => {
+      if(!state.dragging || e.pointerId !== state.dragId) return;
+      steerFromPointer(e.clientX, e.clientY);
+    });
+    const endPointer = e => {
+      if(e.pointerId !== state.dragId) return;
+      state.dragging = false;
+      state.dragId = null;
+      state.dragPoint = null;
+      state.moveDir = {x:0,y:0};
+    };
+    canvas.addEventListener('pointerup', endPointer);
+    canvas.addEventListener('pointercancel', endPointer);
+
+    document.querySelectorAll('[data-dir]').forEach(btn => {
+      const dir = btn.dataset.dir;
+      const map = { up:[0,-1], down:[0,1], left:[-1,0], right:[1,0] }[dir];
+      btn.addEventListener('pointerdown', () => { ensureAudio(); trySetDir(map[0], map[1]); });
+      btn.addEventListener('pointerup', () => state.moveDir = {x:0,y:0});
+      btn.addEventListener('pointerleave', () => state.moveDir = {x:0,y:0});
+      btn.addEventListener('pointercancel', () => state.moveDir = {x:0,y:0});
+    });
+    touchCenter.addEventListener('click', () => { state.moveDir = {x:0,y:0}; });
+
+    startBtn.addEventListener('click', () => startGame());
+    overlayStart.addEventListener('click', () => startGame());
+    pauseBtn.addEventListener('click', pauseToggle);
+    restartBtn.addEventListener('click', restartRun);
+    audioBtn.addEventListener('click', () => {
+      state.audioOn = !state.audioOn;
+      if(state.audioOn) ensureAudio();
+      audioBtn.textContent = state.audioOn ? 'Audio On' : 'Audio Off';
+    });
+    fullscreenBtn.addEventListener('click', async () => {
+      const el = document.documentElement;
+      if(!document.fullscreenElement) await el.requestFullscreen?.(); else await document.exitFullscreen?.();
+    });
+
+    buildMaze();
+    updateHud();
+    renderBoard();
+    requestAnimationFrame(step);
+  })();
+  </script>
+</body>
+</html>

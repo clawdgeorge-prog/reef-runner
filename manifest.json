@@ -1,22 +1,22 @@
 {
-  "name": "Neon Snake",
-  "short_name": "NeonSnake",
-  "description": "A neon-styled snake game with powerups and multiple difficulty levels",
-  "start_url": "./index.html",
+  "name": "Reef Runner",
+  "short_name": "ReefRunner",
+  "description": "A mobile-first underwater maze-clear arcade game with smooth controls and polished local visuals",
+  "start_url": "./reef-runner/index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#0a0a0f",
-  "theme_color": "#0a0a0f",
+  "background_color": "#05111f",
+  "theme_color": "#05111f",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%230a0a0f' width='192' height='192' rx='32'/><circle fill='%23ff00ff' cx='96' cy='96' r='40'/><circle fill='%2300ff88' cx='96' cy='96' r='25'/></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%2305111f' width='192' height='192' rx='40'/><path fill='%237df6ff' d='M36 104c22-28 41-42 74-48 16-3 29 2 46 16-11 6-17 13-20 23 3 10 9 18 20 24-18 13-31 18-46 15-33-6-52-20-74-48l18-10-18-10Z'/><circle fill='%23fff2a8' cx='126' cy='92' r='11'/></svg>",
       "sizes": "192x192",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     },
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%230a0a0f' width='512' height='512' rx='64'/><circle fill='%23ff00ff' cx='256' cy='256' r='100'/><circle fill='%2300ff88' cx='256' cy='256' r='60'/></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%2305111f' width='512' height='512' rx='104'/><path fill='%237df6ff' d='M96 277c57-73 107-108 192-124 42-7 75 5 121 41-28 17-44 34-52 61 8 27 24 46 52 62-46 35-79 47-121 40-85-16-135-51-192-124l46-26-46-30Z'/><circle fill='%23fff2a8' cx='337' cy='246' r='31'/></svg>",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"

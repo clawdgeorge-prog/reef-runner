@@ -38,10 +38,11 @@ Neon browser arcade prototype focused on maze-chase + route-control gameplay.
 - New in-canvas tactical radar gives a compact live overview of maze walls, player position, drones, gate anchors, decoys, shard / exit location, and your current breadcrumb route — especially useful on mobile when pressure gets dense
 - New flow-scoring system rewards stylish clean play: risky shard pickups, multi-drone arc-lash stuns, and fast portal breaches now build a live multiplier, with floating callouts, light audio feedback, and a subtle screen glow that makes momentum readable without cluttering the maze
 - New **Overdrive** system turns close calls into a reward loop: skim drones without taking a hit to gain a short speed surge, bonus charge, extra score, and a gold-lit visual state that makes high-risk route threading feel more intentional
+- Polished **title screen** with animated pulsing logo, best score / districts cleared stats, keyboard controls reference, and accessibility toggles for reduced motion and high contrast (all persisted locally)
+- Game over screen now displays score, districts cleared, and best score with option to return to title
 
 ## Next polish ideas
 - richer soundtrack / SFX layering beyond the new district-reactive base score
-- title screen, progression, unlocks
+- progression unlocks / meta-progression beyond high score
 - stronger portal presentation / completion cinematics
 - richer district arrival / completion stingers
-- district-specific VFX/audio stingers when traits rotate in

@@ -779,8 +779,12 @@
     districtBanner.textContent = `Exit Breach • Reach the portal before it shifts`;
     state.districtBannerTimer = 1.8;
     districtBanner.classList.add('visible');
-    addParticles(c.x, c.y, state.currentTheme.gateA, 28, 4.8, 1.1);
-    addParticles(state.player.x, state.player.y, state.currentTheme.gateB, 18, 3.6, .8);
+    // Enhanced portal opening: dramatic particle burst with both theme colors
+    addParticles(c.x, c.y, state.currentTheme.gateA, 42, 5.8, 1.4);
+    addParticles(c.x, c.y, state.currentTheme.gateB, 32, 5.2, 1.2);
+    addParticles(state.player.x, state.player.y, state.currentTheme.gateB, 24, 4.2, 1.0);
+    state.cameraShake = Math.max(state.cameraShake, .32);
+    state.flash = Math.max(state.flash, .22);
     playSfx('gate');
     playSfx('alarm');
   }
@@ -794,7 +798,7 @@
       c = randomOpenCell();
       tries += 1;
     }
-    addParticles(old.x, old.y, state.currentTheme.gateB, 20, 4.8, .95);
+    addParticles(old.x, old.y, state.currentTheme.gateB, 28, 5.5, 1.1);
     state.exitPortal = {...c, pulse:0, flare:1};
     state.exitTimer = Math.max(5.8, state.exitTimerMax - 1.2 - state.exitRelocations * .35);
     state.exitAlarmTimer = .15;
@@ -802,8 +806,10 @@
     districtBanner.textContent = `Portal Shift • Exit lane rerouted`;
     state.districtBannerTimer = 1.2;
     districtBanner.classList.add('visible');
-    state.cameraShake = Math.max(state.cameraShake, .2);
-    addParticles(c.x, c.y, state.currentTheme.gateA, 28, 5.2, 1.15);
+    state.cameraShake = Math.max(state.cameraShake, .28);
+    state.flash = Math.max(state.flash, .16);
+    addParticles(c.x, c.y, state.currentTheme.gateA, 38, 5.8, 1.25);
+    addParticles(c.x, c.y, state.currentTheme.gateB, 26, 4.8, 1.05);
     playSfx('alarm');
     playSfx('gate');
     vibrate([20, 30, 20]);
@@ -840,9 +846,13 @@
     state.transitionTitle = `District Breached • ${clearedTheme.name}`;
     state.transitionText = `${clearedTheme.trait} resolved • ${state.currentTheme.label} online`;
     state.transitionAccent = state.currentTheme.gateA;
-    state.cameraShake = .24;
-    addParticles(state.player.x, state.player.y, clearedTheme.shardB, 44, 5.8, 1.25);
-    addParticles(state.player.x, state.player.y, state.currentTheme.gateA, 34, 4.8, 1.05);
+    // Enhanced breach completion: dramatic celebration effect
+    state.cameraShake = .42;
+    state.flash = Math.max(state.flash, .32);
+    addParticles(state.player.x, state.player.y, clearedTheme.shardB, 56, 6.8, 1.45);
+    addParticles(state.player.x, state.player.y, clearedTheme.shardA, 42, 5.8, 1.25);
+    addParticles(state.player.x, state.player.y, state.currentTheme.gateA, 48, 6.2, 1.35);
+    addParticles(state.player.x, state.player.y, '#ffffff', 24, 4.2, 0.85);
     playSfx('breach');
     playSfx('start');
     if(state.score>state.best){ state.best=state.score; localStorage.setItem(STORAGE_KEY,String(state.best)); }

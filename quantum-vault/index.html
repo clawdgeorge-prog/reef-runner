@@ -87,18 +87,18 @@
   <div class="app">
     <aside class="panel sidebar">
       <div class="brand">
-        <div class="eyebrow">One-thumb neon arcade</div>
+        <div class="eyebrow">Phone-first arcade sprint</div>
         <h1>Quantum Vault</h1>
-        <div class="tagline">Collect every shard, open the portal, and escape. The whole game now leans harder into a fast, readable phone-first arcade run.</div>
+        <div class="tagline">Grab the glowing shards, wake the portal, and bail out. Short runs, softer punishment, and a much cleaner arcade read on phones.</div>
       </div>
 
       <div class="stats">
         <div class="card"><div class="label">Score</div><div id="score" class="value">0</div><div class="sub">This run</div></div>
         <div class="card"><div class="label">Best</div><div id="bestHero" class="value">0</div><div class="sub">Top local run</div></div>
-        <div class="card"><div class="label">Level</div><div id="level" class="value">1</div><div class="sub" id="districtName">Prism Lock</div></div>
-        <div class="card"><div class="label">Lives</div><div id="lives" class="value">3</div><div class="sub">Crashes left</div></div>
+        <div class="card"><div class="label">Zone</div><div id="level" class="value">1</div><div class="sub" id="districtName">Prism Lock</div></div>
         <div class="card"><div class="label">Shards</div><div id="shards" class="value">0 / 0</div><div class="sub">Collect them all</div></div>
-        <div class="card"><div class="label">Burst</div><div id="burstState" class="value">0%</div><div class="sub">Emergency stun</div></div>
+        <div class="card"><div class="label">Mistakes</div><div id="lives" class="value">3</div><div class="sub">Hits left</div></div>
+        <div class="card"><div class="label">Burst</div><div id="burstState" class="value">0%</div><div class="sub">Panic button</div></div>
       </div>
 
       <div class="box ctrl-box">
@@ -115,11 +115,11 @@
       </div>
 
       <div class="box objective-box">
-        <div class="section">Objective</div>
+        <div class="section">How It Plays</div>
         <ul>
           <li>Collect every shard</li>
-          <li>When the maze is clear, the exit portal opens</li>
-          <li>Escape fast for a larger clear bonus</li>
+          <li>The portal opens when the room is clear</li>
+          <li>If a sentry tags you, you lose a hit and restart from the entry pad</li>
         </ul>
       </div>
 
@@ -128,7 +128,7 @@
         <div id="leaderboard" class="leaderboard"></div>
       </div>
 
-      <div class="foot">Swipe or use the D-pad on mobile • WASD / arrows on desktop • Burst is your only panic button.</div>
+      <div class="foot">Swipe anywhere or use the D-pad on mobile • WASD / arrows on desktop • Tap for Burst when the bar is full.</div>
     </aside>
 
     <main class="panel game-shell">
@@ -136,14 +136,13 @@
         <div class="hud-group">
           <div class="pill accent"><strong id="state">Standby</strong></div>
           <div class="pill">Best <strong id="best">0</strong></div>
-          <div class="pill">Level <strong id="hudLevel">1</strong></div>
-          <div class="pill">Drones <strong id="enemies">0</strong></div>
-          <div class="pill">Zone <strong id="theme">Prism Lock</strong></div>
+          <div class="pill">Zone <strong id="hudLevel">1</strong></div>
+          <div class="pill">Sentries <strong id="enemies">0</strong></div>
         </div>
         <div class="hud-group">
           <div class="pill accent">Goal <strong id="goal">Collect every shard</strong></div>
-          <div class="pill">Clear Bonus <strong id="speedBonus">+0</strong></div>
-          <div class="pill">Maze Clear <strong id="clearPct">0%</strong></div>
+          <div class="pill">Exit Bonus <strong id="speedBonus">+0</strong></div>
+          <div class="pill">Room Clear <strong id="clearPct">0%</strong></div>
         </div>
       </div>
 
@@ -152,7 +151,7 @@
         <div id="overlay" class="overlay">
           <div id="overlayCard" class="overlay-card">
             <h2>Quantum Vault</h2>
-            <p>Collect every shard, wake the portal, and get out. Fewer rules, chunkier feedback, and a cleaner arcade rhythm on phones.</p>
+            <p>Collect every shard, wake the portal, and get out. Short runs, prettier glow, softer punishment, and cleaner phone-first action.</p>
             <div class="actions"><button id="overlayStart" class="primary">Enter Vault</button></div>
           </div>
         </div>
@@ -185,7 +184,6 @@
     const bestEl = document.getElementById('best');
     const hudLevelEl = document.getElementById('hudLevel');
     const enemiesEl = document.getElementById('enemies');
-    const themeEl = document.getElementById('theme');
     const districtNameEl = document.getElementById('districtName');
     const goalEl = document.getElementById('goal');
     const speedBonusEl = document.getElementById('speedBonus');
@@ -252,6 +250,7 @@
       shake:0,
       audioOn:true,
       hudTick:0,
+      levelHits:0,
       audioStarted:false,
       theme:THEMES[0],
       clearGlow:0,
@@ -427,11 +426,10 @@
       burstStateEl.textContent = `${Math.round(state.burst)}%`;
       stateEl.textContent = state.over ? 'Run Lost' : state.paused ? 'Paused' : state.running ? (state.exitUnlocked ? 'Exit Open' : 'Collecting') : 'Standby';
       bestEl.textContent = state.best.toLocaleString();
-      hudLevelEl.textContent = state.level;
+      hudLevelEl.textContent = state.theme.name;
       enemiesEl.textContent = state.enemies.length;
-      themeEl.textContent = state.theme.name;
       districtNameEl.textContent = state.theme.name;
-      goalEl.textContent = state.exitUnlocked ? 'Reach the portal' : 'Collect every shard';
+      goalEl.textContent = state.exitUnlocked ? 'Reach the portal' : (state.shardTotal - state.shardCount === 1 ? 'Grab the last shard' : 'Collect every shard');
       speedBonusEl.textContent = `+${state.speedBonus}`;
       clearPctEl.textContent = `${clearPct}%`;
     }
@@ -439,11 +437,12 @@
     function setupLevel(level){
       state.theme = THEMES[(level - 1) % THEMES.length];
       state.maze = layouts[(level - 1) % layouts.length].map(r=>r.split('').map(Number));
+      state.levelHits = 0;
       state.player = {
         x:cellCenter(1,1).x,
         y:cellCenter(1,1).y,
         radius:TILE*.29,
-        speed:3.5 + Math.min(.55, level * .05),
+        speed:3.8 + Math.min(.7, level * .045),
         dir:{x:0,y:0},
         nextDir:{x:0,y:0},
         trail:[],
@@ -462,11 +461,11 @@
       state.exitUnlocked = false;
       state.exit = {...cellCenter(GRID-2, GRID-2), pulse:0};
       state.shardCount = 0;
-      state.levelTimer = Math.max(10, 24 - level * .65);
+      state.levelTimer = Math.max(12, 26 - level * .6);
       state.speedBonus = Math.round(state.levelTimer) * 30;
       state.burst = clamp(state.burst + 16, 0, 100);
 
-      const totalShards = 7 + Math.min(7, level - 1);
+      const totalShards = 6 + Math.min(5, Math.floor((level - 1) * .8));
       state.shardTotal = totalShards;
       for(let i=0;i<totalShards;i++){
         let c = randomOpenCell();
@@ -474,7 +473,7 @@
         state.shards.push({...c,rot:rand(0,Math.PI*2),pulse:rand(0,Math.PI*2)});
       }
 
-      const enemyCount = Math.min(4, 1 + Math.floor(level / 2));
+      const enemyCount = Math.min(3, 1 + Math.floor((level - 1) / 3));
       for(let i=0;i<enemyCount;i++) spawnEnemy(i);
       buildAmbient();
       syncHud();
@@ -484,7 +483,7 @@
       let c = randomOpenCell();
       while(Math.abs(c.cx-1)<4&&Math.abs(c.cy-1)<4) c = randomOpenCell();
       const hueOffset = [120, 138, 156, 174][i % 4];
-      state.enemies.push({x:c.x,y:c.y,type:'sentry',hue:state.theme.hue + hueOffset,speed:0.88 + state.level*.05 + i*.025,radius:TILE*.205,trail:[],wobble:rand(0,Math.PI*2),stunned:0,dir:{x:0,y:0},target:{x:c.x,y:c.y}});
+      state.enemies.push({x:c.x,y:c.y,type:'sentry',hue:state.theme.hue + hueOffset,speed:0.78 + state.level*.038 + i*.02,radius:TILE*.21,trail:[],wobble:rand(0,Math.PI*2),stunned:0,dir:{x:0,y:0},target:{x:c.x,y:c.y}});
     }
 
     function resetRun(){
@@ -500,7 +499,7 @@
       state.newBestGlow = 0;
       setupLevel(1);
       overlay.classList.remove('hidden');
-      overlayCard.innerHTML = `<h2>Quantum Vault</h2><p>Collect every shard, wake the portal, and escape. Clean objective, quick retries, and softer mobile controls.</p><div class="actions"><button id="restartAction" class="primary">Enter Vault</button></div>`;
+      overlayCard.innerHTML = `<h2>Quantum Vault</h2><p>Collect every shard, wake the portal, and escape. One clear goal, forgiving restarts, and a brighter arcade feel.</p><div class="actions"><button id="restartAction" class="primary">Enter Vault</button></div>`;
       document.getElementById('restartAction').addEventListener('click', startGame);
       syncHud();
     }
@@ -527,7 +526,7 @@
 
     function collectShards(){
       state.shards = state.shards.filter(shard => {
-        if(Math.hypot(shard.x - state.player.x, shard.y - state.player.y) < TILE*.35){
+        if(Math.hypot(shard.x - state.player.x, shard.y - state.player.y) < TILE*.42){
           state.shardCount += 1;
           state.burst = clamp(state.burst + 24, 0, 100);
           awardScore(100, 'SHARD +100', shard.x, shard.y - 18, state.theme.shard);
@@ -543,10 +542,11 @@
 
     function nextLevel(){
       const speedBonus = Math.round(state.speedBonus);
-      const levelBonus = 360 + state.level * 140;
+      const levelBonus = 420 + state.level * 140;
       const lifeBonus = state.lives * 180;
-      const totalBonus = levelBonus + lifeBonus + speedBonus;
-      awardScore(totalBonus, `CLEAR +${totalBonus}`, state.exit.x, state.exit.y - 48, '#baff8b');
+      const cleanBonus = state.levelHits === 0 ? 260 + state.level * 80 : 0;
+      const totalBonus = levelBonus + lifeBonus + speedBonus + cleanBonus;
+      awardScore(totalBonus, cleanBonus ? `CLEAN EXIT +${totalBonus}` : `CLEAR +${totalBonus}`, state.exit.x, state.exit.y - 48, '#baff8b');
       state.level += 1;
       setupLevel(state.level);
       state.running = true;
@@ -562,7 +562,7 @@
       const result = maybeRecordBest();
       overlay.classList.remove('hidden');
       const medal = result.wasNewBest ? '🏆 New local best' : result.place === 2 ? '🥈 #2 on your device' : result.place === 3 ? '🥉 #3 on your device' : '✨ Back in instantly';
-      overlayCard.innerHTML = `<h2>${reason}</h2><p><strong>${medal}</strong></p><p>You reached <strong>level ${state.level}</strong> with <strong>${state.score.toLocaleString()}</strong> points. Local board place: <strong>#${result.place}</strong>.</p><p style="margin-top:10px;color:rgba(255,255,255,.72)">Best local score: <strong>${state.best.toLocaleString()}</strong> • Shards cleared this level: <strong>${state.shardCount}/${state.shardTotal}</strong></p><div class="actions"><button id="restartBtn" class="primary">Run Again</button></div>`;
+      overlayCard.innerHTML = `<h2>${reason}</h2><p><strong>${medal}</strong></p><p>You reached <strong>zone ${state.level}</strong> with <strong>${state.score.toLocaleString()}</strong> points. Local board place: <strong>#${result.place}</strong>.</p><p style="margin-top:10px;color:rgba(255,255,255,.72)">Best local score: <strong>${state.best.toLocaleString()}</strong> • Room progress: <strong>${state.shardCount}/${state.shardTotal}</strong> shards</p><div class="actions"><button id="restartBtn" class="primary">Run Again</button></div>`;
       document.getElementById('restartBtn').addEventListener('click', startGame);
       syncHud();
     }
@@ -585,7 +585,7 @@
       addParticles(state.player.x, state.player.y, state.theme.exit, 44, 6.2, 1.2);
       addRing(state.player.x, state.player.y, state.theme.exit, 24, 126);
       state.shake = .18;
-      awardScore(80, 'BURST', state.player.x, state.player.y - 20, state.theme.exit);
+      awardScore(50, 'BURST', state.player.x, state.player.y - 20, state.theme.exit);
       sfx('burst');
       syncHud();
     }
@@ -659,16 +659,27 @@
         const d = dist(enemy, state.player);
         if(d < enemy.radius + state.player.radius && state.player.hitCooldown <= 0 && !enemy.stunned){
           state.player.hitCooldown = 1.1;
+          state.levelHits += 1;
           state.lives -= 1;
-          state.speedBonus = Math.max(0, state.speedBonus - 140);
+          state.burst = clamp(state.burst + 22, 0, 100);
+          state.speedBonus = Math.max(0, state.speedBonus - 90);
           state.flash = .65;
           state.shake = .24;
           addParticles(state.player.x, state.player.y, '#ff7b84', 34, 6, 1.2);
           addRing(state.player.x, state.player.y, '#ff7b84', 20, 84);
-          addPopup('HIT', state.player.x, state.player.y - 18, '#ff7b84', true);
+          addPopup('RESET', state.player.x, state.player.y - 18, '#ff7b84', true);
           sfx('hit');
           vibrate([18,34,18]);
           if(state.lives <= 0) gameOver('System Crashed');
+          else {
+            const spawn = cellCenter(1,1);
+            state.player.x = spawn.x;
+            state.player.y = spawn.y;
+            state.player.dir = {x:0,y:0};
+            state.player.nextDir = {x:0,y:0};
+            state.player.trail = [];
+            addRing(spawn.x, spawn.y, '#71f0ff', 18, 70);
+          }
           syncHud();
         }
       });
@@ -682,7 +693,7 @@
     }
 
     function updateFlow(dt){
-      state.burst = clamp(state.burst + dt * 3.1, 0, 100);
+      state.burst = clamp(state.burst + dt * 4, 0, 100);
       state.flash = Math.max(0, state.flash - dt);
       state.shake = Math.max(0, state.shake - dt);
       state.clearGlow = Math.max(0, state.clearGlow - dt);
@@ -751,7 +762,7 @@
       });
 
       for(let i=0;i<68;i++){
-        const y = i/68*canvas.height;
+        const y = i/68*canvas.height + Math.sin(performance.now()*0.00022 + i*.35)*2.1;
         ctx.fillStyle = i%2===0 ? 'rgba(255,255,255,.012)' : state.theme.floor;
         ctx.fillRect(0, y, canvas.width, 1.1);
       }
@@ -784,7 +795,10 @@
           ctx.lineTo(px+TILE-10,py+10);
           ctx.stroke();
         } else {
-          ctx.fillStyle = 'rgba(255,255,255,.02)';
+          const floor = ctx.createRadialGradient(px + TILE/2, py + TILE/2, 0, px + TILE/2, py + TILE/2, TILE*.9);
+          floor.addColorStop(0, 'rgba(255,255,255,.03)');
+          floor.addColorStop(1, state.theme.floor);
+          ctx.fillStyle = floor;
           ctx.fillRect(px,py,TILE,TILE);
           ctx.strokeStyle = 'rgba(113,240,255,.045)';
           ctx.strokeRect(px+.5,py+.5,TILE-1,TILE-1);
@@ -812,6 +826,15 @@
         ctx.beginPath();
         ctx.arc(0,0,TILE*.16,0,Math.PI*2);
         ctx.fill();
+        ctx.rotate(e.pulse * .34);
+        ctx.strokeStyle = 'rgba(255,255,255,.72)';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(-TILE*.22, 0);
+        ctx.lineTo(TILE*.22, 0);
+        ctx.moveTo(0, -TILE*.22);
+        ctx.lineTo(0, TILE*.22);
+        ctx.stroke();
       }
       ctx.restore();
     }
@@ -892,7 +915,7 @@
           ctx.arc(t.x,t.y,enemy.radius*(idx/enemy.trail.length),0,Math.PI*2);
           ctx.fill();
         });
-        const hover = Math.sin(enemy.wobble) * 3;
+        const hover = Math.sin(enemy.wobble) * 4.5;
         ctx.save();
         ctx.translate(enemy.x, enemy.y + hover);
         ctx.shadowBlur = 28;
@@ -900,13 +923,18 @@
         ctx.fillStyle = enemy.stunned > 0 ? '#ffffff' : `hsl(${enemy.hue} 100% 64%)`;
         ctx.globalAlpha = enemy.stunned > 0 ? .82 : 1;
         ctx.beginPath();
-        ctx.roundRect(-enemy.radius*.95,-enemy.radius*.95,enemy.radius*1.9,enemy.radius*1.9,10);
+        ctx.roundRect(-enemy.radius*.95,-enemy.radius*.95,enemy.radius*1.9,enemy.radius*1.9,12);
         ctx.fill();
-        ctx.fillStyle = 'rgba(4,10,22,.55)';
+        ctx.fillStyle = 'rgba(4,10,22,.45)';
         ctx.beginPath();
-        ctx.arc(0, 0, enemy.radius*.44, 0, Math.PI*2);
+        ctx.arc(0, 0, enemy.radius*.52, 0, Math.PI*2);
         ctx.fill();
-        ctx.fillStyle = 'rgba(255,255,255,.92)';
+        ctx.strokeStyle = 'rgba(255,255,255,.55)';
+        ctx.lineWidth = 2.4;
+        ctx.beginPath();
+        ctx.arc(0, 0, enemy.radius*.74, 0, Math.PI*2);
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(255,255,255,.96)';
         ctx.beginPath();
         ctx.arc(enemy.radius*.18, -enemy.radius*.12, enemy.radius*.12, 0, Math.PI*2);
         ctx.fill();
@@ -1008,7 +1036,7 @@
       ctx.fillStyle = 'rgba(255,255,255,.72)';
       ctx.font = '700 14px Inter, system-ui, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(state.exitUnlocked ? 'Exit is open — get out.' : 'Collect every shard to power the gate.', canvas.width/2, canvas.height - 74);
+      ctx.fillText(state.exitUnlocked ? 'Exit is open — get out.' : 'Collect the glow, then hit the portal.', canvas.width/2, canvas.height - 74);
       if(state.clearGlow > 0){
         ctx.fillStyle = `rgba(113,240,255,${state.clearGlow*.05})`;
         ctx.fillRect(0,0,canvas.width,canvas.height);

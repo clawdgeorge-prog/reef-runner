@@ -40,9 +40,8 @@ Neon browser arcade prototype focused on maze-chase + route-control gameplay.
 - New **Overdrive** system turns close calls into a reward loop: skim drones without taking a hit to gain a short speed surge, bonus charge, extra score, and a gold-lit visual state that makes high-risk route threading feel more intentional
 - Polished **title screen** with animated pulsing logo, best score / districts cleared stats, keyboard controls reference, and accessibility toggles for reduced motion and high contrast (all persisted locally)
 - Game over screen now displays score, districts cleared, and best score with option to return to title
+- Audio layering pass adds distinct sound effects for drone spawns, overdrive activation, and upgrade purchases — giving better aural feedback for key gameplay moments
 
 ## Next polish ideas
-- richer soundtrack / SFX layering beyond the new district-reactive base score
-- progression unlocks / meta-progression beyond high score
 - stronger portal presentation / completion cinematics
 - richer district arrival / completion stingers

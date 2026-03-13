@@ -1024,7 +1024,68 @@
     ctx.restore();
   }
   function drawThreatTelegraphs(){
+    const interceptCell = routeInterceptCell();
+    const objective = routeObjective();
+    const interceptPoint = interceptCell ? cellCenter(interceptCell.cx, interceptCell.cy) : null;
     state.drones.forEach(drone=>{
+      if(drone.intent==='Intercept' && interceptPoint){
+        const dx = interceptPoint.x - drone.x;
+        const dy = interceptPoint.y - drone.y;
+        const angle = Math.atan2(dy, dx);
+        const distance = Math.hypot(dx, dy);
+        const alpha = clamp(.18 + (1 - distance / (TILE * 13)) * .34, .12, .42);
+        ctx.save();
+        ctx.strokeStyle = `rgba(99,242,255,${alpha})`;
+        ctx.shadowBlur = 16;
+        ctx.shadowColor = 'rgba(99,242,255,.55)';
+        ctx.setLineDash([10, 10]);
+        ctx.lineDashOffset = -state.introPulse * 90;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.moveTo(drone.x, drone.y);
+        ctx.lineTo(interceptPoint.x, interceptPoint.y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.translate(interceptPoint.x, interceptPoint.y);
+        ctx.rotate(angle + Math.PI * .5);
+        ctx.fillStyle = `rgba(143,238,255,${alpha + .16})`;
+        ctx.beginPath();
+        ctx.moveTo(0, -TILE * .22);
+        ctx.lineTo(TILE * .14, TILE * .1);
+        ctx.lineTo(0, 0);
+        ctx.lineTo(-TILE * .14, TILE * .1);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+      if(drone.intent==='Anchor' && objective){
+        const dx = objective.x - drone.x;
+        const dy = objective.y - drone.y;
+        const alpha = clamp(.18 + (1 - Math.hypot(dx, dy) / (TILE * 13)) * .3, .12, .4);
+        ctx.save();
+        ctx.strokeStyle = `rgba(255,215,106,${alpha})`;
+        ctx.shadowBlur = 18;
+        ctx.shadowColor = 'rgba(255,215,106,.45)';
+        ctx.setLineDash([8, 12]);
+        ctx.lineDashOffset = state.introPulse * 70;
+        ctx.lineWidth = 2.25;
+        ctx.beginPath();
+        ctx.moveTo(drone.x, drone.y);
+        ctx.lineTo(objective.x, objective.y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.translate(objective.x, objective.y);
+        ctx.rotate(state.introPulse * 1.6);
+        for(let i = 0; i < 2; i++){
+          const ringR = TILE * (.34 + i * .11 + Math.sin(state.introPulse * 4 + i) * .018);
+          ctx.globalAlpha = alpha + i * .08;
+          ctx.lineWidth = 2.5 - i * .4;
+          ctx.beginPath();
+          ctx.arc(0, 0, ringR, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
       if(drone.type!=='hunter' || (drone.surgeTelegraph<=0 && drone.surgeBurst<=0)) return;
       const teleAlpha = drone.surgeTelegraph>0 ? clamp(drone.surgeTelegraph/.55, 0, 1) : clamp(drone.surgeBurst/.42, 0, 1) * .8;
       const target = drone.surgeTarget || {x:state.player.x, y:state.player.y};

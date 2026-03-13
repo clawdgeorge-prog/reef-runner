@@ -25,6 +25,7 @@ Neon browser arcade prototype focused on maze-chase + route-control gameplay.
 - New danger-sense readability pass adds a live danger meter, edge-of-screen threat arrows, and a player danger halo so nearby pressure and hunter surge setups are easier to read on mobile
 - Drone roles are now objective-aware instead of only speed-based: scouts cut ahead on your breadcrumb route, glimmers lean toward anchoring the shard / exit, and hunters keep direct lock pressure
 - A live Intel HUD pill now calls out whether the nearest pressure is Pursuit, Intercept, Anchor, Decoy, or an active Hunter Lock so route decisions read faster mid-run
+- New intent telegraphs make drone roles readable at a glance: scouts now project cyan intercept lanes toward your route, glimmers tether gold anchor lines into the live objective, and hunters keep their lock reticles / surge rails
 - Accessibility pass adds one-tap reduced-motion and high-contrast toggles, persisted locally for repeat runs across mobile and desktop
 - District theme rotation is now mechanical as well as visual:
   - **Astra / Flux Reserve** — pulse costs less charge
@@ -35,6 +36,6 @@ Neon browser arcade prototype focused on maze-chase + route-control gameplay.
 ## Next polish ideas
 - richer soundtrack / SFX system
 - title screen, progression, unlocks
-- richer per-drone telegraph FX for intercept / anchor states
 - stronger portal presentation / completion cinematics
+- richer district arrival / completion stingers
 - district-specific VFX/audio stingers when traits rotate in

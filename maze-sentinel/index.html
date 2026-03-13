@@ -70,6 +70,36 @@
     .hud { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
     .pill { padding:10px 14px; border-radius:999px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); color:var(--muted); font-size:.9rem; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); }
     .pill strong { color:var(--ink); }
+    .ability-strip { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .ability-card {
+      position:relative; overflow:hidden; border-radius:22px; padding:14px 15px;
+      background:linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.1); box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    .ability-card::after {
+      content:""; position:absolute; inset:auto -18% -55% auto; width:150px; height:150px; border-radius:50%;
+      background:radial-gradient(circle, rgba(99,242,255,.16), transparent 72%); pointer-events:none;
+      transition:opacity .18s ease;
+    }
+    .ability-card.hot::after { background:radial-gradient(circle, rgba(255,99,212,.18), transparent 72%); }
+    .ability-top { display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
+    .ability-name { font-size:.8rem; text-transform:uppercase; letter-spacing:.18em; color:var(--muted); font-weight:800; }
+    .ability-state { font-size:.96rem; font-weight:900; color:var(--ink); }
+    .ability-sub { margin-top:8px; color:rgba(255,255,255,.62); font-size:.8rem; min-height:1.2em; }
+    .ability-meter { margin-top:12px; height:9px; border-radius:999px; overflow:hidden; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.06); }
+    .ability-fill {
+      height:100%; width:0%; border-radius:999px;
+      background:linear-gradient(90deg, rgba(99,242,255,.55), rgba(85,167,255,.95));
+      box-shadow:0 0 18px rgba(99,242,255,.34); transition:width .16s ease, filter .16s ease, background .16s ease;
+    }
+    .ability-card.ready .ability-fill { filter:saturate(1.18) brightness(1.04); }
+    .ability-card.hot .ability-fill {
+      background:linear-gradient(90deg, rgba(255,99,212,.72), rgba(255,215,106,.95));
+      box-shadow:0 0 18px rgba(255,99,212,.34);
+    }
+    button:disabled { opacity:.42; cursor:not-allowed; transform:none !important; box-shadow:none !important; }
+    button.ready-glow { border-color:rgba(99,242,255,.45); box-shadow:0 0 22px rgba(99,242,255,.16); }
+    button.hot-glow { border-color:rgba(255,99,212,.48); box-shadow:0 0 24px rgba(255,99,212,.18); }
     .canvas-wrap {
       position:relative; overflow:hidden; aspect-ratio:1; min-height:420px; border-radius:30px;
       background:radial-gradient(circle at 50% 35%, rgba(18,44,83,.95), rgba(4,8,20,.99) 68%), linear-gradient(180deg, rgba(4,8,20,1), rgba(4,8,20,1));
@@ -122,7 +152,7 @@
       background: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.05)), linear-gradient(180deg, rgba(6,18,39,.97), rgba(3,8,19,.97));
     }
     @media (max-width:1040px) { .app { grid-template-columns:1fr; } .sidebar { order:2; } .game-shell { order:1; } }
-    @media (max-width:720px) { body { padding:10px; } .sidebar, .game-shell { padding:14px; } .touch-pad { display:grid; } .canvas-wrap { min-height:320px; } .stat-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width:720px) { body { padding:10px; } .sidebar, .game-shell { padding:14px; } .touch-pad { display:grid; } .canvas-wrap { min-height:320px; } .stat-grid, .ability-strip { grid-template-columns:repeat(2,minmax(0,1fr)); } .ability-card { padding:12px 13px; } }
   </style>
 </head>
 <body>
@@ -199,6 +229,24 @@
           <div class="pill">Danger <strong id="dangerLabel">Clear</strong></div>
         </div>
       </div>
+      <div class="ability-strip">
+        <div id="pulseCard" class="ability-card">
+          <div class="ability-top">
+            <div class="ability-name">Pulse Burst</div>
+            <div id="pulseState" class="ability-state">Charging</div>
+          </div>
+          <div id="pulseSub" class="ability-sub">Build charge to fire a disruption wave.</div>
+          <div class="ability-meter"><div id="pulseFill" class="ability-fill"></div></div>
+        </div>
+        <div id="decoyCard" class="ability-card">
+          <div class="ability-top">
+            <div class="ability-name">Decoy Beacon</div>
+            <div id="decoyState" class="ability-state">Ready</div>
+          </div>
+          <div id="decoySub" class="ability-sub">Drop a lure to bend pursuit lines.</div>
+          <div class="ability-meter"><div id="decoyFill" class="ability-fill"></div></div>
+        </div>
+      </div>
       <div class="canvas-wrap">
         <canvas id="game" width="1100" height="1100"></canvas>
         <div id="overlay" class="overlay">
@@ -246,10 +294,20 @@
   const waveTypeEl = document.getElementById('waveType');
   const intelLabelEl = document.getElementById('intelLabel');
   const dangerLabelEl = document.getElementById('dangerLabel');
+  const pulseCard = document.getElementById('pulseCard');
+  const pulseStateEl = document.getElementById('pulseState');
+  const pulseSubEl = document.getElementById('pulseSub');
+  const pulseFillEl = document.getElementById('pulseFill');
+  const decoyCard = document.getElementById('decoyCard');
+  const decoyStateEl = document.getElementById('decoyState');
+  const decoySubEl = document.getElementById('decoySub');
+  const decoyFillEl = document.getElementById('decoyFill');
   const startBtn = document.getElementById('startBtn');
   const pauseBtn = document.getElementById('pauseBtn');
   const boostBtn = document.getElementById('boostBtn');
   const decoyBtn = document.getElementById('decoyBtn');
+  const touchPulseBtn = document.getElementById('touchPulse');
+  const touchDecoyBtn = document.getElementById('touchDecoy');
   const fullscreenBtn = document.getElementById('fullscreenBtn');
   const motionBtn = document.getElementById('motionBtn');
   const contrastBtn = document.getElementById('contrastBtn');
@@ -598,7 +656,45 @@
     state.player=initPlayer(); setDistrictTheme(0, false); spawnShard(); spawnGate(); for(let i=0;i<3;i++) spawnDrone(); updateRouteAssist(); syncHud();
     overlay.classList.remove('hidden');
   }
-  function syncHud(){ scoreEl.textContent=state.score; levelEl.textContent=state.level; healthEl.textContent=state.health; chargeEl.textContent=`${Math.round(state.charge)}%`; bestScoreEl.textContent=state.best; shardCountEl.textContent=state.shards; objectiveCountEl.textContent = state.exitPortal ? `Escape ${Math.max(0, state.exitTimer).toFixed(1)}s` : `${state.levelShards} / ${state.objectiveTarget}`; objectiveCountEl.parentElement.title = state.exitPortal ? 'Exit breach window before the portal relocates.' : 'Collect enough shards to breach the district exit.'; pulseCellsEl.textContent=state.pulseCounter; decoyCountEl.textContent=state.decoyCharges; droneCountEl.textContent=state.drones.length; districtNameEl.textContent=state.currentTheme.name; districtTraitEl.textContent=state.currentTheme.trait; districtTraitEl.parentElement.title = state.currentTheme.traitDesc; navLabelEl.textContent = state.routeType === 'exit' ? 'Exit' : 'Shard'; navLabelEl.parentElement.title = state.routeType === 'exit' ? 'Breadcrumb line is guiding you to the open portal before it shifts.' : 'Breadcrumb line is guiding you to the next shard.'; waveTypeEl.textContent=state.waveType; intelLabelEl.textContent = state.intelLabel; intelLabelEl.style.color = state.intelLabel === 'Lock' ? '#ffd1f0' : state.intelLabel === 'Intercept' ? '#8feeff' : state.intelLabel === 'Anchor' ? '#ffe08d' : state.intelLabel === 'Decoy' ? '#ff9fdb' : '#d5f7ff'; intelLabelEl.parentElement.title = state.intelLabel === 'Lock' ? 'Nearest hunter is lining up a surge lane.' : state.intelLabel === 'Intercept' ? 'Scouts are cutting toward your current route.' : state.intelLabel === 'Anchor' ? 'Glimmers are guarding the live objective.' : state.intelLabel === 'Decoy' ? 'Your decoy is actively bending the drone pack.' : 'Drone pack is mostly in direct pursuit.'; dangerLabelEl.textContent = state.dangerLabel; dangerLabelEl.style.color = state.hunterPressure ? '#ffd1f0' : state.dangerLevel > .68 ? '#ff8a8a' : state.dangerLevel > .38 ? '#ffd76a' : '#bfffee'; dangerLabelEl.parentElement.title = state.hunterPressure ? 'Hunter surge telegraph is active.' : state.dangerLevel > .68 ? 'Multiple drones are in striking range.' : state.dangerLevel > .38 ? 'Nearby drone pressure rising.' : 'Nearby routes are relatively safe.'; stateLabelEl.textContent=state.over?'Run Lost':state.paused?'Paused':state.transitionTimer>0?'District Clear':state.running?(state.exitPortal?'Exit Open':'Active'):'Standby'; }
+  function syncHud(){ scoreEl.textContent=state.score; levelEl.textContent=state.level; healthEl.textContent=state.health; chargeEl.textContent=`${Math.round(state.charge)}%`; bestScoreEl.textContent=state.best; shardCountEl.textContent=state.shards; objectiveCountEl.textContent = state.exitPortal ? `Escape ${Math.max(0, state.exitTimer).toFixed(1)}s` : `${state.levelShards} / ${state.objectiveTarget}`; objectiveCountEl.parentElement.title = state.exitPortal ? 'Exit breach window before the portal relocates.' : 'Collect enough shards to breach the district exit.'; pulseCellsEl.textContent=state.pulseCounter; decoyCountEl.textContent=state.decoyCharges; droneCountEl.textContent=state.drones.length; districtNameEl.textContent=state.currentTheme.name; districtTraitEl.textContent=state.currentTheme.trait; districtTraitEl.parentElement.title = state.currentTheme.traitDesc; navLabelEl.textContent = state.routeType === 'exit' ? 'Exit' : 'Shard'; navLabelEl.parentElement.title = state.routeType === 'exit' ? 'Breadcrumb line is guiding you to the open portal before it shifts.' : 'Breadcrumb line is guiding you to the next shard.'; waveTypeEl.textContent=state.waveType; intelLabelEl.textContent = state.intelLabel; intelLabelEl.style.color = state.intelLabel === 'Lock' ? '#ffd1f0' : state.intelLabel === 'Intercept' ? '#8feeff' : state.intelLabel === 'Anchor' ? '#ffe08d' : state.intelLabel === 'Decoy' ? '#ff9fdb' : '#d5f7ff'; intelLabelEl.parentElement.title = state.intelLabel === 'Lock' ? 'Nearest hunter is lining up a surge lane.' : state.intelLabel === 'Intercept' ? 'Scouts are cutting toward your current route.' : state.intelLabel === 'Anchor' ? 'Glimmers are guarding the live objective.' : state.intelLabel === 'Decoy' ? 'Your decoy is actively bending the drone pack.' : 'Drone pack is mostly in direct pursuit.'; dangerLabelEl.textContent = state.dangerLabel; dangerLabelEl.style.color = state.hunterPressure ? '#ffd1f0' : state.dangerLevel > .68 ? '#ff8a8a' : state.dangerLevel > .38 ? '#ffd76a' : '#bfffee'; dangerLabelEl.parentElement.title = state.hunterPressure ? 'Hunter surge telegraph is active.' : state.dangerLevel > .68 ? 'Multiple drones are in striking range.' : state.dangerLevel > .38 ? 'Nearby drone pressure rising.' : 'Nearby routes are relatively safe.'; stateLabelEl.textContent=state.over?'Run Lost':state.paused?'Paused':state.transitionTimer>0?'District Clear':state.running?(state.exitPortal?'Exit Open':'Active'):'Standby';
+    const pulseCost = currentPulseCost();
+    const pulseReady = state.charge >= pulseCost;
+    const pulseProgress = clamp(state.charge / Math.max(1, pulseCost), 0, 1);
+    const arcLashPrimed = state.decoys.length > 0;
+    pulseCard.classList.toggle('ready', pulseReady);
+    pulseCard.classList.toggle('hot', arcLashPrimed);
+    pulseStateEl.textContent = arcLashPrimed && pulseReady ? 'Arc Lash' : pulseReady ? 'Ready' : `${Math.round(state.charge)} / ${pulseCost}`;
+    pulseSubEl.textContent = arcLashPrimed ? 'Pulse now to snap an arc lash through the live decoy.' : pulseReady ? 'Burst charged — fire to scatter nearby drones.' : `Need ${Math.max(0, Math.ceil(pulseCost - state.charge))}% more charge to burst.`;
+    pulseFillEl.style.width = `${pulseProgress * 100}%`;
+    pulseCard.title = arcLashPrimed ? 'A decoy is live: pulsing now will fire an arc lash trap lane.' : pulseReady ? 'Pulse is charged and ready.' : `Pulse charges at ${pulseCost}% in this district.`;
+
+    const decoyCycle = currentDecoyShardEvery();
+    const shardProgress = decoyCycle <= 0 ? 1 : (state.shards % decoyCycle) / decoyCycle;
+    const decoyReady = state.decoyCharges > 0;
+    const activeDecoy = state.decoys.length > 0;
+    decoyCard.classList.toggle('ready', decoyReady);
+    decoyCard.classList.toggle('hot', activeDecoy);
+    decoyStateEl.textContent = activeDecoy ? 'Primed' : decoyReady ? `Ready ×${state.decoyCharges}` : `${decoyCycle - (state.shards % decoyCycle || decoyCycle)} Shards`;
+    decoySubEl.textContent = activeDecoy ? 'Beacon is live and bending pursuit toward the trap lane.' : decoyReady ? 'Drop a lure on your lane to redirect the pack.' : `Next decoy restocks after ${decoyCycle} shards in this district.`;
+    decoyFillEl.style.width = `${(activeDecoy || decoyReady ? 1 : shardProgress) * 100}%`;
+    decoyCard.title = activeDecoy ? 'Beacon is active now — pulse to convert it into an arc lash.' : decoyReady ? 'At least one decoy charge is ready to deploy.' : `Collect ${decoyCycle - (state.shards % decoyCycle || decoyCycle)} more shard${decoyCycle - (state.shards % decoyCycle || decoyCycle) === 1 ? '' : 's'} to restock a decoy.`;
+
+    const boostHot = arcLashPrimed && pulseReady;
+    [boostBtn, touchPulseBtn].forEach(btn => {
+      if(!btn) return;
+      btn.disabled = !pulseReady;
+      btn.classList.toggle('ready-glow', pulseReady && !boostHot);
+      btn.classList.toggle('hot-glow', boostHot);
+      btn.title = boostHot ? 'Arc Lash primed — pulse now.' : pulseReady ? 'Pulse ready.' : `Need ${Math.max(0, Math.ceil(pulseCost - state.charge))}% more charge.`;
+    });
+    [decoyBtn, touchDecoyBtn].forEach(btn => {
+      if(!btn) return;
+      btn.disabled = !decoyReady;
+      btn.classList.toggle('ready-glow', decoyReady && !activeDecoy);
+      btn.classList.toggle('hot-glow', activeDecoy);
+      btn.title = activeDecoy ? 'A decoy beacon is already active on the field.' : decoyReady ? `Decoy ready (${state.decoyCharges} charge${state.decoyCharges === 1 ? '' : 's'}).` : decoyCard.title;
+    });
+  }
   function tryChangeDir(dir){ state.player.nextDir=dir; }
   function updatePlayer(dt){
     const p=state.player;
@@ -1290,8 +1386,8 @@
   const keyMap={ ArrowUp:{x:0,y:-1}, KeyW:{x:0,y:-1}, ArrowDown:{x:0,y:1}, KeyS:{x:0,y:1}, ArrowLeft:{x:-1,y:0}, KeyA:{x:-1,y:0}, ArrowRight:{x:1,y:0}, KeyD:{x:1,y:0} };
   document.addEventListener('keydown',e=>{ const dir=keyMap[e.code]; if(dir){ e.preventDefault(); tryChangeDir(dir); } if(e.code==='Space'){ e.preventDefault(); triggerPulse(); } if(e.code==='ShiftLeft' || e.code==='ShiftRight' || e.code==='KeyX'){ e.preventDefault(); deployDecoy(); } if(e.code==='Enter'&&(!state.running||state.over)) startGame(); });
   document.querySelectorAll('[data-dir]').forEach(btn=>btn.addEventListener('click',()=>{ const map={up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}}; tryChangeDir(map[btn.dataset.dir]); }));
-  document.getElementById('touchPulse').addEventListener('click', triggerPulse);
-  document.getElementById('touchDecoy').addEventListener('click', deployDecoy);
+  touchPulseBtn.addEventListener('click', triggerPulse);
+  touchDecoyBtn.addEventListener('click', deployDecoy);
   let touchStart=null;
   let activePointerId=null;
   function steerFromPointerDelta(dx, dy){

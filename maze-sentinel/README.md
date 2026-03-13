@@ -34,6 +34,7 @@ Neon browser arcade prototype focused on maze-chase + route-control gameplay.
   - **Nyx / Blink Mesh** — gates recycle faster after warps
 - Level clears now get a short premium-feeling breach transition with a celebratory audio stinger, district confirmation card, and a cleaner handoff into the next themed sector instead of abruptly snapping into the next run state
 - Adaptive soundtrack now changes by district and swells during hunter locks / exit-rush pressure so the run has more cinematic momentum even before new content is added
+- New ability-readiness strip makes pulse charge, decoy restock progress, and arc-lash priming readable at a glance, while the Pulse / Decoy touch buttons now glow or dim based on live availability
 
 ## Next polish ideas
 - richer soundtrack / SFX layering beyond the new district-reactive base score

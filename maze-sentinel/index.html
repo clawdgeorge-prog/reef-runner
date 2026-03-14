@@ -870,7 +870,7 @@
     // Boss wave every 5 levels (5, 10, 15, etc.)
     state.bossWave = (state.level % 5 === 0);
     if (state.bossWave) {
-      state.bossType = ['titan', 'phantom', 'siphon'][Math.floor(state.level / 5) % 3];
+      state.bossType = ['titan', 'phantom', 'siphon', 'rift'][Math.floor(state.level / 5) % 4];
       state.bossAnnounce = 3.5;
       // Boss wave means extra drones cleared bonus
       awardScore(500 + state.level * 75, state.player.x, state.player.y - 24, 'Boss Wave', '#ff63d4');
@@ -981,6 +981,16 @@
         name: 'Siphon',
         desc: 'Creates a leech field that drains your charge over time.',
         ability: 'leech'
+      },
+      rift: { 
+        hue: 45, // Orange/gold - dangerous
+        speed: diff.enemySpeed * 0.55, 
+        radius: TILE * 0.38, 
+        wobble: 1.2,
+        health: 3,
+        name: 'Rift',
+        desc: 'Creates gravity wells that pull you in. Survive the collapse when defeated!',
+        ability: 'gravity'
       }
     };
     const config = bossConfigs[state.bossType];
@@ -1010,7 +1020,12 @@
       // Siphon specific
       leechTimer: 0,
       leechField: 0,
-      leechDrain: 0
+      leechDrain: 0,
+      // Rift specific
+      riftTimer: 0,
+      riftWells: [],
+      riftCollapse: false,
+      riftCollapseTimer: 0
     };
     state.drones.push(bossDrone);
     playSfx('spawn');
@@ -1018,9 +1033,9 @@
     // Big spawn effect
     state.cameraShake = 0.6;
     state.flash = Math.max(state.flash, 0.25);
-    addParticles(c.x, c.y, config.hue === 0 ? '#ff3333' : config.hue === 180 ? '#33ffff' : '#aa33ff', 42, 5.5, 1.3);
+    addParticles(c.x, c.y, config.hue === 0 ? '#ff3333' : config.hue === 180 ? '#33ffff' : config.hue === 280 ? '#aa33ff' : '#ffaa33', 42, 5.5, 1.3);
     // Announce boss
-    addCallout(canvas.width / 2, canvas.height * 0.32, `${config.name} APPEARS!`, config.hue === 0 ? '#ff5555' : config.hue === 180 ? '#55ffff' : '#bb55ff', '#ffffff', 1.4, 1.2);
+    addCallout(canvas.width / 2, canvas.height * 0.32, `${config.name} APPEARS!`, config.hue === 0 ? '#ff5555' : config.hue === 180 ? '#55ffff' : config.hue === 280 ? '#bb55ff' : '#ffaa33', '#ffffff', 1.4, 1.2);
   }
   function resetGame(){
     state.running=false; state.paused=false; state.over=false; state.score=0; state.level=1; state.health=3; state.charge=0; state.shards=0; state.levelShards=0; state.objectiveTarget=4; state.drones=[]; state.particles=[]; state.ribbons=[]; state.pulses=[]; state.decoys=[]; state.links=[]; state.routePath=[]; state.routeType='shard'; state.routePulse=0; state.spawnTimer=0; state.flash=0; state.cameraShake=0; state.shardGlow=0; state.pulseCounter=0; state.decoyCharges=1; state.waveType='Scout'; state.districtBannerTimer=0; state.exitPortal=null; state.dangerLevel=0; state.dangerLabel='Clear'; state.hunterPressure=false; state.threatVectors=[]; state.intelLabel='Pursuit'; state.exitTimer=0; state.exitTimerMax=0; state.exitAlarmTimer=0; state.exitRelocations=0; state.flow=1; state.flowTimer=0; state.flowPeak=1; state.callouts=[]; state.overdrive=0; state.overdriveTimer=0; state.nearMissPulse=0; state.transitionTimer=0; state.transitionMax=0; state.transitionTitle=''; state.transitionText=''; state.transitionAccent=state.currentTheme?.gateA || '#63f2ff'; state.portalWarp={active:false,progress:0,x:0,y:0};
@@ -1567,6 +1582,48 @@
               }
             }
           }
+          // Rift: Creates gravity wells that pull player and collapses on defeat
+          if (drone.type === 'rift') {
+            drone.riftTimer = (drone.riftTimer || 0) - dt;
+            if (drone.riftTimer <= 0 && !drone.riftCollapse) {
+              // Spawn a gravity well
+              const wellX = drone.x + rand(-TILE * 3, TILE * 3);
+              const wellY = drone.y + rand(-TILE * 3, TILE * 3);
+              const cell = cellAt(Math.floor(wellX / TILE), Math.floor(wellY / TILE));
+              if (cell && cell.type === 'floor') {
+                drone.riftWells.push({ x: wellX, y: wellY, life: rand(3.5, 5.0), maxLife: 5.0 });
+                addParticles(wellX, wellY, 'hsla(45, 100%, 62%, 0.7)', 12, 2.8, 0.5);
+                state.cameraShake = Math.max(state.cameraShake, .05);
+              }
+              drone.riftTimer = rand(1.8, 2.8);
+            }
+            // Update gravity wells and apply pull
+            drone.riftWells = drone.riftWells.filter(well => {
+              well.life -= dt;
+              // Pull player toward well
+              const pullStrength = 0.35 * (well.life / well.maxLife);
+              const toWellX = well.x - state.player.x;
+              const toWellY = well.y - state.player.y;
+              const distToWell = Math.hypot(toWellX, toWellY);
+              if (distToWell > 0 && distToWell < TILE * 4) {
+                const pull = pullStrength * (1 - distToWell / (TILE * 4));
+                state.player.vx = (state.player.vx || 0) + (toWellX / distToWell) * pull;
+                state.player.vy = (state.player.vy || 0) + (toWellY / distToWell) * pull;
+                // Damage if too close
+                if (distToWell < TILE * 0.8) {
+                  if (state.player.hitCooldown <= 0) {
+                    state.player.hitCooldown = 0.6;
+                    state.health -= 0.4;
+                    state.flash = Math.max(state.flash, 0.2);
+                    addParticles(state.player.x, state.player.y, '#ffaa33', 8, 2.0, 0.3);
+                    playSfx('hit');
+                    if (state.health <= 0) gameOver();
+                  }
+                }
+              }
+              return well.life > 0;
+            });
+          }
         }
       }
       const dc=nearestCell(drone.x,drone.y); const opts=pathOptions(dc.cx,dc.cy); let choice={x:0,y:0};
@@ -1610,7 +1667,39 @@
     });
     // Remove dead bosses and expired afterimages
     state.drones = state.drones.filter(drone => {
-      if (drone.isBoss && drone.bossHealth <= 0) return false;
+      if (drone.isBoss && drone.bossHealth <= 0) {
+        // Rift boss collapse effect
+        if (drone.type === 'rift') {
+          // Create massive gravity collapse
+          for (let i = 0; i < 5; i++) {
+            setTimeout(() => {
+              const collapseX = drone.x + rand(-TILE * 2, TILE * 2);
+              const collapseY = drone.y + rand(-TILE * 2, TILE * 2);
+              addParticles(collapseX, collapseY, '#ffaa33', 25, 4.0, 1.0);
+              state.cameraShake = Math.max(state.cameraShake, 0.3);
+              state.flash = Math.max(state.flash, 0.15);
+            }, i * 150);
+          }
+          // Create dangerous collapse zone
+          state.drones.push({
+            x: drone.x, y: drone.y,
+            isRiftCollapse: true,
+            radius: TILE * 0.5,
+            collapseRadius: TILE * 5,
+            collapseTimer: 2.5,
+            collapseActive: true,
+            hue: 45,
+            life: 2.5
+          });
+          playSfx('breach');
+        }
+        // Boss defeated effects
+        awardScore(800 + state.level * 100, drone.x, drone.y - 30, 'Boss Defeated!', drone.hue === 0 ? '#ff5555' : drone.hue === 180 ? '#55ffff' : drone.hue === 280 ? '#bb55ff' : '#ffaa33');
+        state.cameraShake = 0.5;
+        state.flash = Math.max(state.flash, 0.3);
+        addCallout(canvas.width / 2, canvas.height * 0.4, 'BOSS DEFEATED!', drone.hue === 0 ? '#ff5555' : drone.hue === 180 ? '#55ffff' : drone.hue === 280 ? '#bb55ff' : '#ffaa33', '#ffffff', 1.2, 0.9);
+        return false;
+      }
       if (drone.isAfterimage) {
         drone.life -= dt;
         if (drone.life <= 0) {
@@ -1643,6 +1732,32 @@
           drone.life = 0;
           drone.stunned = 999; // Mark for removal
           addParticles(drone.x, drone.y, 'hsla(180, 100%, 72%, 0.8)', 16, 3.5, 0.6);
+        } else if (drone.isRiftCollapse) {
+          // Rift collapse zone - pulls player in and damages
+          drone.collapseTimer -= dt;
+          drone.life = drone.collapseTimer;
+          const distToPlayer = Math.hypot(drone.x - state.player.x, drone.y - state.player.y);
+          if (distToPlayer < drone.collapseRadius) {
+            const pullStrength = 0.8 * (1 - distToPlayer / drone.collapseRadius);
+            state.player.vx = (state.player.vx || 0) + ((drone.x - state.player.x) / distToPlayer) * pullStrength;
+            state.player.vy = (state.player.vy || 0) + ((drone.y - state.player.y) / distToPlayer) * pullStrength;
+            // Heavy damage in collapse zone
+            if (distToPlayer < TILE * 1.5 && state.player.hitCooldown <= 0) {
+              state.player.hitCooldown = 0.4;
+              state.health -= 0.7;
+              state.flash = Math.max(state.flash, 0.25);
+              state.cameraShake = Math.max(state.cameraShake, 0.15);
+              addParticles(state.player.x, state.player.y, '#ff6633', 15, 3.0, 0.4);
+              playSfx('hit');
+              if (state.health <= 0) gameOver();
+            }
+          }
+          if (drone.collapseTimer <= 0) {
+            // Collapse implodes
+            addParticles(drone.x, drone.y, '#ffaa33', 35, 5.0, 1.2);
+            state.cameraShake = 0.4;
+            state.flash = Math.max(state.flash, 0.2);
+          }
         } else {
           drone.stunned=Math.max(drone.stunned, (drone.type==='hunter'?1.05:1.5) + currentPulseStunBonus());
         }
@@ -2721,6 +2836,22 @@
           ctx.fill();
         }
         
+        // Rift gravity wells
+        if (drone.type === 'rift' && drone.riftWells) {
+          drone.riftWells.forEach(well => {
+            const wellAlpha = Math.min(0.35, well.life * 0.12);
+            const wellRadius = TILE * 2.5 * (1 - well.life / well.maxLife * 0.3);
+            const gradient = ctx.createRadialGradient(well.x - ctx.canvasX, well.y - ctx.canvasY, 0, well.x - ctx.canvasX, well.y - ctx.canvasY, wellRadius);
+            gradient.addColorStop(0, `hsla(45, 100%, 62%, ${wellAlpha})`);
+            gradient.addColorStop(0.5, `hsla(45, 90%, 52%, ${wellAlpha * 0.5})`);
+            gradient.addColorStop(1, 'hsla(45, 80%, 42%, 0)');
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(well.x - ctx.canvasX, well.y - ctx.canvasY, wellRadius, 0, Math.PI * 2);
+            ctx.fill();
+          });
+        }
+        
         ctx.restore();
       }
       else if (drone.isAfterimage) {
@@ -2732,6 +2863,39 @@
         ctx.beginPath();
         ctx.arc(0, 0, drone.radius, 0, Math.PI * 2);
         ctx.fill();
+        ctx.restore();
+      }
+      else if (drone.isRiftCollapse) {
+        // Rift collapse zone rendering - swirling gravity well
+        ctx.save();
+        const collapseProgress = 1 - drone.collapseTimer / 2.5;
+        const collapseRadius = drone.collapseRadius * collapseProgress;
+        const collapseAlpha = Math.min(0.45, collapseProgress * 0.5);
+        
+        // Outer danger zone
+        const outerGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, collapseRadius);
+        outerGrad.addColorStop(0, `hsla(45, 100%, 62%, ${collapseAlpha})`);
+        outerGrad.addColorStop(0.6, `hsla(30, 100%, 52%, ${collapseAlpha * 0.6})`);
+        outerGrad.addColorStop(1, 'hsla(20, 80%, 42%, 0)');
+        ctx.fillStyle = outerGrad;
+        ctx.beginPath();
+        ctx.arc(0, 0, collapseRadius, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Inner swirling core
+        ctx.globalAlpha = 0.7;
+        ctx.shadowBlur = 35;
+        ctx.shadowColor = '#ffaa33';
+        ctx.strokeStyle = `hsla(45, 100%, 65%, ${collapseAlpha * 1.2})`;
+        ctx.lineWidth = 4;
+        for (let i = 0; i < 3; i++) {
+          const angle = state.introPulse * 8 + i * (Math.PI * 2 / 3);
+          const spiralRadius = collapseRadius * 0.3 * (1 - collapseProgress * 0.5);
+          ctx.beginPath();
+          ctx.arc(Math.cos(angle) * spiralRadius * 0.5, Math.sin(angle) * spiralRadius * 0.5, spiralRadius, 0, Math.PI * 1.5);
+          ctx.stroke();
+        }
+        
         ctx.restore();
       }
       else { ctx.beginPath(); ctx.moveTo(0,-drone.radius*1.25); ctx.lineTo(drone.radius*1.08,drone.radius*.9); ctx.lineTo(0,drone.radius*.45); ctx.lineTo(-drone.radius*1.08,drone.radius*.9); ctx.closePath(); ctx.fill(); }

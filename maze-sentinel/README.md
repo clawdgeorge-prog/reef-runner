@@ -53,7 +53,9 @@ Neon browser arcade prototype focused on maze-chase + route-control gameplay.
   - **Titan** (red): Large and slow, charges up and rushes player for high damage
   - **Phantom** (cyan): Fast and erratic, creates damaging afterimages
   - **Siphon** (purple): Creates a leech field that drains charge and heals slightly
+  - **Rift** (orange/gold): Creates gravity wells that pull the player in, and when defeated triggers a dangerous collapse zone that persists briefly
   - Bosses have health bars and take damage from pulse, defeated bosses award bonus score
 
 ## Next polish ideas
-- Additional boss types with unique mechanics
+- Additional drone types with unique behaviors
+- More district theme variations

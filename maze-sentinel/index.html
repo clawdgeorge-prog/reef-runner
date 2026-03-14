@@ -2899,6 +2899,27 @@
         ctx.restore();
       }
       else { ctx.beginPath(); ctx.moveTo(0,-drone.radius*1.25); ctx.lineTo(drone.radius*1.08,drone.radius*.9); ctx.lineTo(0,drone.radius*.45); ctx.lineTo(-drone.radius*1.08,drone.radius*.9); ctx.closePath(); ctx.fill(); }
+      // Stun ring effect - visible indicator when drone is stunned
+      if(drone.stunned > 0){
+        ctx.save();
+        const stunPulse = Math.sin(state.introPulse * 12) * 0.4 + 0.6;
+        const ringRadius = drone.radius * (1.8 + Math.sin(state.introPulse * 6) * 0.2);
+        ctx.strokeStyle = `hsla(${drone.hue}, 100%, 72%, ${stunPulse * 0.85})`;
+        ctx.lineWidth = 3;
+        ctx.globalAlpha = stunPulse;
+        ctx.shadowBlur = 24;
+        ctx.shadowColor = `hsla(${drone.hue}, 100%, 60%, .8)`;
+        ctx.beginPath();
+        ctx.arc(0, 0, ringRadius, 0, Math.PI * 2);
+        ctx.stroke();
+        // Inner ring
+        ctx.strokeStyle = `hsla(${drone.hue}, 100%, 85%, ${stunPulse * 0.5})`;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(0, 0, ringRadius * 0.6, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
       ctx.restore(); }); }
   function drawParticles(){ state.particles.forEach(p=>{ const alpha=p.life/p.maxLife; ctx.save(); ctx.globalAlpha=alpha; ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x,p.y,p.size*alpha,0,Math.PI*2); ctx.fill(); ctx.restore(); }); }
   function drawCallouts(){

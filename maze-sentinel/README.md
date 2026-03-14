@@ -12,11 +12,12 @@ Neon browser arcade prototype focused on maze-chase + route-control gameplay.
 - `index.html` — playable prototype
 
 ## Current systems
-- Five drone classes: Scout, Hunter, Glimmer, Wraith, and Vortex
+- Six drone classes: Scout, Hunter, Glimmer, Wraith, Vortex, and Cloaker
 - Path-based pursuit so enemies can pressure routes more intelligently
 - Hunter drones telegraph a lock-on reticle, then burst into short high-speed surges
 - Wraith drones can phase through walls briefly, becoming intangible and faster while passing through obstacles — adding unpredictable movement patterns that force players to adapt routes on the fly
 - Vortex drones create pulsing gravity fields that pull players toward them and slow their movement, adding a zone-control element that forces routing decisions around the field placement
+- Cloaker drones use stealth tactics: they first flash semi-transparent, then fade to near-invisibility while hunting faster but with lost tracking, then reappear with a targeting reticle before lunging in for a surprise strike — adding a mind-game element that forces players to check their radar more often
 - Decoy beacon ability: place a temporary lure on your tile to bend pursuit lines and open safer escape lanes
 - Arc-lash combo: trigger a pulse while a decoy is active to fire a crackling trap lane that stuns drones caught along the link
 - District breach loop: collect a shard quota to open an exit portal, then reach it alive to clear the district
@@ -26,7 +27,7 @@ Neon browser arcade prototype focused on maze-chase + route-control gameplay.
 - Mobile handling now truly supports live continuous drag steering on the arena, plus forgiving lane-follow turn assist so quick thumb corrections land more reliably in tight corridors instead of waiting for swipe release
 - New danger-sense readability pass adds a live danger meter, edge-of-screen threat arrows, and a player danger halo so nearby pressure and hunter surge setups are easier to read on mobile
 - Drone roles are now objective-aware instead of only speed-based: scouts cut ahead on your breadcrumb route, glimmers lean toward anchoring the shard / exit, and hunters keep direct lock pressure
-- A live Intel HUD pill now calls out whether the nearest pressure is Pursuit, Intercept, Anchor, Decoy, or an active Hunter Lock so route decisions read faster mid-run
+- A live Intel HUD pill now calls out whether the nearest pressure is Pursuit, Intercept, Anchor, Decoy, Lock, or an active Cloak so route decisions read faster mid-run
 - New intent telegraphs make drone roles readable at a glance: scouts now project cyan intercept lanes toward your route, glimmers tether gold anchor lines into the live objective, and hunters keep their lock reticles / surge rails
 - Accessibility pass adds one-tap reduced-motion and high-contrast toggles, persisted locally for repeat runs across mobile and desktop
 - District theme rotation is now mechanical as well as visual:
@@ -50,4 +51,4 @@ Neon browser arcade prototype focused on maze-chase + route-control gameplay.
 - Additional particle burst upgrades on ability activation for more tactile feedback
 
 ## Next polish ideas
-- more enemy variety
+- boss waves at certain level milestones

@@ -907,7 +907,7 @@
     if(state.score>state.best){ state.best=state.score; localStorage.setItem(STORAGE_KEY,String(state.best)); }
     syncHud();
   }
-  function pickDroneType(){ const pool = ['scout','hunter','glimmer','wraith','vortex']; return pool[Math.min(pool.length-1, Math.floor((state.level-1)/2))] || 'scout'; }
+  function pickDroneType(){ const pool = ['scout','hunter','glimmer','wraith','vortex','cloaker']; return pool[Math.min(pool.length-1, Math.floor((state.level-1)/2))] || 'scout'; }
   function spawnDrone(){
     let c=randomOpenCell(); while(Math.abs(c.cx-1)<5&&Math.abs(c.cy-1)<5) c=randomOpenCell();
     const diff=difficulties[state.difficulty]; const type = pickDroneType();
@@ -916,14 +916,16 @@
       hunter:  { hue:322, speed:diff.enemySpeed + .12 + state.level*.04, radius:TILE*.22, wobble:1.8 },
       glimmer: { hue:48,  speed:diff.enemySpeed + .02 + state.level*.025, radius:TILE*.18, wobble:2.3 },
       wraith:  { hue:280, speed:diff.enemySpeed + .08 + state.level*.035, radius:TILE*.19, wobble:2.8 },
-      vortex:  { hue:45,  speed:diff.enemySpeed + .04 + state.level*.028, radius:TILE*.21, wobble:1.5 }
+      vortex:  { hue:45,  speed:diff.enemySpeed + .04 + state.level*.028, radius:TILE*.21, wobble:1.5 },
+      cloaker: { hue:270, speed:diff.enemySpeed + .06 + state.level*.032, radius:TILE*.18, wobble:2.1 }
     }[type];
     state.waveType = type[0].toUpperCase() + type.slice(1);
     state.drones.push({
       x:c.x, y:c.y, radius:config.radius, speed:config.speed, hue:config.hue, stunned:0, trail:[], wobble:rand(0,Math.PI*2), type, intent:'Pursuit', nearMissCooldown:0,
       surgeCooldown: rand(1.8, 3.4), surgeTelegraph:0, surgeBurst:0, surgeTarget:{x:c.x,y:c.y},
       phaseCooldown: rand(3.5, 5.5), phaseActive:0, phaseTimer:0,
-      vortexCooldown: rand(2.8, 4.8), vortexActive:0, vortexRadius:0
+      vortexCooldown: rand(2.8, 4.8), vortexActive:0, vortexRadius:0,
+      cloakerCooldown: rand(3.0, 5.0), cloakerPhase:0, cloakerOpacity:1, cloakerStrike:0, cloakerStrikeTarget:{x:c.x,y:c.y}
     });
     playSfx('spawn');
   }
@@ -934,7 +936,7 @@
     const owned=getOwnedUpgrades(); upgrades.forEach(u=>{ if(owned[u.id])u.apply(state); }); syncHud();
     overlay.classList.remove('hidden');
   }
-  function syncHud(){ scoreEl.textContent=state.score; levelEl.textContent=state.level; healthEl.textContent=state.health; modulesEl.textContent=state.modules; chargeEl.textContent=`${Math.round(state.charge)}%`; bestScoreEl.textContent=state.best; shardCountEl.textContent=state.shards; objectiveCountEl.textContent = state.exitPortal ? `Escape ${Math.max(0, state.exitTimer).toFixed(1)}s` : `${state.levelShards} / ${state.objectiveTarget}`; objectiveCountEl.parentElement.title = state.exitPortal ? 'Exit breach window before the portal relocates.' : 'Collect enough shards to breach the district exit.'; pulseCellsEl.textContent=state.pulseCounter; decoyCountEl.textContent=state.decoyCharges; droneCountEl.textContent=state.drones.length; districtNameEl.textContent=state.currentTheme.name; districtTraitEl.textContent=state.currentTheme.trait; districtTraitEl.parentElement.title = state.currentTheme.traitDesc; navLabelEl.textContent = state.routeType === 'exit' ? 'Exit' : 'Shard'; navLabelEl.parentElement.title = state.routeType === 'exit' ? 'Breadcrumb line is guiding you to the open portal before it shifts.' : 'Breadcrumb line is guiding you to the next shard.'; waveTypeEl.textContent=state.waveType; intelLabelEl.textContent = state.intelLabel; intelLabelEl.style.color = state.intelLabel === 'Lock' ? '#ffd1f0' : state.intelLabel === 'Intercept' ? '#8feeff' : state.intelLabel === 'Anchor' ? '#ffe08d' : state.intelLabel === 'Decoy' ? '#ff9fdb' : state.intelLabel === 'Flank' ? '#ffcf8c' : '#d5f7ff'; intelLabelEl.parentElement.title = state.intelLabel === 'Lock' ? 'Nearest hunter is lining up a surge lane.' : state.intelLabel === 'Intercept' ? 'Scouts are cutting toward your current route.' : state.intelLabel === 'Anchor' ? 'Glimmers are guarding the live objective.' : state.intelLabel === 'Decoy' ? 'Your decoy is actively bending the drone pack.' : state.intelLabel === 'Flank' ? 'A vortex drone is positioning a gravity field.' : 'Drone pack is mostly in direct pursuit.'; dangerLabelEl.textContent = state.dangerLabel; dangerLabelEl.style.color = state.hunterPressure ? '#ffd1f0' : state.dangerLevel > .68 ? '#ff8a8a' : state.dangerLevel > .38 ? '#ffd76a' : '#bfffee'; dangerLabelEl.parentElement.title = state.hunterPressure ? 'Hunter surge telegraph is active.' : state.dangerLevel > .68 ? 'Multiple drones are in striking range.' : state.dangerLevel > .38 ? 'Nearby drone pressure rising.' : 'Nearby routes are relatively safe.'; stateLabelEl.textContent=state.over?'Run Lost':state.paused?'Paused':state.transitionTimer>0?'District Clear':state.running?(state.exitPortal?'Exit Open':'Active'):'Standby';
+  function syncHud(){ scoreEl.textContent=state.score; levelEl.textContent=state.level; healthEl.textContent=state.health; modulesEl.textContent=state.modules; chargeEl.textContent=`${Math.round(state.charge)}%`; bestScoreEl.textContent=state.best; shardCountEl.textContent=state.shards; objectiveCountEl.textContent = state.exitPortal ? `Escape ${Math.max(0, state.exitTimer).toFixed(1)}s` : `${state.levelShards} / ${state.objectiveTarget}`; objectiveCountEl.parentElement.title = state.exitPortal ? 'Exit breach window before the portal relocates.' : 'Collect enough shards to breach the district exit.'; pulseCellsEl.textContent=state.pulseCounter; decoyCountEl.textContent=state.decoyCharges; droneCountEl.textContent=state.drones.length; districtNameEl.textContent=state.currentTheme.name; districtTraitEl.textContent=state.currentTheme.trait; districtTraitEl.parentElement.title = state.currentTheme.traitDesc; navLabelEl.textContent = state.routeType === 'exit' ? 'Exit' : 'Shard'; navLabelEl.parentElement.title = state.routeType === 'exit' ? 'Breadcrumb line is guiding you to the open portal before it shifts.' : 'Breadcrumb line is guiding you to the next shard.'; waveTypeEl.textContent=state.waveType; intelLabelEl.textContent = state.intelLabel; intelLabelEl.style.color = state.intelLabel === 'Lock' ? '#ffd1f0' : state.intelLabel === 'Cloak' ? '#c9a8ff' : state.intelLabel === 'Intercept' ? '#8feeff' : state.intelLabel === 'Anchor' ? '#ffe08d' : state.intelLabel === 'Decoy' ? '#ff9fdb' : state.intelLabel === 'Flank' ? '#ffcf8c' : '#d5f7ff'; intelLabelEl.parentElement.title = state.intelLabel === 'Lock' ? 'Nearest hunter is lining up a surge lane.' : state.intelLabel === 'Cloak' ? 'A cloaker drone is using stealth to approach from an unexpected angle.' : state.intelLabel === 'Intercept' ? 'Scouts are cutting toward your current route.' : state.intelLabel === 'Anchor' ? 'Glimmers are guarding the live objective.' : state.intelLabel === 'Decoy' ? 'Your decoy is actively bending the drone pack.' : state.intelLabel === 'Flank' ? 'A vortex drone is positioning a gravity field.' : 'Drone pack is mostly in direct pursuit.'; dangerLabelEl.textContent = state.dangerLabel; dangerLabelEl.style.color = state.hunterPressure ? '#ffd1f0' : state.dangerLevel > .68 ? '#ff8a8a' : state.dangerLevel > .38 ? '#ffd76a' : '#bfffee'; dangerLabelEl.parentElement.title = state.hunterPressure ? 'Hunter surge telegraph is active.' : state.dangerLevel > .68 ? 'Multiple drones are in striking range.' : state.dangerLevel > .38 ? 'Nearby drone pressure rising.' : 'Nearby routes are relatively safe.'; stateLabelEl.textContent=state.over?'Run Lost':state.paused?'Paused':state.transitionTimer>0?'District Clear':state.running?(state.exitPortal?'Exit Open':'Active'):'Standby';
     const flowMult = currentFlowMultiplier();
     flowLabelEl.textContent = `x${flowMult.toFixed(1)}`;
     flowLabelEl.style.color = flowMult >= 2.5 ? '#ffe08d' : flowMult >= 1.6 ? '#8feeff' : '#eef7ff';
@@ -1154,6 +1156,15 @@
       }
       return { label: 'Pursuit', cell: playerCell, playerWeight: 0.74, targetWeight: 0.26, supportWeight: 0.08 };
     }
+    if(drone.type === 'cloaker'){
+      // Cloaker uses deceptive movement - sometimes cut ahead during stealth
+      if(drone.cloakerPhase === 2 && objectiveCell && Math.random() < 0.45){
+        // While invisible, lean toward objective to strike from unexpected angle
+        return { label: 'Intercept', cell: objectiveCell, playerWeight: 0.28, targetWeight: 0.72, supportWeight: 0.08 };
+      }
+      // Otherwise direct pursuit
+      return { label: 'Pursuit', cell: playerCell, playerWeight: 0.78, targetWeight: 0.22, supportWeight: 0.04 };
+    }
     return { label: 'Pursuit', cell: playerCell, playerWeight: 0.82, targetWeight: 0.18, supportWeight: 0 };
   }
   function updateDrones(dt){
@@ -1162,7 +1173,7 @@
     const liveObjective = objectiveCell();
     const interceptCell = routeInterceptCell();
     state.drones.forEach(drone=>{
-      drone.wobble += dt*(drone.type==='glimmer'?6:drone.type==='wraith'?5:drone.type==='vortex'?4.2:4);
+      drone.wobble += dt*(drone.type==='glimmer'?6:drone.type==='wraith'?5:drone.type==='vortex'?4.2:drone.type==='cloaker'?5.5:4);
       if(drone.type === 'wraith') drone.phaseTimer = (drone.phaseTimer || 0) + dt;
       drone.stunned=Math.max(0,drone.stunned-dt);
       drone.nearMissCooldown = Math.max(0, (drone.nearMissCooldown || 0) - dt);
@@ -1251,6 +1262,90 @@
           }
         }
       }
+      // Cloaker stealth-strike ability
+      if(drone.type === 'cloaker'){
+        drone.cloakerCooldown = (drone.cloakerCooldown || 0) - dt;
+        if(drone.stunned>0){
+          drone.cloakerPhase = 0;
+          drone.cloakerOpacity = 1;
+          drone.cloakerStrike = 0;
+          drone.cloakerCooldown = Math.max(drone.cloakerCooldown || 0, 1.5);
+        } else if(drone.cloakerStrike > 0){
+          // Strike in progress - fast lunge toward predicted player position
+          drone.cloakerStrike -= dt;
+          const strikeSpeed = drone.speed * 2.8;
+          const dx = drone.cloakerStrikeTarget.x - drone.x;
+          const dy = drone.cloakerStrikeTarget.y - drone.y;
+          const d = Math.hypot(dx, dy);
+          if(d > 0.1){
+            drone.x += (dx/d) * strikeSpeed * dt;
+            drone.y += (dy/d) * strikeSpeed * dt;
+          }
+          // Strike burst effect when hitting
+          if(drone.cloakerStrike <= 0.05){
+            addParticles(drone.x, drone.y, 'hsla(270, 100%, 72%, .9)', 20, 5.0, .7);
+            state.cameraShake = Math.max(state.cameraShake, .18);
+            playSfx('surge');
+          }
+        } else if(drone.cloakerPhase === 2){
+          // Phase 2: Fading out (invisible hunting)
+          drone.cloakerOpacity = Math.max(0.08, drone.cloakerOpacity - dt * 1.8);
+          // Move faster while invisible but lose tracking
+          const baseSpeed = drone.speed * 1.5;
+          // Drift toward where player was last seen
+          if(playerCell){
+            const dx = playerCell.cx - nearestCell(drone.x, drone.y).cx;
+            const dy = playerCell.cy - nearestCell(drone.x, drone.y).cy;
+            const d = Math.hypot(dx, dy);
+            if(d > 0){
+              drone.x += (dx/d) * baseSpeed * dt;
+              drone.y += (dy/d) * baseSpeed * dt;
+            }
+          }
+          // End phase after some time and strike from unexpected direction
+          drone.cloakerPhaseTimer = (drone.cloakerPhaseTimer || 0) - dt;
+          if(drone.cloakerPhaseTimer <= 0){
+            drone.cloakerPhase = 3; // Prepare strike
+            // Predict where player will be
+            drone.cloakerStrikeTarget = {
+              x: state.player.x + state.player.vx * 0.35,
+              y: state.player.y + state.player.vy * 0.35
+            };
+            // Re-appear suddenly for surprise
+            drone.cloakerOpacity = 1.1;
+            addParticles(drone.x, drone.y, 'hsla(270, 90%, 68%, .8)', 16, 4.2, .6);
+          }
+        } else if(drone.cloakerPhase === 3){
+          // Phase 3: Targeting telegraph (brief flash before strike)
+          drone.cloakerOpacity = Math.min(1, drone.cloakerOpacity + dt * 8);
+          drone.cloakerPhaseTimer = (drone.cloakerPhaseTimer || 0) - dt;
+          if(drone.cloakerPhaseTimer <= 0){
+            drone.cloakerPhase = 0;
+            drone.cloakerStrike = rand(0.25, 0.45);
+            drone.cloakerCooldown = rand(4.5, 7.0);
+          }
+        } else if(drone.cloakerPhase === 1){
+          // Phase 1: Semi-visible (warning)
+          drone.cloakerOpacity = 0.4 + 0.3 * Math.sin((drone.cloakerPhaseTimer || 1.5) * 8);
+          drone.cloakerPhaseTimer = (drone.cloakerPhaseTimer || 1.5) - dt;
+          if(drone.cloakerPhaseTimer <= 0){
+            drone.cloakerPhase = 2; // Go fully invisible
+            drone.cloakerPhaseTimer = rand(1.0, 1.6);
+          }
+        } else if((drone.cloakerCooldown || 0) <= 0){
+          // Phase 0: Start cloaking cycle when player is within range
+          if(dist(drone, state.player) < TILE * 6.5){
+            drone.cloakerPhase = 1;
+            drone.cloakerPhaseTimer = rand(1.2, 1.8);
+            drone.cloakerCooldown = rand(5.0, 8.0);
+            addParticles(drone.x, drone.y, 'hsla(270, 85%, 65%, .65)', 12, 3.0, .5);
+          }
+        }
+        // Update wobble speed based on phase
+        if(drone.cloakerPhase === 2){
+          drone.wobble += dt * 7.5; // Faster wobble when invisible
+        }
+      }
       const dc=nearestCell(drone.x,drone.y); const opts=pathOptions(dc.cx,dc.cy); let choice={x:0,y:0};
       const intent = pickDroneIntent(drone, playerCell, liveObjective, interceptCell, activeDecoy);
       drone.intent = intent.label;
@@ -1336,7 +1431,8 @@
     state.dangerLabel = state.hunterPressure ? 'Lock' : state.dangerLevel > .78 ? 'Critical' : state.dangerLevel > .54 ? 'Hot' : state.dangerLevel > .3 ? 'Close' : 'Clear';
     state.threatVectors = threats.slice(0, 3);
     const topIntent = state.threatVectors[0]?.drone?.intent;
-    state.intelLabel = state.hunterPressure ? 'Lock' : topIntent === 'Anchor' ? 'Anchor' : topIntent === 'Intercept' ? 'Intercept' : topIntent === 'Decoy' ? 'Decoy' : 'Pursuit';
+    const cloakerThreat = state.drones.some(d => d.type === 'cloaker' && (d.cloakerPhase === 2 || d.cloakerPhase === 3));
+    state.intelLabel = state.hunterPressure ? 'Lock' : cloakerThreat ? 'Cloak' : topIntent === 'Anchor' ? 'Anchor' : topIntent === 'Intercept' ? 'Intercept' : topIntent === 'Decoy' ? 'Decoy' : 'Pursuit';
     dangerLabelEl.textContent = state.dangerLabel;
     dangerLabelEl.style.color = state.hunterPressure ? '#ffd1f0' : state.dangerLevel > .68 ? '#ff8a8a' : state.dangerLevel > .38 ? '#ffd76a' : '#bfffee';
     dangerLabelEl.parentElement.title = state.hunterPressure ? 'Hunter surge telegraph is active.' : state.dangerLevel > .68 ? 'Multiple drones are in striking range.' : state.dangerLevel > .38 ? 'Nearby drone pressure rising.' : 'Nearby routes are relatively safe.';
@@ -2201,7 +2297,7 @@
     ctx.fillRect(-canvas.width, -canvas.height, canvas.width * 3, canvas.height * 3);
     ctx.restore();
   }
-  function drawDrones(){ state.drones.forEach(drone=>{ drone.trail.forEach((t,idx)=>{ const trailBoost = drone.type==='hunter' && drone.surgeBurst>0 ? .34 : .18; ctx.fillStyle=`hsla(${drone.hue}, 100%, 65%, ${idx/drone.trail.length*trailBoost})`; ctx.beginPath(); ctx.arc(t.x,t.y,drone.radius*(idx/drone.trail.length)*(drone.type==='hunter'&&drone.surgeBurst>0?1.5:1),0,Math.PI*2); ctx.fill(); }); const hover=Math.sin(drone.wobble)*(drone.type==='glimmer'?4:drone.type==='vortex'?3.2:2.5); ctx.save(); ctx.translate(drone.x,drone.y+hover); ctx.shadowBlur=drone.type==='hunter'&&drone.surgeBurst>0?44:28; ctx.shadowColor=`hsla(${drone.hue},100%,60%,.9)`; ctx.fillStyle=drone.stunned>0?'#ffffff':`hsl(${drone.hue} 100% 64%)`; ctx.globalAlpha=drone.stunned>0?0.8:1; if(drone.type==='hunter' && drone.surgeTelegraph>0){ ctx.strokeStyle='rgba(255,214,247,.85)'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(0,0,drone.radius*1.8 + Math.sin(state.introPulse*24)*2,0,Math.PI*2); ctx.stroke(); } if(drone.type==='hunter'){ ctx.beginPath(); ctx.moveTo(0,-drone.radius*1.35); ctx.lineTo(drone.radius*1.12,drone.radius*.95); ctx.lineTo(-drone.radius*1.12,drone.radius*.95); ctx.closePath(); ctx.fill(); }
+  function drawDrones(){ state.drones.forEach(drone=>{ drone.trail.forEach((t,idx)=>{ const trailBoost = drone.type==='hunter' && drone.surgeBurst>0 ? .34 : .18; ctx.fillStyle=`hsla(${drone.hue}, 100%, 65%, ${idx/drone.trail.length*trailBoost})`; ctx.beginPath(); ctx.arc(t.x,t.y,drone.radius*(idx/drone.trail.length)*(drone.type==='hunter'&&drone.surgeBurst>0?1.5:1),0,Math.PI*2); ctx.fill(); }); const hover=Math.sin(drone.wobble)*(drone.type==='glimmer'?4:drone.type==='vortex'?3.2:drone.type==='cloaker'?2.8:2.5); ctx.save(); ctx.translate(drone.x,drone.y+hover); ctx.shadowBlur=drone.type==='hunter'&&drone.surgeBurst>0?44:28; ctx.shadowColor=`hsla(${drone.hue},100%,60%,.9)`; ctx.fillStyle=drone.stunned>0?'#ffffff':`hsl(${drone.hue} 100% 64%)`; ctx.globalAlpha=drone.stunned>0?0.8:1; if(drone.type==='hunter' && drone.surgeTelegraph>0){ ctx.strokeStyle='rgba(255,214,247,.85)'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(0,0,drone.radius*1.8 + Math.sin(state.introPulse*24)*2,0,Math.PI*2); ctx.stroke(); } if(drone.type==='hunter'){ ctx.beginPath(); ctx.moveTo(0,-drone.radius*1.35); ctx.lineTo(drone.radius*1.12,drone.radius*.95); ctx.lineTo(-drone.radius*1.12,drone.radius*.95); ctx.closePath(); ctx.fill(); }
       else if(drone.type==='glimmer'){ ctx.beginPath(); for(let i=0;i<6;i++){ const a=Math.PI/3*i; const r=i%2===0?drone.radius*1.15:drone.radius*.55; const x=Math.cos(a)*r, y=Math.sin(a)*r; i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); } ctx.closePath(); ctx.fill(); }
       else if(drone.type==='wraith'){ const phaseAlpha = drone.phaseActive > 0 ? 0.52 + Math.sin(state.introPulse * 18) * 0.18 : 1; ctx.globalAlpha = ctx.globalAlpha * phaseAlpha; if(drone.phaseActive > 0){ ctx.shadowBlur = 48; ctx.shadowColor = `hsla(${drone.hue},100%,70%,.7)`; } ctx.beginPath(); ctx.arc(0, 0, drone.radius * 0.85, 0, Math.PI * 2); ctx.fill(); if(drone.phaseActive > 0){ const ringAlpha = Math.sin(drone.phaseTimer * 8) * 0.3 + 0.4; ctx.strokeStyle = `hsla(${drone.hue}, 90%, 72%, ${ringAlpha})`; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, drone.radius * 1.4, 0, Math.PI * 2); ctx.stroke(); } }
       else if(drone.type==='vortex'){ 
@@ -2247,6 +2343,60 @@
             ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
           }
           ctx.stroke();
+        }
+      }
+      else if(drone.type === 'cloaker'){
+        // Cloaker stealth visualization
+        const cloakerOpacity = drone.cloakerOpacity !== undefined ? drone.cloakerOpacity : 1;
+        ctx.globalAlpha = ctx.globalAlpha * cloakerOpacity;
+        // Shroud effect when fading
+        if(drone.cloakerPhase === 1 || drone.cloakerPhase === 2){
+          const shroudRadius = drone.radius * 1.6;
+          const shroudGrad = ctx.createRadialGradient(0, 0, drone.radius * 0.3, 0, 0, shroudRadius);
+          shroudGrad.addColorStop(0, `hsla(${drone.hue}, 80%, 58%, ${0.08 * (drone.cloakerPhase === 2 ? 1 : 0.5)})`);
+          shroudGrad.addColorStop(1, 'hsla(270, 70%, 45%, 0)');
+          ctx.fillStyle = shroudGrad;
+          ctx.beginPath();
+          ctx.arc(0, 0, shroudRadius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        // Target lock indicator when about to strike
+        if(drone.cloakerPhase === 3){
+          const lockPulse = Math.sin(state.introPulse * 16) * 0.3 + 0.7;
+          ctx.strokeStyle = `hsla(${drone.hue}, 100%, 75%, ${lockPulse * 0.85})`;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(0, 0, drone.radius * 1.9, 0, Math.PI * 2);
+          ctx.stroke();
+          // Cross hairs
+          ctx.beginPath();
+          ctx.moveTo(-drone.radius * 1.6, 0);
+          ctx.lineTo(-drone.radius * 1.2, 0);
+          ctx.moveTo(drone.radius * 1.2, 0);
+          ctx.lineTo(drone.radius * 1.6, 0);
+          ctx.moveTo(0, -drone.radius * 1.6);
+          ctx.lineTo(0, -drone.radius * 1.2);
+          ctx.moveTo(0, drone.radius * 1.2);
+          ctx.lineTo(0, drone.radius * 1.6);
+          ctx.stroke();
+        }
+        // Core body - diamond shape
+        ctx.beginPath();
+        ctx.moveTo(0, -drone.radius * 1.1);
+        ctx.lineTo(drone.radius * 0.95, 0);
+        ctx.lineTo(0, drone.radius * 1.1);
+        ctx.lineTo(-drone.radius * 0.95, 0);
+        ctx.closePath();
+        ctx.fill();
+        // Inner eye
+        ctx.fillStyle = `hsla(${drone.hue}, 100%, 88%, ${0.5 + 0.3 * Math.sin(state.introPulse * 4)})`;
+        ctx.beginPath();
+        ctx.arc(0, 0, drone.radius * 0.35, 0, Math.PI * 2);
+        ctx.fill();
+        // Strike trail effect
+        if(drone.cloakerStrike > 0){
+          ctx.shadowBlur = 52;
+          ctx.shadowColor = `hsla(${drone.hue}, 100%, 72%, .95)`;
         }
       }
       else { ctx.beginPath(); ctx.moveTo(0,-drone.radius*1.25); ctx.lineTo(drone.radius*1.08,drone.radius*.9); ctx.lineTo(0,drone.radius*.45); ctx.lineTo(-drone.radius*1.08,drone.radius*.9); ctx.closePath(); ctx.fill(); }

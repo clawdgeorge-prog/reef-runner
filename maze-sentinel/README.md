@@ -55,6 +55,7 @@ Neon browser arcade prototype focused on maze-chase + route-control gameplay.
   - **Siphon** (purple): Creates a leech field that drains charge and heals slightly
   - **Rift** (orange/gold): Creates gravity wells that pull the player in, and when defeated triggers a dangerous collapse zone that persists briefly
   - Bosses have health bars and take damage from pulse, defeated bosses award bonus score
+- **Visual stun feedback**: Drones now display a pulsating ring effect when stunned by pulse or arc-lash, making the disabled state much more readable at a glance — especially useful on mobile when multiple drones are on screen
 
 ## Next polish ideas
 - Additional drone types with unique behaviors
